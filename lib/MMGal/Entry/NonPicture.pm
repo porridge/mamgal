@@ -8,4 +8,8 @@ use warnings;
 use base 'MMGal::Entry';
 use Carp;
 
+sub make {}
+sub page_path { shift->{base_name} }
+sub thumbnail_path { }
+
 1;

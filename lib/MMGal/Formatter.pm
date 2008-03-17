@@ -44,9 +44,10 @@ sub entry_cell
 	my $self  = shift;
 	my $entry = shift;
 	my $path = $entry->page_path;
+	my $thumbnail_path = $entry->thumbnail_path;
 	return '<td class="entry_cell">'.
 			sprintf("<a href='%s'>", $path).
-				sprintf("<img src='%s'/>", $entry->thumbnail_path).
+				($thumbnail_path ? sprintf("<img src='%s'/>", $entry->thumbnail_path) : '[no icon]' ) .
 			'</a><br>'.
 			($entry->isa('MMGal::Entry::Dir') ? sprintf("<a href='%s'>%s</a>", $path, $entry->name) : '').'<br>'.
 			'<span class="desc">'.$entry->description.'</span>'.

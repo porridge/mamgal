@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 7;
 use Test::Exception;
 use Test::Files;
 
@@ -19,4 +19,7 @@ my $n;
 lives_ok(sub { $n = MMGal::Entry::NonPicture->new(qw(td empty_file)) },
 							"NonPicture can be created with one existant non-picture");
 isa_ok($n, 'MMGal::Entry::NonPicture');
+
+use_ok('MMGal::Formatter');
+lives_ok(sub { MMGal::Formatter->new->entry_cell($n) },	"NonPicture can be interrogated as an entry cell target");
 
