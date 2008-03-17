@@ -27,8 +27,8 @@ sub make
 	my $formatter = shift or croak "Formatter required";
 	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "[$formatter] is not a formatter";
 
-	$_->make($formatter) for $self->elements;
-	$self->_write_montage(grep { $_->isa('MMGal::Entry::Picture') } $self->elements);
+	foreach my $el ($self->elements) { $el->make($formatter) }
+	$self->_write_montage;
 	$self->_write_contents_to(sub { $formatter->stylesheet    }, 'mmgal.css');
 	$self->_write_contents_to(sub { $formatter->format($self) }, 'index.html');
 }
@@ -78,23 +78,31 @@ sub _write_contents_to
 sub _write_montage
 {
 	my $self = shift;
-	my @images = @_;
+	my @images = grep { $_->isa('MMGal::Entry::Picture') } $self->elements;
 
-	$self->_write_contents_to(sub { MMGal::DirIcon->img }, 'index.png'), return unless @images;
+	unless (@images) {
+		$self->_write_contents_to(sub { MMGal::DirIcon->img }, 'index.png');
+		return;
+	}
 
-	my $r;
+	# Get just a bunch of images, not all of them.
+	my $montage_count = scalar @images > 36 ? 36 : scalar @images;
+	# Stack them all together
 	my $stack = Image::Magick->new;
-	my $count = scalar @images > 36 ? 36 : scalar @images;
 	push @$stack, map {
 		my $img = Image::Magick->new;
 		my $rr;
 		$rr = $img->Read($_->absolute_thumbnail_path)			and die $_->absolute_thumbnail_path.': '.$rr;
-		$img } @images[0..($count-1)];
+		$img } @images[0..($montage_count-1)];
 
-	my $side = 1 + int(sqrt($count));
+	# The montage is a visual clue that the object is a container.
+	# Therefore ensure we do not get a 1x1 montage, because it would be
+	# indistinguishable from a single image.
+	my $side = 1 + int(sqrt($montage_count));
 	$side = 2 if $side < 2;
 
-	my $montage;
+	my ($montage, $r);
+	# Do the magick, scale and write.
 	$r = $montage = $stack->Montage(tile => $side.'x'.$side);
 	ref($r)									or  die "montage: $r";
 	MMGal::Entry::Picture->scale_into($montage, 200, 150);
