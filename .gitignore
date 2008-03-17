@@ -1,4 +1,5 @@
 .*.swp
+tags
 /Makefile
 /Makefile.old
 /blib
