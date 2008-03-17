@@ -25,7 +25,7 @@ sub create_entry_for
 	shift;
 	my $path = shift or croak "Need path"; # relative to WD
 	$path =~ m{^(.*?)/?([^/]+)/*$}o or die "[$path] does not end with a base name";
-	my ($dirname, $basename) = ($1, $2);
+	my ($dirname, $basename) = ($1 || '.', $2);
 	croak "Need 1 args, got second: [$_[0]]" if @_;
 
 	my $stat = lstat($path);
