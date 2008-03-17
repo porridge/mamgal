@@ -22,16 +22,16 @@ sub init
 sub make_without_roots
 {
 	my $self = shift;
-	return $self->make_any(0, @_);
+	return $self->_make_any(0, @_);
 }
 
 sub make_roots
 {
 	my $self = shift;
-	return $self->make_any(1, @_);
+	return $self->_make_any(1, @_);
 }
 
-sub make_any
+sub _make_any
 {
 	my $self = shift;
 	my $dirs_are_roots = shift;
