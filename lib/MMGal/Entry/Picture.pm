@@ -9,15 +9,6 @@ use base 'MMGal::Entry';
 use Carp;
 use Image::Magick;
 
-sub looks_like_one
-{
-	my $self = shift;
-	my $name = shift;
-	$name =~ m{([^/]+)$} or return 0;
-	my $base_name = $1;
-	$base_name ne 'index.png' and $base_name =~ /\.(jpe?g|gif|png|tiff?|bmp)$/i;
-}
-
 sub make
 {
 	my $self = shift;
