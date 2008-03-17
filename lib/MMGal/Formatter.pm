@@ -54,7 +54,7 @@ sub entry_cell
 		$ret .= '[no&nbsp;icon]';
 	}
 	$ret .= '</a>';
-	if ($entry->isa('MMGal::Entry::Dir')) {
+	if ($entry->isa('MMGal::Entry::Dir') or $entry->isa('MMGal::Entry::NonPicture')) {
 		$ret .= sprintf('<br><a href="%s">%s</a><br>', $path, $entry->name);
 	}
 	if ($entry->description) {
