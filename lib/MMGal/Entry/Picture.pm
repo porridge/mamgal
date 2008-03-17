@@ -61,6 +61,8 @@ sub refresh_miniatures
 	}
 }
 
+# This method does not operate on MMGal::Entry::Picture, but this was the most
+# appropriate place to put it into.  At least until we grow a "utils" class.
 sub scale_into
 {
 	my $that = shift;
