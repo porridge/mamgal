@@ -4,9 +4,10 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 13;
 use Test::Exception;
 use Test::Files;
+use MMGal::Formatter;
 
 system('rm -rf td ; cp -a td.in td');
 
@@ -24,6 +25,10 @@ lives_ok(sub { @n = $p->neighbours; },			"lonely picture lives on neighbours cal
 is(scalar @n, 2,					"neighbours call returns 2 undefs");
 ok(! defined $n[0],					"return is undef");
 ok(! defined $n[1],					"return is undef");
+
+my $desc;
+lives_ok(sub { $desc = $p->description },		"returns a description");
+is($desc, "Another test image.");
 
 dir_only_contains_ok('td/one_pic', [qw(a1.png)],
 							"Only the picture at start");

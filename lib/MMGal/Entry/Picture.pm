@@ -8,6 +8,7 @@ use warnings;
 use base 'MMGal::Entry';
 use Carp;
 use Image::Magick;
+use Image::Info 'image_info';
 
 sub make
 {
@@ -37,7 +38,14 @@ sub page_path { 'slides/'.$_[0]->{base_name}.'.html' }
 sub thumbnail_path { 'thumbnails/'.$_[0]->{base_name} }
 sub absolute_thumbnail_path { $_[0]->{dir_name}.'/thumbnails/'.$_[0]->{base_name} }
 
-sub description { "Some doodles will happily go here..." }
+sub description
+{
+	my $self = shift;
+	return $self->{description} if $self->{description_is_cached};
+	$self->{description} = image_info($self->{path_name})->{Comment};
+	$self->{description_is_cached} = 1;
+	$self->{description};
+}
 
 sub refresh_miniature
 {

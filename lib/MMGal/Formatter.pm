@@ -45,13 +45,23 @@ sub entry_cell
 	my $entry = shift;
 	my $path = $entry->page_path;
 	my $thumbnail_path = $entry->thumbnail_path;
-	return '<td class="entry_cell">'.
-			sprintf("<a href='%s'>", $path).
-				($thumbnail_path ? sprintf("<img src='%s'/>", $entry->thumbnail_path) : '[no icon]' ) .
-			'</a><br>'.
-			($entry->isa('MMGal::Entry::Dir') ? sprintf("<a href='%s'>%s</a>", $path, $entry->name) : '').'<br>'.
-			'<span class="desc">'.$entry->description.'</span>'.
-		'</td>';
+	my $ret = '';
+	$ret .= '<td class="entry_cell">';
+	$ret .= sprintf("<a href='%s'>", $path);
+	if ($thumbnail_path) {
+		$ret .= sprintf("<img src='%s'/>", $entry->thumbnail_path);
+	} else {
+		$ret .= '[no&nbsp;icon]';
+	}
+	$ret .= '</a>';
+	if ($entry->isa('MMGal::Entry::Dir')) {
+		$ret .= sprintf('<br><a href="%s">%s</a><br>', $path, $entry->name);
+	}
+	if ($entry->description) {
+		$ret .= sprintf('<br><span class="desc">%s</span>', $entry->description);
+	}
+	$ret .= '</td>';
+	return $ret;
 }
 
 sub format_slide
