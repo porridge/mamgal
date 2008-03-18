@@ -21,11 +21,11 @@ sub format
 	my $self = shift;
 	my $dir  = shift;
 	my @elements = $dir->elements;
-	return $self->EMPTY_PAGE($dir->{is_root}) unless scalar @elements > 0;
+	return $self->EMPTY_PAGE($dir->is_root) unless scalar @elements > 0;
 	my $ret = $self->HEADER('<link rel="stylesheet" href="mmgal.css" type="text/css">')."\n".
 		'<table class="index">'.
 		'<tr><th colspan="4" class="header_cell">'.$dir->name.'</th></tr>'."\n".
-		($dir->{is_root} ? '' : '<tr><th colspan="4" class="header_cell">'.$self->LINK_DOWN.'</th></tr>')."\n";
+		($dir->is_root ? '' : '<tr><th colspan="4" class="header_cell">'.$self->LINK_DOWN.'</th></tr>')."\n";
 	$ret .= "\n<tr>\n";
 	my $i = 1;
 	for my $e (@elements) {

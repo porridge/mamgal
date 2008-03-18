@@ -16,7 +16,8 @@ use MMGal::Maker;
 use MMGal::Formatter;
 my $m = MMGal::Maker->new(MMGal::Formatter->new);
 ok($m->make_roots('td/more'),			"maker returns success on an dir with some files");
-dir_only_contains_ok('td/more', [qw(index.html index.png mmgal.css
+dir_only_contains_ok('td/more', [qw(.mmgal-root
+					index.html index.png mmgal.css
 					medium thumbnails slides
 					a.png b.png x.png
 					medium/a.png medium/b.png medium/x.png

@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 18;
 use Test::Exception;
 use Test::MockObject;
 use Test::Files;
@@ -18,6 +18,12 @@ dies_ok(sub { MMGal::Entry::Dir->new(qw(td empty), 2, 3) },	"dir dies on creatio
 my $d;
 lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td empty)) },	"dir can be created with one existant dir arg");
 isa_ok($d, 'MMGal::Entry::Dir');
+ok(! $d->is_root,					"freshly created dir is not a root");
+
+my $rd;
+lives_ok(sub { $rd = MMGal::Entry::Dir->new(qw(td root_dir)) },	"dir can be created with a root-marked dir arg");
+isa_ok($d, 'MMGal::Entry::Dir');
+ok(! $d->is_root,					"freshly created dir is not a root");
 
 dies_ok(sub { $d->neighbours_of_index(0) },		"no neighbours of first index in an empty dir");
 dies_ok(sub { $d->neighbours_of_index(1) },		"no neighbours of second index in an empty dir");

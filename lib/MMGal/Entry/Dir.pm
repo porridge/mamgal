@@ -18,7 +18,22 @@ sub thumbnail_path   { $_[0]->{base_name}.'/index.png'  }
 sub set_root
 {
 	my $self = shift;
-	$self->{is_root} = shift;
+	my $was_root = $self->is_root;
+	my $is_root = $self->{is_root} = shift; 
+
+	return if $is_root == $was_root;
+
+	if ($is_root) {
+		$self->_write_contents_to(sub {''}, '.mmgal-root');
+	} else {
+		unlink($self->{path_name}.'/.mmgal-root') or die "unlink ".$self->{path_name}."/.mmgal-root: $!";
+	}
+}
+
+sub is_root
+{
+	my $self = shift;
+	return $self->{is_root} || 0;
 }
 
 sub make
