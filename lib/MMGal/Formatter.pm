@@ -57,7 +57,7 @@ sub entry_cell
 	if ($entry->description) {
 		$ret .= sprintf('<br><span class="desc">%s</span>', $entry->description);
 	} else {
-		$ret .= sprintf('<br>[<a href="%s" class="filename">%s</a>]<br>', $path, $entry->name);
+		$ret .= sprintf('<br><span class="filename">[<a href="%s">%s</a>]</span><br>', $path, $entry->name);
 	}
 	$ret .= '</td>';
 	return $ret;
@@ -101,6 +101,8 @@ sub stylesheet
 	my $t = <<END;
 table.index { width: 100% }
 .entry_cell { text-align: center }
+.slide_filename { font-family: monospace }
+.filename { font-family: monospace }
 END
 	return $t;
 }
