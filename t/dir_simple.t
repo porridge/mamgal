@@ -33,7 +33,7 @@ dir_only_contains_ok('td/empty', [],			"directory is empty initially");
 lives_ok(sub { $d->make($f) },				"dir lives on make invocation with a formatter");
 
 ok($f->called('format'),				"dir->make calls formatter->format internally");
-ok($f->called('stylesheet'),				"dir->make calls formatter->format internally");
+ok($f->called('stylesheet'),				"dir->make calls formatter->stylesheet internally");
 dir_only_contains_ok('td/empty', [qw{index.html index.png mmgal.css}],
 							"directory contains only the index file and thumb afterwards");
 file_ok('td/empty/index.html', "whatever",		"dir->make creates an index file");
