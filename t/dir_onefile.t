@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 15;
 use Test::Exception;
 use Test::Files;
 
@@ -19,6 +19,13 @@ is(scalar(@ret), 1,						"dir contains one element");
 isa_ok($ret[0], 'MMGal::Entry::Picture');
 is($ret[0]->element_index, 0,					"picture knows its index");
 
+use MMGal::Formatter;
+my $f = MMGal::Formatter->new;
+
+my $st;
+lives_ok(sub { $st = $f->format_slide($ret[0]) },		"formatter formats a slide");
+like($st, qr/Another test image\./,				"slide page contains description");
+
 my ($prev, $next);
 dies_ok(sub { ($prev, $next) = $d->neighbours_of_index(1) },	"there is no index one");
 lives_ok(sub { ($prev, $next) = $d->neighbours_of_index(0) },	"there is index zero");
@@ -27,8 +34,6 @@ ok(not(defined($next)),						"there is no next neighbour");
 
 dir_only_contains_ok('td/one_pic', [qw(a1.png)],
 								"Only the picture at start");
-use MMGal::Formatter;
-my $f = MMGal::Formatter->new;
 lives_ok(sub { $d->make($f) },					"dir makes stuff and survives");
 
 dir_only_contains_ok('td/one_pic', [qw(medium thumbnails slides index.html index.png mmgal.css

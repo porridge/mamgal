@@ -80,6 +80,7 @@ sub format_slide
 		' '.
 		($next ? "<a href='$next.html'>Next</a>" : 'Next').
 		"<br>\n".
+		($pic->description ? sprintf('<span class="slide_desc">%s</span><br>', $pic->description) : '').
 		sprintf('<a href="%s"><img src="%s"/></a>', '../'.$pic->{base_name}, '../medium/'.$pic->{base_name}) .
 		$self->FOOTER;
 }
