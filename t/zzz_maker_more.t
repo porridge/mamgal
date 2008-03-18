@@ -10,7 +10,7 @@ use Test::HTML::Content;
 
 system('rm -rf td ; cp -a td.in td');
 
-dir_only_contains_ok('td/more', [qw(a.png b.png x.png subdir subdir/p.png)],
+dir_only_contains_ok('td/more', [qw(a.png b.png x.png subdir subdir/p.png), 'zzz another subdir', 'zzz another subdir/p.png'],
 						"not much exists initially");
 use MMGal::Maker;
 use MMGal::Formatter;
@@ -26,6 +26,11 @@ dir_only_contains_ok('td/more', [qw(index.html index.png mmgal.css
 					subdir/index.html subdir/index.png subdir/mmgal.css
 					subdir/medium subdir/medium/p.png
 					subdir/thumbnails subdir/thumbnails/p.png
-					subdir/slides subdir/slides/p.png.html
-					)],
-						"maker created index.html, medium, thumbnail and slides, also for subdir");
+					subdir/slides subdir/slides/p.png.html),
+					'zzz another subdir', 'zzz another subdir/index.png', 'zzz another subdir/index.html',
+					'zzz another subdir/p.png', 'zzz another subdir/mmgal.css', 'zzz another subdir/slides',
+					'zzz another subdir/slides/p.png.html', 'zzz another subdir/thumbnails',
+					'zzz another subdir/thumbnails/p.png', 'zzz another subdir/medium',
+					'zzz another subdir/medium/p.png'
+					],
+						"maker created index.html, medium, thumbnail and slides, also for both subdirs");

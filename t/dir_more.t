@@ -14,7 +14,7 @@ use_ok('MMGal::Entry::Dir');
 my $d;
 lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td more)) },	"creation ok");
 my @ret = $d->elements;
-is(scalar(@ret), 4,						"dir contains 4 elements");
+is(scalar(@ret), 5,						"dir contains 5 elements");
 # read ordering
 isa_ok($ret[0], 'MMGal::Entry::Picture');
 is($ret[0]->element_index, 0, 					"pic 0 knows its element index");
