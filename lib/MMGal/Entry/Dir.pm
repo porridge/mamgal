@@ -101,11 +101,13 @@ sub _write_montage
 	my $side = 1 + int(sqrt($montage_count));
 	$side = 2 if $side < 2;
 
+	my ($m_x, $m_y) = (200, 150);
+
 	my ($montage, $r);
 	# Do the magick, scale and write.
-	$r = $montage = $stack->Montage(tile => $side.'x'.$side);
+	$r = $montage = $stack->Montage(tile => $side.'x'.$side, geometry => $m_x.'x'.$m_y, border => 2);
 	ref($r)									or  die "montage: $r";
-	MMGal::Entry::Picture->scale_into($montage, 200, 150);
+	MMGal::Entry::Picture->scale_into($montage, $m_x, $m_y);
 	$r = $montage->Write($self->{path_name}.'/index.png')			and die $self->{path_name}.'/index.png: '.$r;
 }
 
