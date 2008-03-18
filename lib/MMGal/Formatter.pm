@@ -54,11 +54,10 @@ sub entry_cell
 		$ret .= '[no&nbsp;icon]';
 	}
 	$ret .= '</a>';
-	if ($entry->isa('MMGal::Entry::Dir') or $entry->isa('MMGal::Entry::NonPicture')) {
-		$ret .= sprintf('<br><a href="%s">%s</a><br>', $path, $entry->name);
-	}
 	if ($entry->description) {
 		$ret .= sprintf('<br><span class="desc">%s</span>', $entry->description);
+	} else {
+		$ret .= sprintf('<br>[<a href="%s" class="filename">%s</a>]<br>', $path, $entry->name);
 	}
 	$ret .= '</td>';
 	return $ret;
@@ -73,16 +72,28 @@ sub format_slide
 
 	my ($prev, $next) = map { defined $_ ? $_->name : '' } $pic->neighbours;
 
-	return	$self->HEADER .
-		($prev ? "<a href='$prev.html'>Prev</a>" : 'Prev').
-		' '.
-		"<a href='../index.html'>Index</a>" .
-		' '.
-		($next ? "<a href='$next.html'>Next</a>" : 'Next').
-		"<br>\n".
-		($pic->description ? sprintf('<span class="slide_desc">%s</span><br>', $pic->description) : '').
-		sprintf('<a href="%s"><img src="%s"/></a>', '../'.$pic->{base_name}, '../medium/'.$pic->{base_name}) .
-		$self->FOOTER;
+	my $r = '';
+	$r .= $self->HEADER;
+	if ($prev) {
+		$r .= "<a href='$prev.html'>Prev</a>";
+	} else {
+		$r .= 'Prev';
+	}
+	$r .= " <a href='../index.html'>Index</a> ";
+	if ($next) {
+		$r .= "<a href='$next.html'>Next</a>";
+	} else {
+		$r .= 'Next';
+	}
+	$r .= "<br>\n";
+	if ($pic->description) {
+		$r .= sprintf('<span class="slide_desc">%s</span><br>', $pic->description);
+	} else {
+		$r .= sprintf('[<span class="slide_filename">%s</span>]<br>', $pic->name);
+	}
+	$r .= sprintf('<a href="%s"><img src="%s"/></a>', '../'.$pic->{base_name}, '../medium/'.$pic->{base_name});
+	$r .= $self->FOOTER;
+	return $r;
 }
 
 sub stylesheet
