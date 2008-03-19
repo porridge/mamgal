@@ -40,10 +40,10 @@ sub container
 	return $self->{container};
 }
 
-sub container_names
+sub containers
 {
 	my $self = shift;
-	return ($self->container->container_names, $self->container->name);
+	return ($self->container->containers, $self->container);
 }
 
 sub neighbours

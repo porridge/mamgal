@@ -12,6 +12,7 @@ use MMGal::DirIcon;
 use Image::Magick;
 use MMGal::EntryFactory;
 
+sub child            { $_[0]->{path_name}.'/'.$_[1]     }
 sub page_path        { $_[0]->{base_name}.'/index.html' }
 sub thumbnail_path   { $_[0]->{base_name}.'/index.png'  }
 
@@ -22,7 +23,7 @@ sub init
 	if ($self->{dir_name} eq '/' and ($self->{base_name} eq '/' or $self->{base_name} eq '.')) {
 		$self->{path_name} = '/';
 		$self->{is_root} = 1;
-	} elsif (-e $self->{path_name}.'/.mmgal-root') {
+	} elsif (-e $self->child('.mmgal-root')) {
 		$self->{is_root} = 1;
 	}
 }
@@ -38,7 +39,7 @@ sub set_root
 	if ($is_root) {
 		$self->_write_contents_to(sub {''}, '.mmgal-root');
 	} else {
-		unlink($self->{path_name}.'/.mmgal-root') or die "unlink ".$self->{path_name}."/.mmgal-root: $!";
+		unlink($self->child('.mmgal-root')) or die "unlink ".$self->child(".mmgal-root").": $!";
 	}
 }
 
@@ -64,7 +65,7 @@ sub ensure_subdir_exists
 {
 	my $self = shift;
 	my $basename = shift;
-	my $dir = $self->{path_name}.'/'.$basename;
+	my $dir = $self->child($basename);
 	mkdir $dir or die "[$dir]: $!\n" unless -w $dir;
 }
 
@@ -98,7 +99,7 @@ sub _write_contents_to
 	my $self = shift;
 	my $code = shift;
 	my $suffix = shift;
-	my $full_name = $self->{path_name}.'/'.$suffix;
+	my $full_name = $self->child($suffix);
 	$self->SUPER::_write_contents_to($code, $full_name);
 }
 
@@ -135,7 +136,7 @@ sub _write_montage
 	$r = $montage = $stack->Montage(tile => $side.'x'.$side, geometry => $m_x.'x'.$m_y, border => 2);
 	ref($r)									or  die "montage: $r";
 	MMGal::Entry::Picture->scale_into($montage, $m_x, $m_y);
-	$r = $montage->Write($self->{path_name}.'/index.png')			and die $self->{path_name}.'/index.png: '.$r;
+	$r = $montage->Write($self->child('index.png'))			and die $self->child('index.png').': '.$r;
 }
 
 sub _ignorable_name($)
@@ -172,11 +173,11 @@ sub elements
 	return @{$self->{elements}};
 }
 
-sub container_names
+sub containers
 {
 	my $self = shift;
 	return if $self->is_root;
-	return $self->SUPER::container_names(@_);
+	return $self->SUPER::containers(@_);
 }
 
 1;

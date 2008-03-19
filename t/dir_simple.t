@@ -26,13 +26,13 @@ my $deep_dir;
 lives_ok(sub { $deep_dir = MMGal::Entry::Dir->new(qw(td/more subdir)) },	"dir can be created with one existant dir arg");
 isa_ok($deep_dir, 'MMGal::Entry::Dir');
 ok(! $deep_dir->is_root,						"freshly created dir is not a root");
-is_deeply([($deep_dir->container_names)], [qw(td more)],		"non-root directory has some container names");
+is_deeply([map { $_->name } $deep_dir->containers], [qw(td more)],		"non-root directory has some container names");
 
 my $rd;
 lives_ok(sub { $rd = MMGal::Entry::Dir->new(qw(td root_dir)) },	"dir can be created with a root-marked dir arg");
 isa_ok($rd, 'MMGal::Entry::Dir');
 ok($rd->is_root,						"freshly created root dir is root");
-is_deeply([($rd->container_names)], [],			"root directory has no container names");
+is_deeply([($rd->containers)], [],			"root directory has no container names");
 
 my $bd;
 lives_ok(sub { $bd = MMGal::Entry::Dir->new(qw(/ bin)) },	"dir can be created with a toplevel dir arg");

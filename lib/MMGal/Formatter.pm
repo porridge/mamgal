@@ -29,7 +29,7 @@ sub format
 	my $ret = $self->HEADER('<link rel="stylesheet" href="mmgal.css" type="text/css">')."\n";
 	$ret .= '<table class="index">';
 	$ret .= '<tr><th colspan="4" class="header_cell">';
-	$ret .= join(' / ', map { $self->CURDIR($_) } $dir->container_names, $dir->name);
+	$ret .= join(' / ', map { $self->CURDIR($_->name) } $dir->containers, $dir);
 	$ret .= '</th></tr>'."\n";
 	$ret .= ($dir->is_root ? '' : '<tr><th colspan="4" class="header_cell">'.$self->LINK_DOWN.'</th></tr>')."\n";
 	$ret .= "\n<tr>\n";
@@ -95,7 +95,7 @@ sub format_slide
 		$r .= 'Next';
 	}
 	$r .= ' [ ';
-	$r .= join(' / ', map { $self->CURDIR($_) } $pic->container_names);
+	$r .= join(' / ', map { $self->CURDIR($_->name) } $pic->containers);
 	$r .= " ]<br>\n";
 	if ($pic->description) {
 		$r .= sprintf('<span class="slide_desc">%s</span><br>', $pic->description);
