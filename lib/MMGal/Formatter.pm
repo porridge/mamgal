@@ -16,7 +16,40 @@ sub HEADER
 	"<html><head>$head</head><body>";
 }
 
-sub LINK_DOWN		{ "<a href='../index.html'>Up a dir</a>" }
+sub MAYBE_LINK
+{
+	my $self = shift;
+	my $link = shift;
+	my $text = shift;
+	if ($link) {
+		$self->LINK($link.'.html', $text)
+	} else {
+		$text
+	}
+}
+
+sub MAYBE_IMG
+{
+	my $self = shift;
+	my $img = shift;
+	if ($img) {
+		sprintf("<img src='%s'/>", $img);
+	} else {
+		'[no&nbsp;icon]';
+	}
+}
+
+sub LINK
+{
+	my $self = shift;
+	my $link = shift;
+	my $text = shift;
+	"<a href='$link'>$text</a>";
+}
+
+sub PREV                { '&lt;&lt; prev' }
+sub NEXT                { 'next &gt;&gt;' }
+sub LINK_DOWN		{ $_[0]->LINK('../index.html', 'Up a dir') }
 sub FOOTER		{ "</body></html>"; }
 sub EMPTY_PAGE_TEXT	{ "This directory is empty" }
 sub CURDIR		{ sprintf '<span class="curdir">%s</span>', $_[1] }
@@ -57,17 +90,11 @@ sub entry_cell
 	my $thumbnail_path = $entry->thumbnail_path;
 	my $ret = '';
 	$ret .= '<td class="entry_cell">';
-	$ret .= sprintf("<a href='%s'>", $path);
-	if ($thumbnail_path) {
-		$ret .= sprintf("<img src='%s'/>", $entry->thumbnail_path);
-	} else {
-		$ret .= '[no&nbsp;icon]';
-	}
-	$ret .= '</a>';
+	$ret .= $self->LINK($path, $self->MAYBE_IMG($thumbnail_path));
 	if ($entry->description) {
 		$ret .= sprintf('<br><span class="desc">%s</span>', $entry->description);
 	} else {
-		$ret .= sprintf('<br><span class="filename">[<a href="%s">%s</a>]</span><br>', $path, $entry->name);
+		$ret .= sprintf('<br><span class="filename">[%s]</span><br>', $self->LINK($path, $entry->name));
 	}
 	$ret .= '</td>';
 	return $ret;
@@ -82,27 +109,28 @@ sub format_slide
 
 	my ($prev, $next) = map { defined $_ ? $_->name : '' } $pic->neighbours;
 
-	my $r = $self->HEADER;
-	if ($prev) {
-		$r .= "<a href='$prev.html'>Prev</a>";
-	} else {
-		$r .= 'Prev';
-	}
-	$r .= " <a href='../index.html'>Index</a> ";
-	if ($next) {
-		$r .= "<a href='$next.html'>Next</a>";
-	} else {
-		$r .= 'Next';
-	}
-	$r .= ' [ ';
+	my $r = $self->HEADER('<link rel="stylesheet" href="../mmgal.css" type="text/css">')."\n";
+	$r .= '<div style="float:left">';
+	$r .= $self->MAYBE_LINK($prev, $self->PREV);
+	$r .= ' | ';
+	$r .= $self->LINK('../index.html', 'index');
+	$r .= ' | ';
+	$r .= $self->MAYBE_LINK($next, $self->NEXT);
+	$r .= '</div>';
+
+	$r .= '<div style="float:right">[ ';
 	$r .= join(' / ', map { $self->CURDIR($_->name) } $pic->containers);
-	$r .= " ]<br>\n";
+	$r .= " ]</div><br>\n";
+
+	$r .= "<p>\n";
 	if ($pic->description) {
-		$r .= sprintf('<span class="slide_desc">%s</span><br>', $pic->description);
+		$r .= sprintf('<span class="slide_desc">%s</span>', $pic->description);
 	} else {
-		$r .= sprintf('[<span class="slide_filename">%s</span>]<br>', $pic->name);
+		$r .= sprintf('[<span class="slide_filename">%s</span>]', $pic->name);
 	}
-	$r .= sprintf('<a href="%s"><img src="%s"/></a>', '../'.$pic->{base_name}, '../medium/'.$pic->{base_name});
+	$r .= "</p>\n";
+
+	$r .= $self->LINK('../'.$pic->name, $self->MAYBE_IMG('../medium/'.$pic->name));
 	$r .= $self->FOOTER;
 	return $r;
 }
@@ -112,6 +140,7 @@ sub stylesheet
 	my $t = <<END;
 table.index { width: 100% }
 .entry_cell { text-align: center }
+.slide_desc     { font-weight: bold }
 .slide_filename { font-family: monospace }
 .filename { font-family: monospace }
 .curdir { font-size: xx-large; font-weight: normal }
