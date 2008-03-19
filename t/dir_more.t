@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 19;
+use Test::More tests => 23;
 use Test::Exception;
 use Test::Files;
 
@@ -35,3 +35,10 @@ ok(defined $prev && defined $next,				"there is both prev and next neighbour for
 is($prev, $ret[0],						"prev before 2nd is 1st");
 is($next, $ret[3],						"next after 2nd is 3rd pic (4th element)");
 
+my $subdir = $ret[2];
+is($subdir->container, $d,					"container of dir's subdir is dir");
+
+my $topdir;
+lives_ok(sub { $topdir = $d->container },			"a dir can return its container");
+isa_ok($topdir, 'MMGal::Entry::Dir',				"dir's container is a dir");
+is($topdir->name, 'td',						"dir's parent name is correct");

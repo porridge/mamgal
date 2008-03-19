@@ -9,31 +9,41 @@ use warnings;
 use base 'MMGal::Base';
 use Carp;
 
-sub HEADER	{ "<html><head>".($_[1] ? $_[1] : '')."</head><body>"; }
-sub LINK_DOWN	{ "<a href='../index.html'>Up a dir</a>" }
-sub FOOTER	{ "</body></html>"; }
-sub EMPTY_PAGE	{ $_[0]->HEADER.$_[0]->EMPTY_PAGE_HEADER.$_[0]->FOOTER; }
-sub EMPTY_PAGE_HEADER { ($_[1] ? '' : $_[0]->LINK_DOWN)."<h1>".$_[0]->EMPTY_PAGE_TEXT."</h1>" }
-sub EMPTY_PAGE_TEXT { "This directory is empty" }
+sub HEADER
+{
+	my $self = shift;
+	my $head = shift || '';
+	"<html><head>$head</head><body>";
+}
+
+sub LINK_DOWN		{ "<a href='../index.html'>Up a dir</a>" }
+sub FOOTER		{ "</body></html>"; }
+sub EMPTY_PAGE_TEXT	{ "This directory is empty" }
+sub CURDIR		{ sprintf '<span class="curdir">%s</span>', $_[1] }
 
 sub format
 {
 	my $self = shift;
 	my $dir  = shift;
 	my @elements = $dir->elements;
-	return $self->EMPTY_PAGE($dir->is_root) unless scalar @elements > 0;
-	my $ret = $self->HEADER('<link rel="stylesheet" href="mmgal.css" type="text/css">')."\n".
-		'<table class="index">'.
-		'<tr><th colspan="4" class="header_cell">'.$dir->name.'</th></tr>'."\n".
-		($dir->is_root ? '' : '<tr><th colspan="4" class="header_cell">'.$self->LINK_DOWN.'</th></tr>')."\n";
+	my $ret = $self->HEADER('<link rel="stylesheet" href="mmgal.css" type="text/css">')."\n";
+	$ret .= '<table class="index">';
+	$ret .= '<tr><th colspan="4" class="header_cell">';
+	$ret .= join(' / ', map { $self->CURDIR($_) } $dir->container_names, $dir->name);
+	$ret .= '</th></tr>'."\n";
+	$ret .= ($dir->is_root ? '' : '<tr><th colspan="4" class="header_cell">'.$self->LINK_DOWN.'</th></tr>')."\n";
 	$ret .= "\n<tr>\n";
 	my $i = 1;
-	for my $e (@elements) {
-		die "[$e] is not an object" unless ref $e;
-		die "[$e] is a ".ref($e) unless $e->isa('MMGal::Entry');
-		$ret .= '  '.$self->entry_cell($e)."\n";
-		$ret .= "</tr>\n<tr>\n" if $i % 4 == 0;
-		$i++;
+	if (@elements) {
+		for my $e (@elements) {
+			die "[$e] is not an object" unless ref $e;
+			die "[$e] is a ".ref($e) unless $e->isa('MMGal::Entry');
+			$ret .= '  '.$self->entry_cell($e)."\n";
+			$ret .= "</tr>\n<tr>\n" if $i % 4 == 0;
+			$i++;
+		}
+	} else {
+		$ret .= '<td colspan="4">'.$self->EMPTY_PAGE_TEXT.'</td>';
 	}
 	$ret .= "</tr>\n";
 	return $ret.$self->FOOTER;
@@ -72,8 +82,7 @@ sub format_slide
 
 	my ($prev, $next) = map { defined $_ ? $_->name : '' } $pic->neighbours;
 
-	my $r = '';
-	$r .= $self->HEADER;
+	my $r = $self->HEADER;
 	if ($prev) {
 		$r .= "<a href='$prev.html'>Prev</a>";
 	} else {
@@ -85,7 +94,9 @@ sub format_slide
 	} else {
 		$r .= 'Next';
 	}
-	$r .= "<br>\n";
+	$r .= ' [ ';
+	$r .= join(' / ', map { $self->CURDIR($_) } $pic->container_names);
+	$r .= " ]<br>\n";
 	if ($pic->description) {
 		$r .= sprintf('<span class="slide_desc">%s</span><br>', $pic->description);
 	} else {
@@ -103,6 +114,7 @@ table.index { width: 100% }
 .entry_cell { text-align: center }
 .slide_filename { font-family: monospace }
 .filename { font-family: monospace }
+.curdir { font-size: xx-large; font-weight: normal }
 END
 	return $t;
 }

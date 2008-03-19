@@ -18,6 +18,6 @@ use MMGal::Entry::Dir;
 my $d = MMGal::Entry::Dir->new(qw(td empty));
 my $t = $f->format($d);
 no_tag($t, "img", {},					"the resulting page has no pics");
-tag_ok($t, "h1", { _content => MMGal::Formatter->EMPTY_PAGE_TEXT },
-							"the resulting page has a special header");
+tag_ok($t, "td", { _content => MMGal::Formatter->EMPTY_PAGE_TEXT },
+							"the resulting page has a cell");
 link_ok($t, "../index.html",				"the resulting page has a link down");

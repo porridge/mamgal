@@ -7,6 +7,8 @@ use strict;
 use warnings;
 use base 'MMGal::Base';
 use Carp;
+use Cwd 'abs_path';
+use File::Basename;
 
 sub init
 {
@@ -28,6 +30,21 @@ sub set_element_index { $_[0]->{element_index} = $_[1]  }
 sub name          { $_[0]->{base_name} }
 sub description   { '' }
 sub set_container { $_[0]->{container} = $_[1] }
+sub container
+{
+	my $self = shift;
+	unless (defined $self->{container}) {
+		my $parent = abs_path($self->{dir_name});
+		$self->{container} = $self->new(dirname($parent), basename($parent));
+	}
+	return $self->{container};
+}
+
+sub container_names
+{
+	my $self = shift;
+	return ($self->container->container_names, $self->container->name);
+}
 
 sub neighbours
 {

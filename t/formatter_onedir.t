@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 10;
 use Test::HTML::Content;
 
 system('rm -rf td ; cp -a td.in td');
@@ -19,7 +19,11 @@ text_ok($t, 'one_dir',					"there is the directory name");
 tag_count($t, "a", { href => 'subdir/index.html' }, 2,	"there are two links to the subdir");
 tag_ok($t, "img", { src => 'subdir/index.png' },	"there is a pic on the page");
 no_tag($t, "a", { href => "../index.html" },		"there is no link down");
+no_text($t, '/',					"there is no (leading) slash on root dir page");
 
 my $tsub = $f->format(($d->elements)[0]);
 no_tag($tsub, "img", {},				"subdir index has no pics");
 link_ok($tsub, "../index.html",				"subdir has link down");
+text_ok($tsub, 'subdir',				"there is the directory name");
+text_ok($tsub, 'one_dir',				"there is the parent directory name");
+no_text($tsub, 'td',					"there isn't the grandfather directory name");

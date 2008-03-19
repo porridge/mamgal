@@ -15,6 +15,18 @@ use MMGal::EntryFactory;
 sub page_path        { $_[0]->{base_name}.'/index.html' }
 sub thumbnail_path   { $_[0]->{base_name}.'/index.png'  }
 
+sub init
+{
+	my $self = shift;
+	$self->SUPER::init(@_);
+	if ($self->{dir_name} eq '/' and ($self->{base_name} eq '/' or $self->{base_name} eq '.')) {
+		$self->{path_name} = '/';
+		$self->{is_root} = 1;
+	} elsif (-e $self->{path_name}.'/.mmgal-root') {
+		$self->{is_root} = 1;
+	}
+}
+
 sub set_root
 {
 	my $self = shift;
@@ -158,6 +170,13 @@ sub elements
 		} @entries
 	];
 	return @{$self->{elements}};
+}
+
+sub container_names
+{
+	my $self = shift;
+	return if $self->is_root;
+	return $self->SUPER::container_names(@_);
 }
 
 1;
