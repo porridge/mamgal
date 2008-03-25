@@ -12,7 +12,7 @@ system('rm -rf td ; cp -a td.in td');
 
 use_ok('MMGal::Entry::Dir');
 my $d;
-lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td one_pic)) },		"dir can be created with one arg - existant dir with one pic");
+lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td one_pic)) },		"dir can be created with an array: existant dir with one pic");
 isa_ok($d, 'MMGal::Entry::Dir');
 my @ret = $d->elements;
 is(scalar(@ret), 1,						"dir contains one element");
