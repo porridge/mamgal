@@ -10,8 +10,9 @@ use Test::HTML::Content;
 system('rm -rf td ; cp -a td.in td');
 
 use MMGal::Formatter;
-use MMGal::Entry::Dir;
 my $f = MMGal::Formatter->new;
+
+use MMGal::EntryFactory;
 my $d = MMGal::EntryFactory->create_entry_for('td/one_dir');
 $d->set_root(1);
 my $t = $f->format($d);

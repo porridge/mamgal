@@ -11,8 +11,8 @@ system('rm -rf td ; cp -a td.in td');
 
 use MMGal::Formatter;
 use MMGal::Entry::Picture;
-use MMGal::Entry::Dir;
-my $d = MMGal::Entry::Dir->new(qw(td more));
+use MMGal::EntryFactory;
+my $d = MMGal::EntryFactory->create_entry_for('td/more');
 my $f = MMGal::Formatter->new;
 my @elems = $d->elements;
 my $p = $elems[1];

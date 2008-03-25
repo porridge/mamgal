@@ -12,9 +12,9 @@ system('rm -rf td ; cp -a td.in td');
 
 use MMGal::Formatter;
 use MMGal::Entry::Picture;
-use MMGal::Entry::Dir;
+use MMGal::EntryFactory;
 my $f = MMGal::Formatter->new;
-my $d = MMGal::Entry::Dir->new('td/more', 'zzz another subdir');
+my $d = MMGal::EntryFactory->create_entry_for('td/more/zzz another subdir');
 # this is p.png, which has no description
 my $p = ($d->elements)[0];
 

@@ -10,9 +10,9 @@ use Test::HTML::Content;
 system('rm -rf td ; cp -a td.in td');
 
 use MMGal::Formatter;
-use MMGal::Entry::Dir;
+use MMGal::EntryFactory;
 my $f = MMGal::Formatter->new;
-my $d = MMGal::Entry::Dir->new(qw(td one_pic));
+my $d = MMGal::EntryFactory->create_entry_for('td/one_pic');
 my $t = $f->format($d);
 tag_ok($t, "a", { href => 'slides/a1.png.html' },
 									"there is a link to the slide");

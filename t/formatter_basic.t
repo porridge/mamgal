@@ -14,8 +14,9 @@ use_ok('MMGal::Formatter');
 my $f;
 lives_ok(sub { $f = MMGal::Formatter->new },		"formatter can be created without any arg");
 isa_ok($f, 'MMGal::Formatter');
-use MMGal::Entry::Dir;
-my $d = MMGal::Entry::Dir->new(qw(td empty));
+
+use MMGal::EntryFactory;
+my $d = MMGal::EntryFactory->create_entry_for('td/empty');
 my $t = $f->format($d);
 no_tag($t, "img", {},					"the resulting page has no pics");
 tag_ok($t, "td", { _content => MMGal::Formatter->EMPTY_PAGE_TEXT },

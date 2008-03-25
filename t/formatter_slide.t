@@ -12,9 +12,9 @@ system('rm -rf td ; cp -a td.in td');
 
 use MMGal::Formatter;
 use MMGal::Entry::Picture;
-use MMGal::Entry::Dir;
+use MMGal::EntryFactory;
 my $f = MMGal::Formatter->new;
-my $d = MMGal::Entry::Dir->new(qw(td one_pic));
+my $d = MMGal::EntryFactory->create_entry_for('td/one_pic');
 my $p = ($d->elements)[0];
 
 dies_ok(sub { $f->format_slide },				"dies with no arg");
