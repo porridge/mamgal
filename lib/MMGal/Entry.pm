@@ -9,6 +9,7 @@ use base 'MMGal::Base';
 use Carp;
 use Cwd 'abs_path';
 use File::Basename;
+use MMGal::EntryFactory;
 
 sub init
 {
@@ -35,7 +36,7 @@ sub container
 	my $self = shift;
 	unless (defined $self->{container}) {
 		my $parent = abs_path($self->{dir_name});
-		$self->{container} = $self->new(dirname($parent), basename($parent));
+		$self->set_container(MMGal::EntryFactory->create_entry_for($parent));
 	}
 	return $self->{container};
 }

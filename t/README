@@ -1,0 +1,48 @@
+mmgal - a program for creating static image galleries
+Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
+See the README file for license information
+
+Some information about tests
+============================
+
+Quick HOWTO
+-----------
+  
+  Simply run the following in the top source directory:
+  
+    perl Makefile.PL
+    make test
+ 
+Purpose
+-------
+
+  The tests have a dual purpose. I use them as part of test-driven development,
+  so they basically define the code architecture. They also serve as a
+  regression test suite.
+
+Kinds of tests
+--------------
+
+  We have:
+
+   - unit tests: testing classes individually, in separation from each other.
+     Any necessary instances of other classes should be mocked.
+
+   - integration tests: testing larger test cases involving interactions of
+     objects of different classes
+
+Organization
+------------
+
+  Although test ordering itself should not matter, it does make sense to run
+  the unit tests before integration tests. The reason is that if some change
+  breaks both kinds of tests, seeing the unit tests failure at the beginning
+  will make it easier to find the cause (integration tests are usually more
+  complicated).
+
+  Therefore we have a naming convention which makes the unit tests run before
+  all other tests. Also, integration tests which use less classes should be put
+  before those which use more classes, if possible.
+
+  Ordering is possible because the perl testing framework runs them in filename
+  alphabetical order.

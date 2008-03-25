@@ -4,27 +4,22 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 13;
 use Test::Exception;
 use Test::Files;
+use lib 'testlib';
+use MMGal::TestHelper;
 
 system('rm -rf td ; cp -a td.in td');
 
 use_ok('MMGal::Entry::Dir');
 my $d;
-lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td one_pic)) },		"dir can be created with an array: existant dir with one pic");
+lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td one_pic)) },   "dir can be created with an array: existant dir with one pic");
 isa_ok($d, 'MMGal::Entry::Dir');
 my @ret = $d->elements;
 is(scalar(@ret), 1,						"dir contains one element");
 isa_ok($ret[0], 'MMGal::Entry::Picture');
 is($ret[0]->element_index, 0,					"picture knows its index");
-
-use MMGal::Formatter;
-my $f = MMGal::Formatter->new;
-
-my $st;
-lives_ok(sub { $st = $f->format_slide($ret[0]) },		"formatter formats a slide");
-like($st, qr/Another test image\./,				"slide page contains description");
 
 my ($prev, $next);
 dies_ok(sub { ($prev, $next) = $d->neighbours_of_index(1) },	"there is no index one");
@@ -34,7 +29,8 @@ ok(not(defined($next)),						"there is no next neighbour");
 
 dir_only_contains_ok('td/one_pic', [qw(a1.png)],
 								"Only the picture at start");
-lives_ok(sub { $d->make($f) },					"dir makes stuff and survives");
+my $mf = get_mock_formatter(qw(format stylesheet format_slide));
+lives_ok(sub { $d->make($mf) },					"dir makes stuff and survives");
 
 dir_only_contains_ok('td/one_pic', [qw(medium thumbnails slides index.html index.png mmgal.css
 					a1.png

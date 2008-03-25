@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 23;
+use Test::More tests => 24;
 use Test::Exception;
 use Test::Files;
 
@@ -13,6 +13,7 @@ system('rm -rf td ; cp -a td.in td');
 use_ok('MMGal::Entry::Dir');
 my $d;
 lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td more)) },	"creation ok");
+isa_ok($d, 'MMGal::Entry::Dir',                                 "a dir is a dir");
 my @ret = $d->elements;
 is(scalar(@ret), 5,						"dir contains 5 elements");
 # read ordering

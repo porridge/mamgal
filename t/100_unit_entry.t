@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 13;
 use Test::Exception;
 
 system('rm -rf td ; cp -a td.in td');
@@ -22,4 +22,7 @@ lives_ok(sub { $e = MMGal::Entry->new(qw(td empty_file)) },	"Entry can be create
 isa_ok($e, 'MMGal::Entry');
 lives_ok(sub { $n = $e->name },					"Entry knows its name");
 is($n, 'empty_file',						"Entry name is ok");
+my $dir;
+lives_ok(sub { $dir = $e->container },                          "Entry returns its container");
+isa_ok($dir, 'MMGal::Entry::Dir',                               "Entry's container is a dir");
 

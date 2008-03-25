@@ -58,6 +58,7 @@ sub format
 {
 	my $self = shift;
 	my $dir  = shift;
+	croak "Only one arg is required" if @_;
 	my @elements = $dir->elements;
 	my $ret = $self->HEADER('<link rel="stylesheet" href="mmgal.css" type="text/css">')."\n";
 	$ret .= '<table class="index">';
