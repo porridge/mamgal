@@ -40,6 +40,10 @@ Organization
   will make it easier to find the cause (integration tests are usually more
   complicated).
 
+  Additionally, having the biggest integration test execute as last, makes it
+  easy to visually inspect the program behaviour in a relatively interesting
+  use case.
+
   Therefore we have a naming convention which makes the unit tests run before
   all other tests. Also, integration tests which use less classes should be put
   before those which use more classes, if possible.
