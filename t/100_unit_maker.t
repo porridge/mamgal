@@ -7,8 +7,10 @@ use warnings;
 use Test::More tests => 9;
 use Test::Exception;
 use Test::Files;
+use lib 'testlib';
+use MMGal::TestHelper;
 
-system('rm -rf td ; cp -a td.in td');
+prepare_test_data;
 
 use_ok('MMGal::Maker');
 my $m;

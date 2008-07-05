@@ -6,8 +6,10 @@ use strict;
 use warnings;
 use Test::More tests => 11;
 use Test::HTML::Content;
+use lib 'testlib';
+use MMGal::TestHelper;
 
-system('rm -rf td ; cp -a td.in td');
+prepare_test_data;
 
 use MMGal::Formatter;
 use MMGal::Entry::Picture;

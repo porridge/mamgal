@@ -7,8 +7,10 @@ use warnings;
 use Test::More tests => 3;
 use Test::Files;
 use Test::HTML::Content;
+use lib 'testlib';
+use MMGal::TestHelper;
 
-system('rm -rf td ; cp -a td.in td');
+prepare_test_data;
 
 dir_only_contains_ok('td/one_pic', ['a1.png'],
 						"index does not exist initially");

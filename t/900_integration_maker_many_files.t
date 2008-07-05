@@ -7,8 +7,10 @@ use warnings;
 use Test::More tests => 3;
 use Test::Files;
 use Test::HTML::Content;
+use lib 'testlib';
+use MMGal::TestHelper;
 
-system('rm -rf td ; cp -a td.in td');
+prepare_test_data;
 
 dir_only_contains_ok('td/more', [qw(a.png b.png x.png subdir subdir/p.png), 'zzz another subdir', 'zzz another subdir/p.png'],
 						"not much exists initially");

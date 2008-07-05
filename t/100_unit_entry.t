@@ -6,8 +6,10 @@ use strict;
 use warnings;
 use Test::More tests => 16;
 use Test::Exception;
+use lib 'testlib';
+use MMGal::TestHelper;
 
-system('rm -rf td ; cp -a td.in td');
+prepare_test_data;
 
 use_ok('MMGal::Entry');
 dies_ok(sub { MMGal::Entry->new },				"Entry dies on creation with no args");

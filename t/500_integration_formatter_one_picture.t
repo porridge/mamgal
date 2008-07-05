@@ -7,8 +7,10 @@ use warnings;
 use Test::More tests => 37;
 use Test::HTML::Content;
 use Test::Exception;
+use lib 'testlib';
+use MMGal::TestHelper;
 
-system('rm -rf td ; cp -a td.in td');
+prepare_test_data;
 
 use MMGal::Formatter;
 use MMGal::EntryFactory;

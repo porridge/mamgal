@@ -12,7 +12,7 @@ use MMGal::Formatter;
 use lib 'testlib';
 use MMGal::TestHelper;
 
-system('rm -rf td ; cp -a td.in td');
+prepare_test_data;
 
 use_ok('MMGal::Entry::Dir');
 
