@@ -22,6 +22,7 @@ sub init
 	$self->SUPER::init(@_);
 	if ($self->{dir_name} eq '/' and ($self->{base_name} eq '/' or $self->{base_name} eq '.')) {
 		$self->{path_name} = '/';
+		$self->{base_name} = '/';
 		$self->{is_root} = 1;
 	} elsif (-e $self->child('.mmgal-root')) {
 		$self->{is_root} = 1;

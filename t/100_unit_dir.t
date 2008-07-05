@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 30;
+use Test::More tests => 34;
 use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
@@ -18,6 +18,7 @@ use_ok('MMGal::Entry::Dir');
 
 # test parameter checks
 dies_ok(sub { MMGal::Entry::Dir->new },                      "dir dies on creation with no args");
+dies_ok(sub { MMGal::Entry::Dir->new('td') },                "dir dies on creation with just one arg");
 dies_ok(sub { MMGal::Entry::Dir->new(qw(td empty), 2, 3) },  "dir dies on creation with more than 3 args");
 
 # test reading empty dir
@@ -65,7 +66,13 @@ ok($bd->container->is_root,                               "toplevel dir's contai
 
 # test root property on the real "/" root
 my $Rd;
-lives_ok(sub { $Rd = MMGal::Entry::Dir->new(qw(/ /)) },	"dir can be created with the / dir");
+lives_ok(sub { $Rd = MMGal::Entry::Dir->new(qw(/ .)) },	"dir can be created with the / dir");
 isa_ok($Rd, 'MMGal::Entry::Dir',                        "a dir is a dir");
 ok($Rd->is_root,					"freshly created root dir is root");
+
+# test creation of the current directory
+my $cd;
+lives_ok(sub { $cd = MMGal::Entry::Dir->new(qw(. .)) }, "dir can be created with the . dir");
+isa_ok($cd, 'MMGal::Entry::Dir',                        "a dir is a dir");
+ok(! $cd->is_root,                                      "freshly created root dir is not a root");
 

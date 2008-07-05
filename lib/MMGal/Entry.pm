@@ -7,15 +7,16 @@ use strict;
 use warnings;
 use base 'MMGal::Base';
 use Carp;
-use Cwd 'abs_path';
 use File::Basename;
 use MMGal::EntryFactory;
 
 sub init
 {
 	my $self     = shift;
-	my $dirname  = shift or croak "Need dir"; # containing dir, relative to WD
+	my $dirname  = shift or croak "Need dir"; # the directory which contains this entry, relative to WD or absolute
 	my $basename = shift or croak "Need basename"; # under $dirname
+	die "A basename of \".\" used when other would be possible (last component of $dirname)" if $basename eq '.' and not ($dirname eq '.' or $dirname eq '/');
+	die "Basename [$basename] contains a slash" if $basename =~ m{/};
 	my $stat     = shift; # File::stat (of target, if symlink)
 	die "At most 3 args expected, got fourth: [$_[0]]" if @_;
 
@@ -31,12 +32,12 @@ sub set_element_index { $_[0]->{element_index} = $_[1]  }
 sub name          { $_[0]->{base_name} }
 sub description   { '' }
 sub set_container { $_[0]->{container} = $_[1] }
+
 sub container
 {
 	my $self = shift;
 	unless (defined $self->{container}) {
-		my $parent = abs_path($self->{dir_name});
-		$self->set_container(MMGal::EntryFactory->create_entry_for($parent));
+		$self->set_container(MMGal::EntryFactory->create_entry_for($self->{dir_name}));
 	}
 	return $self->{container};
 }

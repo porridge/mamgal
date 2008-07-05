@@ -13,31 +13,69 @@ use MMGal::Entry::BrokenSymlink;
 use MMGal::Entry::Unreadable;
 use File::stat;
 use Fcntl ':mode';
+use Cwd;
 
-sub _sounds_like_picture($)
+sub sounds_like_picture($)
 {
 	my $base_name = shift;
-	return $base_name =~ /\.(jpe?g|gif|png|tiff?|bmp)$/i;
+	return $base_name =~ /\.(jpe?g|gif|png|tiff?|bmp)$/io;
+}
+
+sub canonicalize_path($)
+{
+	croak "list context required" unless wantarray;
+
+	my $path = shift;
+
+	# Do some path mangling in two special cases:
+	if ($path eq '.') {
+		# discover current directory name, so that it looks nice in
+		# listings, and we know where to ascend when retracting towards
+		# root directory
+		$path = Cwd::abs_path($path);
+	} elsif ($path eq '/') {
+		# mangle the path so that the following regular expression
+		# splits it nicely
+		$path = '//.';
+	}
+
+	# Split the path into containing directory and basename, stripping any trailing slashes
+	$path =~ m{^(.*?)/?([^/]+)/*$}o or die "[$path] does not end with a base name";
+	my ($dirname, $basename) = ($1 || '.', $2);
+	return ($path, $dirname, $basename);
+}
+
+# Drill down through symlinks to get the real type of the file
+# Throw exception if path is not there. Return false if symlink _destination_ is not there.
+sub recursive_stat($)
+{
+	my $path = shift;
+	my $stat = lstat($path) or croak "[$path]: $!";
+	$stat = stat($path) if ($stat->mode & S_IFLNK);
+	return $stat;
 }
 
 sub create_entry_for
 {
 	shift;
-	my $path = shift or croak "Need path"; # relative to WD
-	$path = '//.' if $path eq '/';
-	$path =~ m{^(.*?)/?([^/]+)/*$}o or die "[$path] does not end with a base name";
-	my ($dirname, $basename) = ($1 || '.', $2);
-	croak "Need 1 args, got second: [$_[0]]" if @_;
+	my $path_arg = shift or croak "Need path"; # absolute, or relative to CWD
+	croak "Need 1 arg, got more: [$_[0]]" if @_;
 
-	my $stat = lstat($path);
-	croak "[$path]: $!" if not $stat;
+	my ($path, $dirname, $basename) = canonicalize_path($path_arg);
+	my $stat = recursive_stat($path);
 
-	$stat = stat($path) if ($stat->mode & S_IFLNK);
+	if (not $stat) {
+		MMGal::Entry::BrokenSymlink->new($dirname, $basename)
 
-	return MMGal::Entry::BrokenSymlink->new($dirname, $basename)  if not $stat;
-	return MMGal::Entry::Dir->new($dirname, $basename, $stat)     if ($stat->mode & S_IFDIR);
-	return MMGal::Entry::Picture->new($dirname, $basename, $stat) if ($stat->mode & S_IFREG) and _sounds_like_picture($basename);
-	return MMGal::Entry::NonPicture->new($dirname, $basename, $stat);
+	} elsif ($stat->mode & S_IFDIR) {
+		MMGal::Entry::Dir->new($dirname, $basename, $stat)
+
+	} elsif (($stat->mode & S_IFREG) and sounds_like_picture($path)) {
+		MMGal::Entry::Picture->new($dirname, $basename, $stat)
+
+	} else {
+		MMGal::Entry::NonPicture->new($dirname, $basename, $stat)
+	}
 }
 
 1;
