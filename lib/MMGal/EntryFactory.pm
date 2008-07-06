@@ -14,6 +14,7 @@ use MMGal::Entry::Unreadable;
 use File::stat;
 use Fcntl ':mode';
 use Cwd;
+use Locale::gettext;
 
 sub sounds_like_picture($)
 {
@@ -40,7 +41,7 @@ sub canonicalize_path($)
 	}
 
 	# Split the path into containing directory and basename, stripping any trailing slashes
-	$path =~ m{^(.*?)/?([^/]+)/*$}o or die "[$path] does not end with a base name";
+	$path =~ m{^(.*?)/?([^/]+)/*$}o or die sprintf(gettext("Internal Error: [%s] does not end with a base name.\n"), $path);
 	my ($dirname, $basename) = ($1 || '.', $2);
 	return ($path, $dirname, $basename);
 }

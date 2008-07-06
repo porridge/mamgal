@@ -9,6 +9,7 @@ use base 'MMGal::Base';
 use Carp;
 use MMGal::Entry::Dir;
 use MMGal::Formatter;
+use Locale::gettext;
 our $VERSION = '0.01';
 
 sub init
@@ -17,6 +18,10 @@ sub init
 	my $formatter = shift or croak "Need a formatter arg";
 	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "Arg is not a formatter, but a [$formatter]";
 	$self->{formatter} = $formatter;
+	my $le = MMGal::LocaleEnv->new;
+	$le->set_locale('');
+	$formatter->set_locale_env($le);
+	textdomain('mmgal');
 }
 
 sub make_without_roots

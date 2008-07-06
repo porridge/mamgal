@@ -8,12 +8,35 @@ use strict;
 use warnings;
 use base 'MMGal::Base';
 use Carp;
+use Locale::gettext;
+use MMGal::LocaleEnv;
+
+sub init
+{
+	my $self = shift;
+	my $le = shift;
+	if ($le) {
+		unless (ref $le and $le->isa('MMGal::LocaleEnv')) {
+			croak "Optional argument must be a LocaleEnv, if provided";
+		}
+	} else {
+		$le = MMGal::LocaleEnv->new;
+	}
+	$self->set_locale_env($le);
+}
+
+sub set_locale_env
+{
+	my $self = shift;
+	my $le = shift;
+	$self->{locale_env} = $le;
+}
 
 sub HEADER
 {
 	my $self = shift;
 	my $head = shift || '';
-	"<html><head>$head</head><body>";
+	sprintf("<html><head><meta http-equiv='Content-Type' content='text/html; charset=%s'>%s</head><body>", $self->{locale_env}->get_charset, $head);
 }
 
 sub MAYBE_LINK
@@ -35,7 +58,10 @@ sub MAYBE_IMG
 	if ($img) {
 		sprintf("<img src='%s'/>", $img);
 	} else {
-		'[no&nbsp;icon]';
+		# TRANSLATORS: This text will appear literally where no thumbnail is avaialable
+		# for a given object.
+		# Please use &nbsp; for whitespace, to avoid line breaks.
+		gettext('[no&nbsp;icon]');
 	}
 }
 
@@ -47,11 +73,12 @@ sub LINK
 	"<a href='$link'>$text</a>";
 }
 
-sub PREV                { '&lt;&lt; prev' }
-sub NEXT                { 'next &gt;&gt;' }
-sub LINK_DOWN		{ $_[0]->LINK('../index.html', 'Up a dir') }
+# TRANSLATORS: The following three are for navigation on a slide page (&lt; is shown as <, and &gt; as >)
+sub PREV                { gettext('&lt;&lt; prev') }
+sub NEXT                { gettext('next &gt;&gt;') }
+sub LINK_DOWN		{ $_[0]->LINK('../index.html', gettext('Up a dir')) }
 sub FOOTER		{ "</body></html>"; }
-sub EMPTY_PAGE_TEXT	{ "This directory is empty" }
+sub EMPTY_PAGE_TEXT	{ gettext("This directory is empty") }
 sub CURDIR		{ sprintf '<span class="curdir">%s</span>', $_[1] }
 
 sub format
@@ -114,7 +141,8 @@ sub format_slide
 	$r .= '<div style="float:left">';
 	$r .= $self->MAYBE_LINK($prev, $self->PREV);
 	$r .= ' | ';
-	$r .= $self->LINK('../index.html', 'index');
+	# TRANSLATORS: This is the text of the link from a slide page to the index page.
+	$r .= $self->LINK('../index.html', gettext('index'));
 	$r .= ' | ';
 	$r .= $self->MAYBE_LINK($next, $self->NEXT);
 	$r .= '</div>';

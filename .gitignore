@@ -1,4 +1,5 @@
 .*.swp
+*.mo
 tags
 /Makefile
 /Makefile.old

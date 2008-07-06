@@ -1,0 +1,50 @@
+# Messages for mmgal program.
+# Copyright (C) 2007-2008 Marcin Owsiany <marcin@owsiany.pl>
+# This file is distributed under the same license as the mmgal package.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: mmgal 0.01\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-07-06 14:03+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/MMGal/EntryFactory.pm:44
+#, perl-format
+msgid "Internal Error: [%s] does not end with a base name.\n"
+msgstr ""
+
+#. TRANSLATORS: This text will appear literally where no thumbnail is avaialable
+#. for a given object.
+#. Please use &nbsp; for whitespace, to avoid line breaks.
+#: lib/MMGal/Formatter.pm:42
+msgid "[no&nbsp;icon]"
+msgstr ""
+
+#. TRANSLATORS: The following three are for navigation on a slide page (&lt; is shown as <, and &gt; as >)
+#: lib/MMGal/Formatter.pm:55
+msgid "&lt;&lt; prev"
+msgstr ""
+
+#: lib/MMGal/Formatter.pm:56
+msgid "next &gt;&gt;"
+msgstr ""
+
+#: lib/MMGal/Formatter.pm:57
+msgid "Up a dir"
+msgstr ""
+
+#: lib/MMGal/Formatter.pm:59
+msgid "This directory is empty"
+msgstr ""
+
+#. TRANSLATORS: This is the text of the link from a slide page to the index page.
+#: lib/MMGal/Formatter.pm:123
+msgid "index"
+msgstr ""

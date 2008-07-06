@@ -17,6 +17,7 @@ lib/MMGal/DirIcon.pm
 lib/MMGal/EntryFactory.pm
 lib/MMGal/Entry.pm
 lib/MMGal/Formatter.pm
+lib/MMGal/LocaleEnv.pm
 lib/MMGal/Maker.pm
 lib/MMGal/Entry/BrokenSymlink.pm
 lib/MMGal/Entry/Dir.pm

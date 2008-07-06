@@ -43,3 +43,10 @@ The license for dir.png and lib/MMGal/DirIcon.pm is:
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+----------------------------------------------------------------------------------------------------------------------------------------------
+Some useful commands:
+diff -u <(find * -type f|LANG=C sort) <(LANG=C sort MANIFEST )
+grep pm$ MANIFEST |xgettext --add-comments=TRANSLATORS: --copyright-holder="Marcin Owsiany <marcin@owsiany.pl>" -d mmgal -o po/mmgal.pot.new -f -
+mv po/mmgal.pot po/mmgal.pot.old
+msgmerge po/mmgal.pot.old po/mmgal.pot.new > po/mmgal.pot
+

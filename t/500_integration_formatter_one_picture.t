@@ -34,6 +34,7 @@ dies_ok(sub { $f->format_slide(1) },                 "dies non pic arg");
 dies_ok(sub { $f->format_slide($p_nd, 2) },          "dies with > 1 arg");
 my $st_p_nd;
 lives_ok(sub { $st_p_nd = $f->format_slide($p_nd) }, "lives with a pic arg");
+
 text_ok($st_p_nd, 'p.png',                           "slide contains filename");
 for my $n ('td', 'more', 'zzz another subdir') {
 	text_ok($st_p_nd, $n,                        "slide contains parent filename");
