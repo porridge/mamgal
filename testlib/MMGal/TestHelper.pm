@@ -22,7 +22,12 @@ sub prepare_test_data {
 	my $orig_size = -s "td.in/p.png" or die "Unable to stat td.in/p.png";
 	my $dest_size = -s 'td.in/more/zzz another subdir/p.png';
 	unless ($dest_size and $orig_size == $dest_size) {
-		system('cp', '-a', 'td.in/p.png', 'td.in/more/zzz another subdir/p.png') unless $orig_size == -s 'td.in/more/zzz another subdir/p.png';
+		system('cp', '-a', 'td.in/p.png', 'td.in/more/zzz another subdir/p.png');
+	}
+	# We also need to create our test symlinks, because MakeMaker does not like them
+	for my $pair ([qw(td.in/symlink_broken broken)], [qw(td.in/symlink_pic_noext one_pic/a1.png)], [qw(td.in/symlink_to_empty empty)], [qw(td.in/symlink_to_empty_file empty_file)], [qw(td.in/symlink_pic.png one_pic/a1.png)]) {
+		my ($link, $dest) = @$pair;
+		symlink($dest, $link) or die "Failed to symlink [$dest] to [$link]" unless -l $link;
 	}
 	# Finally, purge and copy a clean version of the test data into "td"
 	system('rm -rf td ; cp -a td.in td') == 0 or die "Test data preparation failed: $?";
