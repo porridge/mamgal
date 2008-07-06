@@ -12,6 +12,8 @@ use MMGal::TestHelper;
 prepare_test_data;
 
 use_ok('MMGal::Entry');
+
+# test parameter checks
 dies_ok(sub { MMGal::Entry->new },				"Entry dies on creation with no args");
 dies_ok(sub { MMGal::Entry->new('/') },                         "Entry dies on creation with one arg");
 dies_ok(sub { MMGal::Entry->new(qw(td empty_file), 2, 3) },	"Entry dies on creation with more than 3 args");
