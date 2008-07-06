@@ -31,7 +31,7 @@ td.in/more/a.png
 td.in/more/b.png
 td.in/more/x.png
 td.in/more/subdir/p.png
-td.in/more/zzz another subdir/p.png
+td.in/p.png
 Makefile.PL
 MANIFEST
 dir.png
