@@ -1,6 +1,7 @@
 t/100_unit_dir.t
 t/100_unit_entry.t
 t/100_unit_formatter.t
+t/100_unit_localeenv.t
 t/100_unit_maker.t
 t/100_unit_nonpicture.t
 t/300_integration_dir_with_many.t
@@ -38,3 +39,5 @@ MANIFEST
 dir.png
 testlib/MMGal/TestHelper.pm
 README
+po/mmgal.pot
+po/pl.po
