@@ -4,10 +4,11 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 22;
 use Test::Exception;
 use lib 'testlib';
 use MMGal::TestHelper;
+use File::stat;
 
 prepare_test_data;
 
@@ -16,7 +17,9 @@ use_ok('MMGal::Entry');
 # test parameter checks
 dies_ok(sub { MMGal::Entry->new },				"Entry dies on creation with no args");
 dies_ok(sub { MMGal::Entry->new('/') },                         "Entry dies on creation with one arg");
-dies_ok(sub { MMGal::Entry->new(qw(td empty_file), 2, 3) },	"Entry dies on creation with more than 3 args");
+dies_ok(sub { MMGal::Entry->new(qw(td empty_file), 1) },        "Entry dies on creation with third argument not being a File::stat");
+my $stat = stat('td/empty_file');
+dies_ok(sub { MMGal::Entry->new(qw(td empty_file), $stat, 3) },	"Entry dies on creation with more than 3 args");
 my $e;
 lives_ok(sub { $e = MMGal::Entry->new(qw(td empty)) },		"Entry can be created with one existant dir arg");
 isa_ok($e, 'MMGal::Entry');
@@ -34,3 +37,18 @@ isa_ok($dir, 'MMGal::Entry::Dir',                               "Entry's contain
 dies_ok(sub { MMGal::Entry->new(qw(td/empty .)) },              "Entry refuses to be created with '.' as the basename, when a name could have been provided");
 dies_ok(sub { MMGal::Entry->new(qw(. td/empty)) },              "Entry refuses to be created with basename containing a slash");
 
+# stat functionality
+my $fake_stat = Test::MockObject->new;
+$fake_stat->set_isa('File::stat');
+$fake_stat->mock('mtime', sub { 'fake_timestamp' });
+my $entry_with_stat;
+lives_ok(sub { $entry_with_stat = MMGal::Entry->new(qw(td empty_file), $fake_stat) }, "Entry survives creation with a fake stat");
+my $ct;
+lives_ok(sub { $ct = $entry_with_stat->creation_time },         "Entry returns the a (mocked) creation time");
+is($ct, 'fake_timestamp',                                       "Returned creation time is the mocked mtime");
+
+my $entry_no_stat;
+lives_ok(sub { $entry_no_stat = MMGal::Entry->new(qw(td empty_file)) }, "Entry survives creation without a stat object");
+lives_ok(sub { $entry_no_stat->creation_time },                 "Entry returns some creation time, even if a stat object was not passed on construction");
+
+# TODO test correctness

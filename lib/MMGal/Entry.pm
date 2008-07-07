@@ -8,6 +8,7 @@ use warnings;
 use base 'MMGal::Base';
 use Carp;
 use File::Basename;
+use File::stat;
 use MMGal::EntryFactory;
 
 sub init
@@ -17,7 +18,8 @@ sub init
 	my $basename = shift or croak "Need basename"; # under $dirname
 	die "A basename of \".\" used when other would be possible (last component of $dirname)" if $basename eq '.' and not ($dirname eq '.' or $dirname eq '/');
 	die "Basename [$basename] contains a slash" if $basename =~ m{/};
-	my $stat     = shift; # File::stat (of target, if symlink)
+	my $stat     = shift;
+	die "Third argument must be a File::stat, if provided" unless not $stat or (ref $stat and $stat->isa('File::stat'));
 	die "At most 3 args expected, got fourth: [$_[0]]" if @_;
 
 	$self->{dir_name}  = $dirname;
@@ -53,6 +55,19 @@ sub neighbours
 	my $self = shift;
 	return (undef, undef) unless $self->{container};
 	return $self->{container}->neighbours_of_index($self->element_index);
+}
+
+# Returns the best available approximation of creation time of this entry
+sub creation_time
+{
+	my $self = shift;
+	# Get the stat object provided on construction, or do a stat now
+	# TODO: cache it
+	my $stat = $self->{stat} || stat($self->{path_name});
+	# We might not be able to get stat information (broken symlink, no permissions, ...)
+	return undef unless $stat;
+	# We need to use st_mtime, for lack of anything better
+	return $stat->mtime;
 }
 
 #######################################################################################################################
