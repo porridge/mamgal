@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More tests => 25;
 use Test::Exception;
 use lib 'testlib';
 use MMGal::TestHelper;
@@ -49,6 +49,13 @@ is($ct, 'fake_timestamp',                                       "Returned creati
 
 my $entry_no_stat;
 lives_ok(sub { $entry_no_stat = MMGal::Entry->new(qw(td empty_file)) }, "Entry survives creation without a stat object");
-lives_ok(sub { $entry_no_stat->creation_time },                 "Entry returns some creation time, even if a stat object was not passed on construction");
+my $time = time;
+utime($time, $time, 'td/empty_file') == 1 or die "Failed to touch file";
+my $ret_time;
+lives_ok(sub { $ret_time = $entry_no_stat->creation_time },     "Entry returns some creation time, even if a stat object was not passed on construction");
+is($ret_time, $time,                                            "Returned creation time is correct");
+my $time2 = $time + 10;
+utime($time2, $time2, 'td/empty_file') == 1 or die "Failed to touch file";
+lives_ok(sub { $ret_time = $entry_no_stat->creation_time },     "Entry returns some creation time, even if a stat object was not passed on construction");
+is($ret_time, $time,                                            "Returned creation time is cached");
 
-# TODO test correctness

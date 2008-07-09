@@ -62,8 +62,8 @@ sub creation_time
 {
 	my $self = shift;
 	# Get the stat object provided on construction, or do a stat now
-	# TODO: cache it
-	my $stat = $self->{stat} || stat($self->{path_name});
+	$self->{stat} = stat($self->{path_name}) unless defined $self->{stat};
+	my $stat = $self->{stat};
 	# We might not be able to get stat information (broken symlink, no permissions, ...)
 	return undef unless $stat;
 	# We need to use st_mtime, for lack of anything better
