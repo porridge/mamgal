@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 20;
 use Test::Exception;
 use Test::HTML::Content;
 use lib 'testlib';
@@ -21,6 +21,8 @@ dies_ok(sub { MMGal::Formatter->new(1) },		"formatter can not be created some ju
 my $le = Test::MockObject->new;
 $le->set_isa('MMGal::LocaleEnv');
 $le->mock('get_charset', sub { 'UTF-8' });
+$le->mock('format_time', sub { '12:00:00' });
+$le->mock('format_date', sub { '18 gru 2004' });
 
 lives_ok(sub { $f->set_locale_env($le) },               "Formatter accepts a set_locale_env call");
 lives_ok(sub { $f = MMGal::Formatter->new($le) },	"formatter can be created with a locale env parameter");
@@ -38,3 +40,20 @@ no_tag($t, "img", {},					"the resulting page has no pics");
 tag_ok($t, "td", { _content => MMGal::Formatter->EMPTY_PAGE_TEXT },
 							"the resulting page has a cell");
 link_ok($t, "../index.html",				"the resulting page has a link down");
+
+my $mp = Test::MockObject->new;
+$mp->set_isa('MMGal::Picture');
+my $time = 1227684276;
+$mp->mock('creation_time', sub { $time });
+$mp->mock('page_path', sub { 'page_path' });
+$mp->mock('thumbnail_path', sub { 'tn_path' });
+$mp->mock('description', sub { 'some description' });
+$mp->mock('name', sub { 'foobar' });
+my $cell;
+lives_ok(sub { $cell = $f->entry_cell($mp) },		"formatter can format a cell");
+ok($mp->called('creation_time'),			"formatter interrogated the entry for creation time");
+ok($le->called('format_time'),				"formatter interrogated the locale env for time formatting");
+ok($le->called('format_date'),				"formatter interrogated the locale env for date formatting");
+tag_ok($cell, 'span', { 'class' => 'time', _content => '12:00:00' }, "generated cell contains creation time");
+tag_ok($cell, 'span', { 'class' => 'date', _content => '18 gru 2004' }, "generated cell contains creation date");
+

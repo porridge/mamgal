@@ -118,6 +118,8 @@ sub entry_cell
 	my $thumbnail_path = $entry->thumbnail_path;
 	my $ret = '';
 	$ret .= '<td class="entry_cell">';
+	my $time = $entry->creation_time();
+	$ret .= sprintf('<br><span class="date">%s</span> <span class="time">%s</span><br>', $self->{locale_env}->format_date($time), $self->{locale_env}->format_time($time));
 	$ret .= $self->LINK($path, $self->MAYBE_IMG($thumbnail_path));
 	if ($entry->description) {
 		$ret .= sprintf('<br><span class="desc">%s</span>', $entry->description);
@@ -160,6 +162,8 @@ sub format_slide
 	$r .= "</p>\n";
 
 	$r .= $self->LINK('../'.$pic->name, $self->MAYBE_IMG('../medium/'.$pic->name));
+	my $time = $pic->creation_time();
+	$r .= sprintf('<br><span class="date">%s</span> <span class="time">%s</span><br>', $self->{locale_env}->format_date($time), $self->{locale_env}->format_time($time));
 	$r .= $self->FOOTER;
 	return $r;
 }

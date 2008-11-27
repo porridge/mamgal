@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 37;
+use Test::More tests => 39;
 use Test::HTML::Content;
 use Test::Exception;
 use lib 'testlib';
@@ -14,7 +14,10 @@ prepare_test_data;
 
 use MMGal::Formatter;
 use MMGal::EntryFactory;
-my $f = MMGal::Formatter->new;
+use MMGal::LocaleEnv;
+my $le = MMGal::LocaleEnv->new;
+$le->set_locale('C');
+my $f = MMGal::Formatter->new($le);
 
 #
 # a dir with a single pic _without_ description
@@ -44,6 +47,8 @@ tag_count($st_p_nd, "img", {}, 1,                    "just one img tag");
 tag_ok($st_p_nd, "a", {href => '../index.html'},     "there is a link up on the page");
 tag_ok($st_p_nd, "a", {href => '../p.png'},          "there is a link to image itself");
 tag_count($st_p_nd, "a", {}, 2,                      "two links in total");
+tag_ok($st_p_nd, "span", {class => 'date', _content => '07/06/08'},"there is a date");
+tag_ok($st_p_nd, "span", {class => 'time', _content => '10:39:26'},"there is a time");
 
 my $ct_p_nd;
 lives_ok(sub { $ct_p_nd = $f->entry_cell($p_nd) },   "lives through cell entry generation");

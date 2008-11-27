@@ -50,3 +50,16 @@ Organization
 
   Ordering is possible because the perl testing framework runs them in filename
   alphabetical order.
+
+Notes
+-----
+
+Things to keep in mind when changing/adding tests:
+ - they should succeed in any timezone and any locale: you can check that by
+   running for example:
+
+   LANG=C TZ=GMT make test
+   LANG=pl_PL.UTF-8 TZ=America/Los_Angeles make test
+
+   before that make sure your system supports the locale you are testing with (try "LANG=pl_PL.UTF-8 locale")
+

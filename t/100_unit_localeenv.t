@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 14;
 use Test::Exception;
 use lib 'testlib';
 use MMGal::TestHelper;
@@ -29,3 +29,11 @@ lives_ok(sub { $ch = $le->get_charset },             "Locale env can retrieve th
 # The following string should be returned whether nl_langinfo is available or not
 is($ch, "ANSI_X3.4-1968",                            "Charset name retrieved by locale env is expected name for posix locale");
 
+# Time formatting
+my ($t, $d);
+lives_ok(sub { $t = $le->format_time(1227723614) },  "Locale env can format time");
+lives_ok(sub { $d = $le->format_date(1227723614) },  "Locale env can format date");
+is($t, '18:20:14',                                   "Time is correct");
+is($d, '11/26/08',                                   "Date is correct");
+is($le->format_time(), '??:??:??',                   "Locale env can format unknown time");
+is($le->format_date(), '???',                        "Locale env can format unknown date");

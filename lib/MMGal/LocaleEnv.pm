@@ -39,4 +39,18 @@ sub set_locale
 	setlocale(LC_ALL, $locale);
 }
 
+sub format_time
+{
+	my $self = shift;
+	my $time = shift or return '??:??:??';
+	strftime('%X', gmtime($time))
+}
+
+sub format_date
+{
+	my $self = shift;
+	my $time = shift or return '???';
+	strftime('%x', gmtime($time))
+}
+
 1;
