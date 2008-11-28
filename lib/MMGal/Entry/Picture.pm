@@ -8,7 +8,8 @@ use warnings;
 use base 'MMGal::Entry';
 use Carp;
 use Image::Magick;
-use Image::Info 'image_info';
+use Image::Info;
+use POSIX;
 
 sub make
 {
@@ -38,11 +39,20 @@ sub page_path { 'slides/'.$_[0]->{base_name}.'.html' }
 sub thumbnail_path { 'thumbnails/'.$_[0]->{base_name} }
 sub absolute_thumbnail_path { $_[0]->{dir_name}.'/thumbnails/'.$_[0]->{base_name} }
 
+sub image_info
+{
+	my $self = shift;
+	return $self->{image_info} if defined $self->{image_info};
+	$self->{image_info} = Image::Info::image_info($self->{path_name});
+	warn "Cannot retrieve image info from [".$self->{path_name}."]: ".$self->{image_info}->{error}."\n" if exists $self->{image_info}->{error};
+	return $self->{image_info};
+}
+
 sub description
 {
 	my $self = shift;
 	return $self->{description} if $self->{description_is_cached};
-	$self->{description} = image_info($self->{path_name})->{Comment};
+	$self->{description} = $self->image_info->{Comment};
 	$self->{description_is_cached} = 1;
 	$self->{description};
 }
@@ -88,6 +98,21 @@ sub scale_into
 	} else {
 		$r = $img->Scale(height => $y, width => $x_pic / $y_ratio) and die $r;
 	}
+}
+
+sub creation_time
+{
+	my $self = shift;
+	my $info = $self->image_info;
+	my $exif_time = $info->{DateTimeOriginal} || $info->{DateTime} or return $self->SUPER::creation_time(@_);
+	if ($exif_time =~ /^\s*(\d+):(\d+):(\d+)\s+(\d+):(\d+):(\d+)\s*$/) {
+		my ($y, $m, $d, $H, $M, $S) = ($1, $2, $3, $4, $5, $6);
+		my $time = POSIX::mktime($S, $M, $H, $d, $m-1, $y-1900);
+		return $time if defined $time;
+		# falls through on mktime() error
+	}
+	warn "Invalid EXIF DateTime [$exif_time] in [".$self->{path_name}."].\n";
+	return $self->SUPER::creation_time(@_);
 }
 
 1;
