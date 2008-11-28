@@ -18,6 +18,7 @@ use MMGal::Maker;
 use MMGal::Formatter;
 use MMGal::LocaleEnv;
 my $l = MMGal::LocaleEnv->new;
+# Get locale from environment so that you can see some representatative output in your language
 $l->set_locale('');
 my $m = MMGal::Maker->new(MMGal::Formatter->new($l));
 ok($m->make_roots('td/more'),			"maker returns success on an dir with some files");
