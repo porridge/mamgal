@@ -14,7 +14,8 @@ use POSIX;
 sub refresh_scaled_pictures
 {
 	my $self = shift;
-	return $self->refresh_miniatures(['medium', 800, 600], ['thumbnails', 200, 150]);
+	my $tools = shift or croak "Tools required.\n";
+	return $self->refresh_miniatures($tools, [$self->medium_dir, 800, 600], [$self->thumbnails_dir, 200, 150]);
 }
 
 sub image_info
@@ -38,6 +39,7 @@ sub description
 sub read_image
 {
 	my $self = shift;
+	my $tools = shift or croak "Tools required.\n";
 	my $i = Image::Magick->new;
 	my $r;
 	$r = $i->Read($self->{path_name})	and die $self->{path_name}.': '.$r;

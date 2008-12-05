@@ -161,7 +161,7 @@ sub format_slide
 	}
 	$r .= "</p>\n";
 
-	$r .= $self->LINK('../'.$pic->name, $self->MAYBE_IMG('../medium/'.$pic->name));
+	$r .= $self->LINK('../'.$pic->name, $self->MAYBE_IMG('../'.$pic->medium_dir.'/'.$pic->name));
 	my $time = $pic->creation_time();
 	$r .= sprintf('<br><span class="date">%s</span> <span class="time">%s</span><br>', $self->{locale_env}->format_date($time), $self->{locale_env}->format_time($time));
 	$r .= $self->FOOTER;

@@ -14,7 +14,7 @@ sub make
 	my $tools = shift or croak "Tools required\n";
 	my $formatter = $tools->{formatter} or croak "Formatter required\n";
 	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "Arg is not a formatter\n";
-	$self->refresh_scaled_pictures;
+	$self->refresh_scaled_pictures($tools);
 	$self->refresh_slide($formatter);
 }
 
@@ -23,15 +23,16 @@ sub refresh_slide
 	my $self = shift;
 	my $formatter = shift;
 
-	$self->{container}->ensure_subdir_exists('slides');
-	$self->{container}->_write_contents_to(sub { $formatter->format_slide($self) }, 'slides/'.$self->{base_name}.'.html');
+	$self->{container}->ensure_subdir_exists($self->slides_dir);
+	$self->{container}->_write_contents_to(sub { $formatter->format_slide($self) }, $self->page_path);
 }
 
 sub refresh_miniatures
 {
 	my $self = shift;
+	my $tools = shift or croak "Tools required\n";
 	my @miniatures = @_ or croak "Need args: miniature specifications";
-	my $i = $self->read_image;
+	my $i = $self->read_image($tools);
 	my $r;
 	for my $miniature (@miniatures) {
 		my ($subdir, $x, $y, $suffix) = @$miniature;
@@ -43,9 +44,9 @@ sub refresh_miniatures
 	}
 }
 
-sub page_path { 'slides/'.$_[0]->{base_name}.'.html' }
-sub thumbnail_path { 'thumbnails/'.$_[0]->{base_name} }
-sub absolute_thumbnail_path { $_[0]->{dir_name}.'/thumbnails/'.$_[0]->{base_name} }
+sub page_path { $_[0]->slides_dir.'/'.$_[0]->{base_name}.'.html' }
+sub thumbnail_path { $_[0]->thumbnails_dir.'/'.$_[0]->{base_name} }
+sub absolute_thumbnail_path { $_[0]->{dir_name}.'/'.$_[0]->thumbnail_path }
 
 # This method does not operate on MMGal::Entry::Picture::Static, but this was the most
 # appropriate place to put it into.  At least until we grow a "utils" class.

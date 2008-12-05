@@ -143,10 +143,12 @@ sub _write_montage
 
 sub _ignorable_name($)
 {
+	my $self = shift;
 	my $name = shift;
 	# ignore hidden files
 	return 1 if substr($_, 0, 1) eq '.';
-	return 1 if grep { $_ eq $name } qw(index.html index.png mmgal.css slides medium thumbnails);
+	# TODO: optimize out contants calls
+	return 1 if grep { $_ eq $name } (qw(index.html index.png mmgal.css), $self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
 	return 0;
 }
 
@@ -159,7 +161,7 @@ sub elements
 	# Read the names from the dir
 	my $path = $self->{path_name};
 	opendir DIR, $path or die "[$path]: $!\n";
-	my @entries = sort { $a cmp $b } grep { ! _ignorable_name($_) } readdir DIR;
+	my @entries = sort { $a cmp $b } grep { ! $self->_ignorable_name($_) } readdir DIR;
 	closedir DIR or die "[$path]: $!\n";
 
 	my $i = 0;

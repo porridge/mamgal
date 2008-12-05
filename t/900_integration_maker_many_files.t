@@ -16,11 +16,12 @@ dir_only_contains_ok('td/more', [qw(a.png b.png x.png subdir subdir/p.png), 'zzz
 						"not much exists initially");
 use MMGal::Maker;
 use MMGal::Formatter;
+use MMGal::MplayerWrapper;
 use MMGal::LocaleEnv;
 my $l = MMGal::LocaleEnv->new;
 # Get locale from environment so that you can see some representatative output in your language
 $l->set_locale('');
-my $m = MMGal::Maker->new(MMGal::Formatter->new($l));
+my $m = MMGal::Maker->new(MMGal::Formatter->new($l), MMGal::MplayerWrapper->new);
 ok($m->make_roots('td/more'),			"maker returns success on an dir with some files");
 dir_only_contains_ok('td/more', [qw(.mmgal-root
 					index.html index.png mmgal.css

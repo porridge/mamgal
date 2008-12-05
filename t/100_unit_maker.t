@@ -18,7 +18,9 @@ dies_ok(sub { MMGal::Maker->new },		"maker creation fails with no arg");
 
 use MMGal::Formatter;
 my $f = MMGal::Formatter->new;
-lives_ok(sub { $m = MMGal::Maker->new($f) },	"maker creation succeeds with one formatter arg");
+use MMGal::MplayerWrapper;
+my $w = MMGal::MplayerWrapper->new;
+lives_ok(sub { $m = MMGal::Maker->new($f, $w) },"maker creation succeeds with formatter and wrapper args");
 isa_ok($m, 'MMGal::Maker');
 
 dies_ok(sub { $m->make() },			"maker dies on no args");

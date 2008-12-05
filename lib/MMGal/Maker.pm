@@ -17,7 +17,10 @@ sub init
 	my $self = shift;
 	my $formatter = shift or croak "Need a formatter arg";
 	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "Arg is not a formatter, but a [$formatter]";
+	my $mplayer_wrapper = shift or croak "Need an mplayer wrapper arg";
+	ref $mplayer_wrapper and $mplayer_wrapper->isa('MMGal::MplayerWrapper') or croak "Arg is not an mplayer wrapper, but a [$mplayer_wrapper]";
 	$self->{formatter} = $formatter;
+	$self->{mplayer_wrapper} = $mplayer_wrapper;
 	my $le = MMGal::LocaleEnv->new;
 	$le->set_locale('');
 	$formatter->set_locale_env($le);
@@ -47,7 +50,7 @@ sub _make_any
 		$d->set_root(1) if $dirs_are_roots;
 		$d
 	} @_;
-	my $tools = { formatter => $self->{formatter} };
+	my $tools = { formatter => $self->{formatter}, mplayer_wrapper => $self->{mplayer_wrapper} };
 	$_->make($tools) for @dirs;
 
 	return 1;

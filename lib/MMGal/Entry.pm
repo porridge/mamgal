@@ -70,6 +70,11 @@ sub creation_time
 	return $stat->mtime;
 }
 
+# Some constants
+sub slides_dir     { 'slides' }
+sub thumbnails_dir { 'thumbnails' }
+sub medium_dir     { 'medium' }
+
 #######################################################################################################################
 # Abstract methods
 # these two need to return the text of the link ...

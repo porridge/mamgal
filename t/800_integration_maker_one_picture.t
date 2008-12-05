@@ -16,7 +16,8 @@ dir_only_contains_ok('td/one_pic', ['a1.png'],
 						"index does not exist initially");
 use MMGal::Maker;
 use MMGal::Formatter;
-my $m = MMGal::Maker->new(MMGal::Formatter->new);
+use MMGal::MplayerWrapper;
+my $m = MMGal::Maker->new(MMGal::Formatter->new, MMGal::MplayerWrapper->new);
 ok($m->make_without_roots('td/one_pic'),		"maker returns success on an dir with one file");
 dir_only_contains_ok('td/one_pic', [qw(index.html index.png mmgal.css medium thumbnails slides
 					a1.png

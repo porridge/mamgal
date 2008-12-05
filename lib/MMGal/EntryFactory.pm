@@ -27,8 +27,7 @@ sub sounds_like_picture($)
 sub sounds_like_film($)
 {
 	my $base_name = shift;
-# TODO: more
-	return $base_name =~ /\.(mpe?g|mov|avi)$/io;
+	return $base_name =~ /\.(mpe?g|mov|avi|mjpeg|m[12]v|wmv|fli|nuv|vob|ogm|vcd|svcd|mp4|qt)$/io;
 }
 
 sub canonicalize_path($)
