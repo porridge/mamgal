@@ -53,10 +53,11 @@ sub is_root
 sub make
 {
 	my $self = shift;
-	my $formatter = shift or croak "Formatter required";
+	my $tools = shift or croak "Tools required\n";
+	my $formatter = $tools->{formatter} or croak "Formatter required\n";
 	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "[$formatter] is not a formatter";
 
-	foreach my $el ($self->elements) { $el->make($formatter) }
+	foreach my $el ($self->elements) { $el->make($tools) }
 	$self->_write_montage;
 	$self->_write_contents_to(sub { $formatter->stylesheet    }, 'mmgal.css');
 	$self->_write_contents_to(sub { $formatter->format($self) }, 'index.html');

@@ -47,8 +47,8 @@ sub _make_any
 		$d->set_root(1) if $dirs_are_roots;
 		$d
 	} @_;
-	my $f = $self->{formatter};
-	$_->make($f) for @dirs;
+	my $tools = { formatter => $self->{formatter} };
+	$_->make($tools) for @dirs;
 
 	return 1;
 }

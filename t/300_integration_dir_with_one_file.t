@@ -18,7 +18,7 @@ lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td one_pic)) },   "dir can be crea
 isa_ok($d, 'MMGal::Entry::Dir');
 my @ret = $d->elements;
 is(scalar(@ret), 1,						"dir contains one element");
-isa_ok($ret[0], 'MMGal::Entry::Picture');
+isa_ok($ret[0], 'MMGal::Entry::Picture::Static');
 is($ret[0]->element_index, 0,					"picture knows its index");
 
 my ($prev, $next);
@@ -30,7 +30,8 @@ ok(not(defined($next)),						"there is no next neighbour");
 dir_only_contains_ok('td/one_pic', [qw(a1.png)],
 								"Only the picture at start");
 my $mf = get_mock_formatter(qw(format stylesheet format_slide));
-lives_ok(sub { $d->make($mf) },					"dir makes stuff and survives");
+my $tools = {formatter => $mf};
+lives_ok(sub { $d->make($tools) },				"dir makes stuff and survives");
 
 dir_only_contains_ok('td/one_pic', [qw(medium thumbnails slides index.html index.png mmgal.css
 					a1.png

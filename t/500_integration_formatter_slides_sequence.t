@@ -12,7 +12,6 @@ use MMGal::TestHelper;
 prepare_test_data;
 
 use MMGal::Formatter;
-use MMGal::Entry::Picture;
 use MMGal::EntryFactory;
 my $d = MMGal::EntryFactory->create_entry_for('td/more');
 my $f = MMGal::Formatter->new;

@@ -35,11 +35,11 @@ isa_ok($e, 'MMGal::Entry::BrokenSymlink',						"expected entry is a BrokenSymlin
 is($e->name, 'symlink_broken',								"file name matches");
 
 lives_ok(sub { $e = MMGal::EntryFactory->create_entry_for('td/one_pic/a1.png') },	"EF creates entry from a picture");
-isa_ok($e, 'MMGal::Entry::Picture',							"expected entry is a Picture");
+isa_ok($e, 'MMGal::Entry::Picture::Static',							"expected entry is a Picture::Static");
 is($e->name, 'a1.png',									"file name matches");
 
 lives_ok(sub { $e = MMGal::EntryFactory->create_entry_for('td/symlink_pic.png') },	"EF creates entry from a symlink to picture");
-isa_ok($e, 'MMGal::Entry::Picture',							"expected entry is a Picture");
+isa_ok($e, 'MMGal::Entry::Picture::Static',						"expected entry is a Picture::Static");
 is($e->name, 'symlink_pic.png',								"file name matches");
 
 lives_ok(sub { $e = MMGal::EntryFactory->create_entry_for('td/symlink_pic_noext') },	"EF creates entry from a secret symlink to picture");

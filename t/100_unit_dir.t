@@ -36,7 +36,7 @@ dies_ok(sub { $d->make },                                    "Dir dies on make i
 
 dir_only_contains_ok('td/empty', [],                         "Directory is empty initially");
 my $mf = get_mock_formatter(qw(format stylesheet));
-lives_ok(sub { $d->make($mf) },                              "Dir lives on make invocation with a formatter");
+lives_ok(sub { $d->make({formatter => $mf}) },               "Dir lives on make invocation with a formatter");
 ok($mf->called('format'),                                    "Dir->make calls formatter->format internally");
 ok($mf->called('stylesheet'),                                "Dir->make calls formatter->stylesheet internally");
 dir_only_contains_ok('td/empty', [qw{index.html index.png mmgal.css}],

@@ -19,13 +19,13 @@ isa_ok($d, 'MMGal::Entry::Dir',                                 "a dir is a dir"
 my @ret = $d->elements;
 is(scalar(@ret), 5,						"dir contains 5 elements");
 # read ordering
-isa_ok($ret[0], 'MMGal::Entry::Picture');
+isa_ok($ret[0], 'MMGal::Entry::Picture::Static');
 is($ret[0]->element_index, 0, 					"pic 0 knows its element index");
-isa_ok($ret[1], 'MMGal::Entry::Picture');
+isa_ok($ret[1], 'MMGal::Entry::Picture::Static');
 is($ret[1]->element_index, 1, 					"pic 1 knows its element index");
 isa_ok($ret[2], 'MMGal::Entry::Dir');
 is($ret[2]->element_index, 2, 					"pic 2 knows its element index");
-isa_ok($ret[3], 'MMGal::Entry::Picture');
+isa_ok($ret[3], 'MMGal::Entry::Picture::Static');
 is($ret[3]->element_index, 3, 					"pic 3 knows its element index");
 
 my ($prev, $next);

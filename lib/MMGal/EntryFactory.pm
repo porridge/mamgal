@@ -8,6 +8,8 @@ use warnings;
 use Carp;
 use MMGal::Entry::Dir;
 use MMGal::Entry::Picture;
+use MMGal::Entry::Picture::Static;
+use MMGal::Entry::Picture::Film;
 use MMGal::Entry::NonPicture;
 use MMGal::Entry::BrokenSymlink;
 use MMGal::Entry::Unreadable;
@@ -20,6 +22,13 @@ sub sounds_like_picture($)
 {
 	my $base_name = shift;
 	return $base_name =~ /\.(jpe?g|gif|png|tiff?|bmp)$/io;
+}
+
+sub sounds_like_film($)
+{
+	my $base_name = shift;
+# TODO: more
+	return $base_name =~ /\.(mpe?g|mov|avi)$/io;
 }
 
 sub canonicalize_path($)
@@ -72,7 +81,10 @@ sub create_entry_for
 		MMGal::Entry::Dir->new($dirname, $basename, $stat)
 
 	} elsif (($stat->mode & S_IFREG) and sounds_like_picture($path)) {
-		MMGal::Entry::Picture->new($dirname, $basename, $stat)
+		MMGal::Entry::Picture::Static->new($dirname, $basename, $stat)
+
+	} elsif (($stat->mode & S_IFREG) and sounds_like_film($path)) {
+		MMGal::Entry::Picture::Film->new($dirname, $basename, $stat)
 
 	} else {
 		MMGal::Entry::NonPicture->new($dirname, $basename, $stat)

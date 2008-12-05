@@ -42,7 +42,7 @@ tag_ok($t, "td", { _content => MMGal::Formatter->EMPTY_PAGE_TEXT },
 link_ok($t, "../index.html",				"the resulting page has a link down");
 
 my $mp = Test::MockObject->new;
-$mp->set_isa('MMGal::Picture');
+$mp->set_isa('MMGal::Picture::Static');
 my $time = 1227684276;
 $mp->mock('creation_time', sub { $time });
 $mp->mock('page_path', sub { 'page_path' });
