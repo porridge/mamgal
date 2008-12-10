@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mmgal 0.01\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-06 14:03+0100\n"
+"POT-Creation-Date: 2008-12-10 18:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/MMGal/EntryFactory.pm:44
+#: lib/MMGal/EntryFactory.pm:52
 #, perl-format
 msgid "Internal Error: [%s] does not end with a base name.\n"
 msgstr ""
@@ -23,28 +23,39 @@ msgstr ""
 #. TRANSLATORS: This text will appear literally where no thumbnail is avaialable
 #. for a given object.
 #. Please use &nbsp; for whitespace, to avoid line breaks.
-#: lib/MMGal/Formatter.pm:42
+#: lib/MMGal/Formatter.pm:64
 msgid "[no&nbsp;icon]"
 msgstr ""
 
+#. TRANSLATORS: This text will appear literally where no path is
+#. avaialable for a given film.
+#. Please use &nbsp; for whitespace, to avoid line breaks.
+#: lib/MMGal/Formatter.pm:78
+msgid "[no&nbsp;film]"
+msgstr ""
+
 #. TRANSLATORS: The following three are for navigation on a slide page (&lt; is shown as <, and &gt; as >)
-#: lib/MMGal/Formatter.pm:55
+#: lib/MMGal/Formatter.pm:91
 msgid "&lt;&lt; prev"
 msgstr ""
 
-#: lib/MMGal/Formatter.pm:56
+#: lib/MMGal/Formatter.pm:92
 msgid "next &gt;&gt;"
 msgstr ""
 
-#: lib/MMGal/Formatter.pm:57
+#: lib/MMGal/Formatter.pm:93
 msgid "Up a dir"
 msgstr ""
 
-#: lib/MMGal/Formatter.pm:59
+#: lib/MMGal/Formatter.pm:95
 msgid "This directory is empty"
 msgstr ""
 
 #. TRANSLATORS: This is the text of the link from a slide page to the index page.
-#: lib/MMGal/Formatter.pm:123
+#: lib/MMGal/Formatter.pm:161
 msgid "index"
+msgstr ""
+
+#: lib/MMGal/Formatter.pm:181
+msgid "Download"
 msgstr ""
