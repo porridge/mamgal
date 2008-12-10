@@ -11,6 +11,7 @@ t/100_unit_picture.t
 t/300_integration_dir_with_many.t
 t/300_integration_dir_with_one_file.t
 t/300_integration_entry_factory.t
+t/500_integration_formatter_one_film.t
 t/500_integration_formatter_one_picture.t
 t/500_integration_formatter_one_subdir.t
 t/500_integration_formatter_slides_sequence.t
@@ -49,5 +50,6 @@ MANIFEST
 dir.png
 testlib/MMGal/TestHelper.pm
 README
+mmgal.pl
 po/mmgal.pot
 po/pl.po
