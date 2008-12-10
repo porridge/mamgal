@@ -65,6 +65,20 @@ sub MAYBE_IMG
 	}
 }
 
+sub MAYBE_EMBED
+{
+	my $self = shift;
+	my $film = shift;
+	if ($film) {
+		sprintf("<embed src='%s'/>", $film);
+	} else {
+		# TRANSLATORS: This text will appear literally where no path is
+		# avaialable for a given film.
+		# Please use &nbsp; for whitespace, to avoid line breaks.
+		gettext('[no&nbsp;film]');
+	}
+}
+
 sub LINK
 {
 	my $self = shift;
@@ -161,7 +175,13 @@ sub format_slide
 	}
 	$r .= "</p>\n";
 
-	$r .= $self->LINK('../'.$pic->name, $self->MAYBE_IMG('../'.$pic->medium_dir.'/'.$pic->name));
+	if ($pic->isa('MMGal::Entry::Picture::Film')) {
+		$r .= $self->MAYBE_EMBED('../'.$pic->name);
+		$r .= '<br>';
+		$r .= $self->LINK('../'.$pic->name, gettext('Download'));
+	} else {
+		$r .= $self->LINK('../'.$pic->name, $self->MAYBE_IMG('../'.$pic->medium_dir.'/'.$pic->name));
+	}
 	my $time = $pic->creation_time();
 	$r .= sprintf('<br><span class="date">%s</span> <span class="time">%s</span><br>', $self->{locale_env}->format_date($time), $self->{locale_env}->format_time($time));
 	$r .= $self->FOOTER;

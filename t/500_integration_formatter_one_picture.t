@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 39;
+use Test::More tests => 40;
 use Test::HTML::Content;
 use Test::Exception;
 use lib 'testlib';
@@ -43,6 +43,7 @@ for my $n ('td', 'more', 'zzz another subdir') {
 	text_ok($st_p_nd, $n,                        "slide contains parent filename");
 }
 tag_ok($st_p_nd, "img", {src => '../medium/p.png'},  "there is a medium pic on the page");
+no_tag($st_p_nd, "embed",                            "there is no embed tag on the page");
 tag_count($st_p_nd, "img", {}, 1,                    "just one img tag");
 tag_ok($st_p_nd, "a", {href => '../index.html'},     "there is a link up on the page");
 tag_ok($st_p_nd, "a", {href => '../p.png'},          "there is a link to image itself");
