@@ -23,6 +23,8 @@ my $f = MMGal::Formatter->new($le);
 # a dir with a single film
 #
 
+my $time = 1228933448;
+utime($time, $time, 'td/one_film/m.mov') == 1 or die "Failed to touch file";
 my $dir = MMGal::EntryFactory->create_entry_for('td/one_film');
 # this is m.mov
 my $mov = ($dir->elements)[0];
@@ -48,8 +50,8 @@ tag_count($st_mov, "embed", {}, 1,                  "just one embed tag");
 tag_ok($st_mov, "a", {href => '../index.html'},     "there is a link up on the page");
 tag_ok($st_mov, "a", {href => '../m.mov', _content => "Download"}, "there is a link to film itself");
 tag_count($st_mov, "a", {}, 2,                      "two links in total");
-tag_ok($st_mov, "span", {class => 'date', _content => '11/30/08'},"there is a date");
-tag_ok($st_mov, "span", {class => 'time', _content => '22:07:18'},"there is a time");
+tag_ok($st_mov, "span", {class => 'date', _content => '12/10/08'},"there is a date");
+tag_ok($st_mov, "span", {class => 'time', _content => '18:24:08'},"there is a time");
 
 my $ct_mov;
 lives_ok(sub { $ct_mov = $f->entry_cell($mov) },   "lives through cell entry generation");

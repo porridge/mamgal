@@ -23,6 +23,8 @@ my $f = MMGal::Formatter->new($le);
 # a dir with a single pic _without_ description
 #
 
+my $time = 1228933448;
+utime($time, $time, 'td/more/zzz another subdir/p.png') == 1 or die "Failed to touch file";
 my $dir_nd = MMGal::EntryFactory->create_entry_for('td/more/zzz another subdir');
 # this is p.png, which has no description
 my $p_nd = ($dir_nd->elements)[0];
@@ -48,8 +50,8 @@ tag_count($st_p_nd, "img", {}, 1,                    "just one img tag");
 tag_ok($st_p_nd, "a", {href => '../index.html'},     "there is a link up on the page");
 tag_ok($st_p_nd, "a", {href => '../p.png'},          "there is a link to image itself");
 tag_count($st_p_nd, "a", {}, 2,                      "two links in total");
-tag_ok($st_p_nd, "span", {class => 'date', _content => '07/06/08'},"there is a date");
-tag_ok($st_p_nd, "span", {class => 'time', _content => '10:39:26'},"there is a time");
+tag_ok($st_p_nd, "span", {class => 'date', _content => '12/10/08'},"there is a date");
+tag_ok($st_p_nd, "span", {class => 'time', _content => '18:24:08'},"there is a time");
 
 my $ct_p_nd;
 lives_ok(sub { $ct_p_nd = $f->entry_cell($p_nd) },   "lives through cell entry generation");
