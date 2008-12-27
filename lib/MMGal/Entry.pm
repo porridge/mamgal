@@ -18,8 +18,9 @@ sub init
 	my $basename = shift or croak "Need basename"; # under $dirname
 	die "A basename of \".\" used when other would be possible (last component of $dirname)" if $basename eq '.' and not ($dirname eq '.' or $dirname eq '/');
 	die "Basename [$basename] contains a slash" if $basename =~ m{/};
+	# We might not be able to get stat information (e.g. no execute permission on containing directory), so do not croak
 	my $stat     = shift;
-	die "Third argument must be a File::stat, if provided" unless not $stat or (ref $stat and $stat->isa('File::stat'));
+	die "Third argument must be a File::stat, if provided" unless (not defined $stat) or (ref $stat and $stat->isa('File::stat'));
 	die "At most 3 args expected, got fourth: [$_[0]]" if @_;
 
 	$self->{dir_name}  = $dirname;
@@ -61,8 +62,6 @@ sub neighbours
 sub creation_time
 {
 	my $self = shift;
-	# Get the stat object provided on construction, or do a stat now
-	$self->{stat} = stat($self->{path_name}) unless defined $self->{stat};
 	my $stat = $self->{stat};
 	# We might not be able to get stat information (broken symlink, no permissions, ...)
 	return undef unless $stat;

@@ -9,12 +9,13 @@ use Test::Exception;
 use Test::Files;
 use lib 'testlib';
 use MMGal::TestHelper;
+use File::stat;
 
 prepare_test_data;
 
 use_ok('MMGal::Entry::Dir');
 my $d;
-lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td more)) },	"creation ok");
+lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td more), stat('td/more')) },	"creation ok");
 isa_ok($d, 'MMGal::Entry::Dir',                                 "a dir is a dir");
 my @ret = $d->elements;
 is(scalar(@ret), 5,						"dir contains 5 elements");

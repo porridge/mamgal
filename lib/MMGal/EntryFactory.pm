@@ -54,15 +54,6 @@ sub canonicalize_path($)
 	return ($path, $dirname, $basename);
 }
 
-# Drill down through symlinks to get the real type of the file
-# Throw exception if path is not there. Return false if symlink _destination_ is not there.
-sub recursive_stat($)
-{
-	my $path = shift;
-	my $stat = lstat($path) or croak "[$path]: $!";
-	$stat = stat($path) if ($stat->mode & S_IFLNK);
-	return $stat;
-}
 
 sub create_entry_for
 {
@@ -71,10 +62,14 @@ sub create_entry_for
 	croak "Need 1 arg, got more: [$_[0]]" if @_;
 
 	my ($path, $dirname, $basename) = canonicalize_path($path_arg);
-	my $stat = recursive_stat($path);
+	my $lstat = lstat($path) or croak "[$path]: $!";
+	my $stat = $lstat;
+	if ($lstat->mode & S_IFLNK) {
+		$stat = stat($path);
+	}
 
 	if (not $stat) {
-		MMGal::Entry::BrokenSymlink->new($dirname, $basename)
+		MMGal::Entry::BrokenSymlink->new($dirname, $basename, $lstat)
 
 	} elsif ($stat->mode & S_IFDIR) {
 		MMGal::Entry::Dir->new($dirname, $basename, $stat)
