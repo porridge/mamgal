@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 19;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
@@ -12,6 +12,12 @@ use MMGal::TestHelper;
 use File::stat;
 
 prepare_test_data;
+
+my $time = time;
+my $pic_time = $time - 120;
+# touch up the directory and picture with different times
+utime $time, $time, 'td/one_pic' or die "Touching directory failed";
+utime $pic_time, $pic_time, 'td/one_pic/a1.png' or die "Touching picture failed";
 
 use_ok('MMGal::Entry::Dir');
 my $d;
@@ -28,8 +34,8 @@ lives_ok(sub { ($prev, $next) = $d->neighbours_of_index(0) },	"there is index ze
 ok(not(defined($prev)),						"there is no prev neighbour");
 ok(not(defined($next)),						"there is no next neighbour");
 
-dir_only_contains_ok('td/one_pic', [qw(a1.png)],
-								"Only the picture at start");
+dir_only_contains_ok('td/one_pic', [qw(a1.png)],                "Only the picture at start");
+
 my $mf = get_mock_formatter(qw(format stylesheet format_slide));
 my $tools = {formatter => $mf};
 lives_ok(sub { $d->make($tools) },				"dir makes stuff and survives");
@@ -40,4 +46,16 @@ dir_only_contains_ok('td/one_pic', [qw(medium thumbnails slides index.html index
 					medium/a1.png
 					slides/a1.png.html)],
 								"index, picture, thumbnail, medium and slides");
+
+my $single_creation_time = $d->creation_time;
+ok($single_creation_time, "There is some non-zero create time");
+my @creation_time_range = $d->creation_time;
+is(scalar @creation_time_range, 1, "Creation time range is empty");
+is($creation_time_range[0], $single_creation_time, "Range-type creation time is equal to the scalar one");
+
+my ($one_pic_entry) = $d->elements();
+ok($one_pic_entry, "There is one picture");
+my $picture_creation_time = $one_pic_entry->creation_time;
+ok($picture_creation_time, "Picture has a creation time");
+is($single_creation_time, $picture_creation_time, "The creation times match");
 

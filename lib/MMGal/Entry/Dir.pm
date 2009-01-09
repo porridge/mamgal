@@ -148,7 +148,7 @@ sub _ignorable_name($)
 	# ignore hidden files
 	return 1 if substr($_, 0, 1) eq '.';
 	# TODO: optimize out contants calls
-	return 1 if grep { $_ eq $name } (qw(index.html index.png mmgal.css), $self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
+	return 1 if grep { $_ eq $name } (qw(lost+found index.html index.png mmgal.css), $self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
 	return 0;
 }
 
@@ -182,6 +182,24 @@ sub containers
 	my $self = shift;
 	return if $self->is_root;
 	return $self->SUPER::containers(@_);
+}
+
+sub creation_time
+{
+	my $self = shift;
+	my @elements = $self->elements;
+	if (scalar @elements == 1) {
+		return $elements[0]->creation_time;
+	} elsif (scalar @elements > 1) {
+		my ($oldest, $youngest) = (undef, undef);
+		foreach my $t (map { $_->creation_time } @elements) {
+			$oldest   = $t if not defined $oldest   or $oldest   > $t;
+			$youngest = $t if not defined $youngest or $youngest < $t;
+		}
+		return ($oldest, $youngest) if wantarray;
+		return $youngest;
+	}
+	return $self->SUPER::creation_time;
 }
 
 1;
