@@ -132,8 +132,11 @@ sub entry_cell
 	my $thumbnail_path = $entry->thumbnail_path;
 	my $ret = '';
 	$ret .= '<td class="entry_cell">';
-	my $time = $entry->creation_time();
-	$ret .= sprintf('<br><span class="date">%s</span> <span class="time">%s</span><br>', $self->{locale_env}->format_date($time), $self->{locale_env}->format_time($time));
+	my @timeret;
+	foreach my $time ($entry->creation_time()) {
+		push @timeret, sprintf('<span class="date">%s</span> <span class="time">%s</span>', $self->{locale_env}->format_date($time), $self->{locale_env}->format_time($time));
+	}
+	$ret .= '<br>'.join(' &mdash; ', @timeret).'<br>';
 	$ret .= $self->LINK($path, $self->MAYBE_IMG($thumbnail_path));
 	if ($entry->description) {
 		$ret .= sprintf('<br><span class="desc">%s</span>', $entry->description);

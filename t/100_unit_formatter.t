@@ -4,7 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 28;
 use Test::Exception;
 use Test::HTML::Content;
 use lib 'testlib';
@@ -21,8 +21,8 @@ dies_ok(sub { MMGal::Formatter->new(1) },		"formatter can not be created some ju
 my $le = Test::MockObject->new;
 $le->set_isa('MMGal::LocaleEnv');
 $le->mock('get_charset', sub { 'UTF-8' });
-$le->mock('format_time', sub { '12:00:00' });
-$le->mock('format_date', sub { '18 gru 2004' });
+$le->mock('format_time', sub { $_[1] == 1227684276 ? '12:00:00' : '13:13:13' });
+$le->mock('format_date', sub { $_[1] == 1227684276 ? '18 gru 2004' : '2 kwi 2004' });
 
 lives_ok(sub { $f->set_locale_env($le) },               "Formatter accepts a set_locale_env call");
 lives_ok(sub { $f = MMGal::Formatter->new($le) },	"formatter can be created with a locale env parameter");
@@ -56,4 +56,22 @@ ok($le->called('format_time'),				"formatter interrogated the locale env for tim
 ok($le->called('format_date'),				"formatter interrogated the locale env for date formatting");
 tag_ok($cell, 'span', { 'class' => 'time', _content => '12:00:00' }, "generated cell contains creation time");
 tag_ok($cell, 'span', { 'class' => 'date', _content => '18 gru 2004' }, "generated cell contains creation date");
+
+my $mp2 = Test::MockObject->new;
+$mp2->set_isa('MMGal::Picture::Static');
+my ($time1, $time2) = (1080907993, 1227684276);
+$mp2->mock('creation_time', sub { ($time1, $time2) });
+$mp2->mock('page_path', sub { 'page_path' });
+$mp2->mock('thumbnail_path', sub { 'tn_path' });
+$mp2->mock('description', sub { 'some description' });
+$mp2->mock('name', sub { 'foobar' });
+my $cell2;
+lives_ok(sub { $cell2 = $f->entry_cell($mp2) },		"formatter can format a cell");
+ok($mp2->called('creation_time'),			"formatter interrogated the entry for creation time");
+ok($le->called('format_time'),				"formatter interrogated the locale env for time formatting");
+ok($le->called('format_date'),				"formatter interrogated the locale env for date formatting");
+tag_ok($cell2, 'span', { 'class' => 'time', _content => '12:00:00' }, "generated cell contains creation time");
+tag_ok($cell2, 'span', { 'class' => 'date', _content => '18 gru 2004' }, "generated cell contains creation date");
+tag_ok($cell2, 'span', { 'class' => 'time', _content => '13:13:13' }, "generated cell contains creation time");
+tag_ok($cell2, 'span', { 'class' => 'date', _content => '2 kwi 2004' }, "generated cell contains creation date");
 
