@@ -48,7 +48,7 @@ sub page_path { $_[0]->slides_dir.'/'.$_[0]->{base_name}.'.html' }
 sub thumbnail_path { $_[0]->thumbnails_dir.'/'.$_[0]->{base_name} }
 sub absolute_thumbnail_path { $_[0]->{dir_name}.'/'.$_[0]->thumbnail_path }
 
-# This method does not operate on MMGal::Entry::Picture::Static, but this was the most
+# This method does not operate on MMGal::Entry::Picture, but this was the most
 # appropriate place to put it into.  At least until we grow a "utils" class.
 sub scale_into
 {
