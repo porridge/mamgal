@@ -200,6 +200,8 @@ table.index { width: 100% }
 .slide_filename { font-family: monospace }
 .filename { font-family: monospace }
 .curdir { font-size: xx-large; font-weight: normal }
+.date { font-size: small }
+.time { font-size: small }
 END
 	return $t;
 }
