@@ -10,6 +10,7 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
+use File::stat;
 BEGIN { our @ISA = 'MMGal::Unit::Entry' }
 BEGIN { do 't/050_unit_entry.t' }
 
@@ -90,6 +91,52 @@ sub stat_functionality : Test(2) {
 sub stat_functionality_when_created_without_stat : Test(2) {
 	my $self = shift;
 	$self->stat_functionality(@_);
+}
+
+sub miniature_writing : Test(2) {
+	my $self = shift;
+	my $e = $self->{entry};
+	ok(! -f 'td/test_miniature/c.jpg');
+	$e->refresh_miniatures('fake_tools', ['test_miniature', 60, 60]);
+	ok(-f 'td/test_miniature/c.jpg');
+}
+
+sub _touch {
+	my ($dir, $name, $time) = @_;
+	use Carp;
+	mkdir $dir or confess "Cannot mkdir: $!";# unless -d $dir;
+	open(T, '>'.$dir.'/'.$name) or die "Cannot open: $!";
+	print T 'whatever';
+	close(T) or die "Cannot close: $!";
+	utime $time, $time, $dir.'/'.$name or die "Cannot touch: $!";
+}
+
+sub miniature_not_rewriting : Test(2) {
+	my $self = shift;
+	my $e = $self->{entry};
+	my $file_mtime = $e->{stat}->mtime;
+	my $miniature_mtime = $file_mtime + 60;
+	_touch('td/rewriting_miniature', 'c.jpg', $miniature_mtime);
+	my $stat_before = stat('td/rewriting_miniature/c.jpg') or die "Cannot stat: $!";
+	is($stat_before->mtime, $miniature_mtime);
+	$e->refresh_miniatures('fake_tools', ['rewriting_miniature', 60, 60]);
+	my $stat_after = stat('td/rewriting_miniature/c.jpg') or die "Cannot stat: $!";
+	is($stat_after->mtime, $miniature_mtime);
+}
+
+sub miniature_refreshing : Test(3) {
+	my $self = shift;
+	my $e = $self->{entry};
+	my $file_mtime = $e->{stat}->mtime;
+	# make the miniature older than the source file
+	my $miniature_mtime = $file_mtime - 60;
+	_touch('td/refreshed_miniature', 'c.jpg', $miniature_mtime);
+	my $stat_before = stat('td/refreshed_miniature/c.jpg') or die "Cannot stat: $!";
+	is($stat_before->mtime, $miniature_mtime);
+	$e->refresh_miniatures('fake_tools', ['refreshed_miniature', 60, 60]);
+	my $stat_after = stat('td/refreshed_miniature/c.jpg') or die "Cannot stat: $!";
+	cmp_ok($stat_after->mtime, '>', $miniature_mtime, 'refreshed miniature mtime is newer than its previous mtime');
+	cmp_ok($stat_after->mtime, '>', $file_mtime, 'refreshed miniature mtime is newer than its source file\'s mtime');
 }
 
 package MMGal::Unit::Entry::Picture::Film;

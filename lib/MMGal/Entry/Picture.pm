@@ -7,6 +7,7 @@ use strict;
 use warnings;
 use base 'MMGal::Entry';
 use Carp;
+use File::stat;
 
 sub make
 {
@@ -23,8 +24,8 @@ sub refresh_slide
 	my $self = shift;
 	my $formatter = shift;
 
-	$self->{container}->ensure_subdir_exists($self->slides_dir);
-	$self->{container}->_write_contents_to(sub { $formatter->format_slide($self) }, $self->page_path);
+	$self->container->ensure_subdir_exists($self->slides_dir);
+	$self->container->_write_contents_to(sub { $formatter->format_slide($self) }, $self->page_path);
 }
 
 sub refresh_miniatures
@@ -32,14 +33,20 @@ sub refresh_miniatures
 	my $self = shift;
 	my $tools = shift or croak "Tools required\n";
 	my @miniatures = @_ or croak "Need args: miniature specifications";
-	my $i = $self->read_image($tools);
+	my $i = undef;
 	my $r;
 	for my $miniature (@miniatures) {
 		my ($subdir, $x, $y, $suffix) = @$miniature;
-		$self->scale_into($i, $x, $y);
-		$self->{container}->ensure_subdir_exists($subdir);
 		my $name = $self->{dir_name}.'/'.$subdir.'/'.$self->{base_name};
 		$name .= $suffix if defined $suffix;
+		if (-e $name) {
+			my $miniature_stat = stat($name) or die "Miniature \"$name\" exists, but cannot read its metadata (stat).\n";
+			next if $miniature_stat->mtime > $self->{stat}->mtime;
+		}
+		# loading image data deferred until it's necessary
+		$i = $self->read_image($tools) unless defined $i;
+		$self->scale_into($i, $x, $y);
+		$self->container->ensure_subdir_exists($subdir);
 		$r = $i->Write($name)		and die "Writing \"${name}\": $r";
 	}
 }
