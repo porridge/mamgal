@@ -79,11 +79,12 @@ sub stat_functionality : Test(2) {
 	my $e = $self->{entry};
 
 	my $ct = $e->creation_time;
-	is($ct, 1227818631, "Returned creation time is the EXIF creation time");
+	# we need to use localtime() as comparing raw time_t value breaks tests when changing locale
+	is(localtime($ct), 'Thu Nov 27 20:43:51 2008', "Returned creation time is the EXIF creation time");
 	my $time = time;
 	utime($time, $time, join('/', $self->file_name)) == 1 or die "Failed to touch file";
 	$ct = $e->creation_time;
-	is($ct, 1227818631, "Returned creation time is still the (cached) EXIF creation time");
+	is(localtime($ct), 'Thu Nov 27 20:43:51 2008', "Returned creation time is still the (cached) EXIF creation time");
 }
 
 sub stat_functionality_when_created_without_stat : Test(2) {
