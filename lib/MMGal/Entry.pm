@@ -40,6 +40,8 @@ sub container
 {
 	my $self = shift;
 	unless (defined $self->{container}) {
+		# TODO this will lead to creation of a strange split tree if it
+		# is traversed again from container to this child
 		$self->set_container(MMGal::EntryFactory->create_entry_for($self->{dir_name}));
 	}
 	return $self->{container};
@@ -54,6 +56,11 @@ sub containers
 sub neighbours
 {
 	my $self = shift;
+	# TODO this should in theory use container method rather than the hash
+	# element, but because this method needs element_index to be available
+	# (which is only set in the entity if it is instantiated by its
+	# container), then this will break in mysterious ways if the container
+	# method has to instantiate the container object
 	return (undef, undef) unless $self->{container};
 	return $self->{container}->neighbours_of_index($self->element_index);
 }
