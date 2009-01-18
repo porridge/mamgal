@@ -14,6 +14,79 @@ use File::stat;
 BEGIN { our @ISA = 'MMGal::Unit::Entry' }
 BEGIN { do 't/050_unit_entry.t' }
 
+sub pre_class_setting : Test(startup) {
+	my $self = shift;
+	$self->{tools} = { mplayer_wrapper => MMGal::TestHelper->get_mock_mplayer_wrapper };
+}
+
+sub _touch
+{
+	my ($self, $infix, $time, $suffix) = @_;
+	my $dir = $self->{test_file_name}->[0].'/'.$infix;
+	my $name = $self->{test_file_name}->[1];
+	$name .= $suffix || '';
+	use Carp;
+	mkdir $dir or confess "Cannot mkdir [$dir]: $!";
+	open(T, '>'.$dir.'/'.$name) or die "Cannot open: $!";
+	print T 'whatever';
+	close(T) or die "Cannot close: $!";
+	utime $time, $time, $dir.'/'.$name or die "Cannot touch: $!";
+}
+
+sub miniature_path
+{
+	my $self = shift;
+	my $component = shift;
+	return join('/', $self->{test_file_name}->[0], $component, $self->{test_file_name}->[1]);
+}
+
+sub call_refresh_miniatures
+{
+	my $self = shift;
+	my $infix = shift;
+	my $suffix = shift;
+	my $e = $self->{entry};
+	$e->refresh_miniatures($self->{tools}, [$infix, 60, 60, $suffix]);
+}
+
+sub miniature_writing : Test(2) {
+	my $self = shift;
+	my $infix = 'test_miniature-'.$self->{class_name};
+	ok(! -f $self->miniature_path($infix));
+	$self->call_refresh_miniatures($infix);
+	ok(-f $self->miniature_path($infix));
+}
+
+sub miniature_not_rewriting : Test(2) {
+	my $self = shift;
+	my $file_mtime = $self->{entry}->{stat}->mtime;
+	my $miniature_mtime = $file_mtime + 60;
+	my $infix = 'rewriting_miniature-'.$self->{class_name};
+	$self->_touch($infix, $miniature_mtime);
+	my $path = $self->miniature_path($infix);
+	my $stat_before = stat($path) or die "Cannot stat [$path]: $!";
+	is($stat_before->mtime, $miniature_mtime);
+	$self->call_refresh_miniatures($infix);
+	my $stat_after = stat($path) or die "Cannot stat: $!";
+	is($stat_after->mtime, $miniature_mtime);
+}
+
+sub miniature_refreshing : Test(3) {
+	my $self = shift;
+	my $file_mtime = $self->{entry}->{stat}->mtime;
+	# make the miniature older than the source file
+	my $miniature_mtime = $file_mtime - 60;
+	my $infix = 'refreshed_miniature-'.$self->{class_name};
+	$self->_touch($infix, $miniature_mtime);
+	my $path = $self->miniature_path($infix);
+	my $stat_before = stat($path) or die "Cannot stat: $!";
+	is($stat_before->mtime, $miniature_mtime);
+	$self->call_refresh_miniatures($infix);
+	my $stat_after = stat($path) or die "Cannot stat: $!";
+	cmp_ok($stat_after->mtime, '>', $miniature_mtime, 'refreshed miniature mtime is newer than its previous mtime');
+	cmp_ok($stat_after->mtime, '>', $file_mtime, 'refreshed miniature mtime is newer than its source file\'s mtime');
+}
+
 sub page_path_method : Test(2) {
 	my $self = shift;
 	my $class_name = $self->{class_name};
@@ -93,52 +166,6 @@ sub stat_functionality_when_created_without_stat : Test(2) {
 	$self->stat_functionality(@_);
 }
 
-sub miniature_writing : Test(2) {
-	my $self = shift;
-	my $e = $self->{entry};
-	ok(! -f 'td/test_miniature/c.jpg');
-	$e->refresh_miniatures('fake_tools', ['test_miniature', 60, 60]);
-	ok(-f 'td/test_miniature/c.jpg');
-}
-
-sub _touch {
-	my ($dir, $name, $time) = @_;
-	use Carp;
-	mkdir $dir or confess "Cannot mkdir: $!";# unless -d $dir;
-	open(T, '>'.$dir.'/'.$name) or die "Cannot open: $!";
-	print T 'whatever';
-	close(T) or die "Cannot close: $!";
-	utime $time, $time, $dir.'/'.$name or die "Cannot touch: $!";
-}
-
-sub miniature_not_rewriting : Test(2) {
-	my $self = shift;
-	my $e = $self->{entry};
-	my $file_mtime = $e->{stat}->mtime;
-	my $miniature_mtime = $file_mtime + 60;
-	_touch('td/rewriting_miniature', 'c.jpg', $miniature_mtime);
-	my $stat_before = stat('td/rewriting_miniature/c.jpg') or die "Cannot stat: $!";
-	is($stat_before->mtime, $miniature_mtime);
-	$e->refresh_miniatures('fake_tools', ['rewriting_miniature', 60, 60]);
-	my $stat_after = stat('td/rewriting_miniature/c.jpg') or die "Cannot stat: $!";
-	is($stat_after->mtime, $miniature_mtime);
-}
-
-sub miniature_refreshing : Test(3) {
-	my $self = shift;
-	my $e = $self->{entry};
-	my $file_mtime = $e->{stat}->mtime;
-	# make the miniature older than the source file
-	my $miniature_mtime = $file_mtime - 60;
-	_touch('td/refreshed_miniature', 'c.jpg', $miniature_mtime);
-	my $stat_before = stat('td/refreshed_miniature/c.jpg') or die "Cannot stat: $!";
-	is($stat_before->mtime, $miniature_mtime);
-	$e->refresh_miniatures('fake_tools', ['refreshed_miniature', 60, 60]);
-	my $stat_after = stat('td/refreshed_miniature/c.jpg') or die "Cannot stat: $!";
-	cmp_ok($stat_after->mtime, '>', $miniature_mtime, 'refreshed miniature mtime is newer than its previous mtime');
-	cmp_ok($stat_after->mtime, '>', $file_mtime, 'refreshed miniature mtime is newer than its source file\'s mtime');
-}
-
 package MMGal::Unit::Entry::Picture::Film;
 use strict;
 use warnings;
@@ -156,6 +183,23 @@ sub class_setting : Test(startup) {
 	my $self = shift;
 	$self->{class_name} = 'MMGal::Entry::Picture::Film';
 	$self->{test_file_name} = [qw(td/one_film m.mov)];
+}
+
+sub miniature_path
+{
+	my $self = shift;
+	$self->SUPER::miniature_path(@_).'.jpg'
+}
+
+sub _touch {
+	my $self = shift;
+	$self->SUPER::_touch(@_, '.jpg')
+}
+
+sub call_refresh_miniatures
+{
+	my $self = shift;
+	$self->SUPER::call_refresh_miniatures(@_, '.jpg')
 }
 
 sub thumbnail_path_method : Test(2) {

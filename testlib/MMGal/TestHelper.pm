@@ -11,6 +11,18 @@ sub get_mock_formatter {
 	return $mf;
 }
 
+sub get_mock_mplayer_wrapper {
+	my $mmw = Test::MockObject->new;
+	$mmw->set_isa('MMGal::MplayerWrapper');
+	my $mock_image = Test::MockObject->new;
+	$mock_image->set_isa('Image::Magick');
+	$mock_image->mock('Get', sub { '100', '100' });
+	$mock_image->mock('Scale', sub { undef });
+	$mock_image->mock('Write', sub { system('touch', $_[1] ) });
+	$mmw->mock('snapshot', sub { $mock_image });
+	return $mmw;
+}
+
 sub prepare_test_data {
 	# We have to create empty directories, because git does not track them
 	for my $dir (qw(empty one_dir one_dir/subdir)) {
