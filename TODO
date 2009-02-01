@@ -1,0 +1,12 @@
+List of things to do
+--------------------
+
+The following things would be useful, though not critical:
+
+
+Add options for forcing mmgal to refresh slides and/or miniatures despite them
+being fresh. This will be useful when e.g. regenerating the gallery in a
+different locale (or with some modified options, when they are implemented).
+
+There are some features in imageindex which would be nice to have, such as
+graphic smileys, or greater ability to control the appearance of pages.
