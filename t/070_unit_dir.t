@@ -332,7 +332,7 @@ sub stat_functionality_when_created_without_stat : Test { ok(1) }
 package main;
 use Test::More;
 unless (defined caller) {
-	my @classes = qw(MMGal::Unit::Entry::Dir::Empty MMGal::Unit::Entry::Dir::MoreSubdir MMGal::Unit::Entry::Dir::ARootDir MMGal::Unit::Entry::Dir::Bin MMGal::Unit::Entry::Dir::Slash MMGal::Unit::Entry::Dir::Dot);
+	my @classes = map { 'MMGal::Unit::Entry::Dir::'.$_ } qw(Empty MoreSubdir ARootDir Bin Slash Dot);
 	my $tests = 0;
 	$tests += $_->expected_tests foreach @classes;
 	plan tests => $tests;
