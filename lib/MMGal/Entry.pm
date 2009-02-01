@@ -77,7 +77,8 @@ sub creation_time
 }
 
 # Some constants
-sub slides_dir     { 'slides' }
+our $slides_dir = 'slides';
+sub slides_dir     { $slides_dir }
 sub thumbnails_dir { 'thumbnails' }
 sub medium_dir     { 'medium' }
 

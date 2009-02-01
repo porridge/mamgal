@@ -13,19 +13,32 @@ sub make
 {
 	my $self = shift;
 	my $tools = shift or croak "Tools required\n";
-	my $formatter = $tools->{formatter} or croak "Formatter required\n";
-	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "Arg is not a formatter\n";
 	$self->refresh_scaled_pictures($tools);
-	$self->refresh_slide($formatter);
+	$self->refresh_slide($tools);
 }
 
 sub refresh_slide
 {
 	my $self = shift;
-	my $formatter = shift;
+	my $tools = shift;
+	my $formatter = $tools->{formatter} or croak "Formatter required\n";
+	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "Arg is not a formatter\n";
 
 	$self->container->ensure_subdir_exists($self->slides_dir);
+	my $name = $self->{dir_name}.'/'.$self->page_path;
+	return if $self->fresher_than_me($name);
 	$self->container->_write_contents_to(sub { $formatter->format_slide($self) }, $self->page_path);
+}
+
+sub fresher_than_me
+{
+	my $self = shift;
+	my $name = shift;
+	if (-e $name) {
+		my $stat = stat($name) or die "File \"$name\" exists, but cannot read its metadata (stat).\n";
+		return 1 if $stat->mtime > $self->{stat}->mtime;
+	}
+	return 0;
 }
 
 sub refresh_miniatures
@@ -39,10 +52,7 @@ sub refresh_miniatures
 		my ($subdir, $x, $y, $suffix) = @$miniature;
 		my $name = $self->{dir_name}.'/'.$subdir.'/'.$self->{base_name};
 		$name .= $suffix if defined $suffix;
-		if (-e $name) {
-			my $miniature_stat = stat($name) or die "Miniature \"$name\" exists, but cannot read its metadata (stat).\n";
-			next if $miniature_stat->mtime > $self->{stat}->mtime;
-		}
+		next if $self->fresher_than_me($name);
 		# loading image data deferred until it's necessary
 		$i = $self->read_image($tools) unless defined $i;
 		$self->scale_into($i, $x, $y);
