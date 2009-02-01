@@ -147,7 +147,7 @@ sub _ignorable_name($)
 	my $name = shift;
 	# ignore hidden files
 	return 1 if substr($_, 0, 1) eq '.';
-	# TODO: optimize out contants calls
+	# TODO: optimize out contants calls, keeping in mind that they are not really constant (eg. tests change them when testing slides/miniatures generation)
 	return 1 if grep { $_ eq $name } (qw(lost+found index.html index.png mmgal.css), $self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
 	return 0;
 }
