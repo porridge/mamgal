@@ -1,5 +1,5 @@
 mmgal - a program for creating static image galleries
-Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
+Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 
 License for the files not specified individually below:
 
@@ -16,6 +16,13 @@ License for the files not specified individually below:
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+--------------------------------------------------------------------------------
+
+As a special exception, any files produced by running the program (i.e. the
+produced gallery) are not covered by the above license, even when they are
+being made by copying parts of the program itself. Anyone may use and/or
+redistribute such files in whatever way they please.
 
 --------------------------------------------------------------------------------
 
@@ -44,6 +51,7 @@ The license for dir.png and lib/MMGal/DirIcon.pm is:
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ----------------------------------------------------------------------------------------------------------------------------------------------
+
 Some useful commands:
 diff -u <(find * -type f|LANG=C sort) <(LANG=C sort MANIFEST )
 grep pm$ MANIFEST |xgettext --add-comments=TRANSLATORS: --copyright-holder="Marcin Owsiany <marcin@owsiany.pl>" -d mmgal -o po/mmgal.pot.new -f -
