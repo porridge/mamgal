@@ -40,14 +40,28 @@ sub miniature_path
 {
 	my $self = shift;
 	my $component = shift;
-	return join('/', $self->{test_file_name}->[0], $component, $self->{test_file_name}->[1]);
+	return $self->{test_file_name}->[0].'/'.$self->relative_miniature_path($component);
+}
+
+sub relative_miniature_path
+{
+	my $self = shift;
+	my $component = shift;
+	return $component.'/'.$self->{test_file_name}->[1];
 }
 
 sub slide_path
 {
 	my $self = shift;
 	my $component = shift;
-	return join('/', $self->{test_file_name}->[0], $component, $self->{test_file_name}->[1]).'.html';
+	return $self->{test_file_name}->[0].'/'.$self->relative_slide_path($component);
+}
+
+sub relative_slide_path
+{
+	my $self = shift;
+	my $component = shift;
+	return $component.'/'.$self->{test_file_name}->[1].'.html';
 }
 
 sub call_refresh_miniatures
@@ -66,27 +80,29 @@ sub call_refresh_slide
 	$e->refresh_slide($self->{tools});
 }
 
-sub miniature_writing : Test(2) {
+sub miniature_writing : Test(3) {
 	my $self = shift;
 	my $infix = 'test_miniature-'.$self->{class_name};
 	my $path = $self->miniature_path($infix);
 	ok(! -f $path, "$path does not exist yet");
-	$self->call_refresh_miniatures($infix);
+	my @ret = $self->call_refresh_miniatures($infix);
+	is($ret[0], $self->relative_miniature_path($infix), "refesh_miniatures call returns the perhaps-refreshed path");
 	ok(-f $path, "$path exists now");
 }
 
-sub slide_writing : Test(2) {
+sub slide_writing : Test(3) {
 	my $self = shift;
 	my $infix = 'test_slide-'.$self->{class_name};
 	use MMGal::Entry;
 	local $MMGal::Entry::slides_dir = $infix;
 	my $path = $self->slide_path($infix);
 	ok(! -f $path, "$path does not exist yet");
-	$self->call_refresh_slide();
+	my @ret = $self->call_refresh_slide();
+	is($ret[0], $self->relative_slide_path($infix), "refesh_slide call returns the perhaps-refreshed path");
 	ok(-f $path, "$path exists now");
 }
 
-sub miniature_not_rewriting : Test(2) {
+sub miniature_not_rewriting : Test(3) {
 	my $self = shift;
 	my $file_mtime = $self->{entry}->{stat}->mtime;
 	my $miniature_mtime = $file_mtime + 60;
@@ -95,12 +111,13 @@ sub miniature_not_rewriting : Test(2) {
 	my $path = $self->miniature_path($infix);
 	my $stat_before = stat($path) or die "Cannot stat [$path]: $!";
 	is($stat_before->mtime, $miniature_mtime);
-	$self->call_refresh_miniatures($infix);
+	my @ret = $self->call_refresh_miniatures($infix);
+	is($ret[0], $self->relative_miniature_path($infix), "refesh_miniatures call returns the not-refreshed path");
 	my $stat_after = stat($path) or die "Cannot stat: $!";
 	is($stat_after->mtime, $miniature_mtime);
 }
 
-sub slide_not_rewriting : Test(2) {
+sub slide_not_rewriting : Test(3) {
 	my $self = shift;
 	my $file_mtime = $self->{entry}->{stat}->mtime;
 	my $slide_mtime = $file_mtime + 60;
@@ -110,12 +127,13 @@ sub slide_not_rewriting : Test(2) {
 	my $stat_before = stat($path) or die "Cannot stat [$path]: $!";
 	is($stat_before->mtime, $slide_mtime);
 	local $MMGal::Entry::slides_dir = $infix;
-	$self->call_refresh_slide();
+	my @ret = $self->call_refresh_slide();
+	is($ret[0], $self->relative_slide_path($infix), "refesh_slide call returns the not-refreshed path");
 	my $stat_after = stat($path) or die "Cannot stat: $!";
 	is($stat_after->mtime, $slide_mtime, 'timestamp did not change after refresh_slide()');
 }
 
-sub miniature_refreshing : Test(3) {
+sub miniature_refreshing : Test(4) {
 	my $self = shift;
 	my $file_mtime = $self->{entry}->{stat}->mtime;
 	# make the miniature older than the source file
@@ -125,13 +143,14 @@ sub miniature_refreshing : Test(3) {
 	my $path = $self->miniature_path($infix);
 	my $stat_before = stat($path) or die "Cannot stat: $!";
 	is($stat_before->mtime, $miniature_mtime);
-	$self->call_refresh_miniatures($infix);
+	my @ret = $self->call_refresh_miniatures($infix);
+	is($ret[0], $self->relative_miniature_path($infix), "refesh_miniatures call returns the refreshed path");
 	my $stat_after = stat($path) or die "Cannot stat: $!";
 	cmp_ok($stat_after->mtime, '>', $miniature_mtime, 'refreshed miniature mtime is newer than its previous mtime');
 	cmp_ok($stat_after->mtime, '>', $file_mtime, 'refreshed miniature mtime is newer than its source file\'s mtime');
 }
 
-sub slide_refreshing : Test(3) {
+sub slide_refreshing : Test(4) {
 	my $self = shift;
 	my $file_mtime = $self->{entry}->{stat}->mtime;
 	# make the slide older than the source file
@@ -142,7 +161,8 @@ sub slide_refreshing : Test(3) {
 	my $stat_before = stat($path) or die "Cannot stat: $!";
 	is($stat_before->mtime, $slide_mtime);
 	local $MMGal::Entry::slides_dir = $infix;
-	$self->call_refresh_slide();
+	my @ret = $self->call_refresh_slide();
+	is($ret[0], $self->relative_slide_path($infix), "refesh_slide call returns the refreshed path");
 	my $stat_after = stat($path) or die "Cannot stat: $!";
 	cmp_ok($stat_after->mtime, '>', $slide_mtime, 'refreshed slide mtime is newer than its previous mtime');
 	cmp_ok($stat_after->mtime, '>', $file_mtime, 'refreshed slide mtime is newer than its source file\'s mtime');
@@ -246,10 +266,10 @@ sub class_setting : Test(startup) {
 	$self->{test_file_name} = [qw(td/one_film m.mov)];
 }
 
-sub miniature_path
+sub relative_miniature_path
 {
 	my $self = shift;
-	$self->SUPER::miniature_path(@_).'.jpg'
+	$self->SUPER::relative_miniature_path(@_).'.jpg'
 }
 
 sub _touch {

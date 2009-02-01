@@ -57,10 +57,13 @@ sub make
 	my $formatter = $tools->{formatter} or croak "Formatter required\n";
 	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "[$formatter] is not a formatter";
 
-	foreach my $el ($self->elements) { $el->make($tools) }
+	my @active_files;
+	foreach my $el ($self->elements) { push @active_files, $el->make($tools) }
+	$self->_prune_inactive_files(\@active_files);
 	$self->_write_montage;
 	$self->_write_contents_to(sub { $formatter->stylesheet    }, 'mmgal.css');
 	$self->_write_contents_to(sub { $formatter->format($self) }, 'index.html');
+	return ()
 }
 
 sub ensure_subdir_exists
@@ -150,6 +153,39 @@ sub _ignorable_name($)
 	# TODO: optimize out contants calls, keeping in mind that they are not really constant (eg. tests change them when testing slides/miniatures generation)
 	return 1 if grep { $_ eq $name } (qw(lost+found index.html index.png mmgal.css), $self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
 	return 0;
+}
+
+sub _prune_inactive_files
+{
+	my $self = shift;
+	my $active_files = shift;
+	my @known_subdirs = ($self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
+	# first, sanity check so we know if we start creating files outside the known subdirs
+	foreach my $f (@$active_files) {
+		die "internal error [$f] has an unknown prefix" unless
+			substr($f, 0, length($known_subdirs[0]) + 1) eq $known_subdirs[0].'/' or
+			substr($f, 0, length($known_subdirs[1]) + 1) eq $known_subdirs[1].'/' or
+			substr($f, 0, length($known_subdirs[2]) + 1) eq $known_subdirs[2].'/';
+	}
+	my %active = map { $_ => 1 } @$active_files;
+	my $base = $self->{path_name};
+	for my $dir (@known_subdirs) {
+		# If the directory is not there, we have nothing to do about it
+		next unless -d $base.'/'.$dir;
+		# Read the names from the dir
+		opendir DIR, $base.'/'.$dir or die "[$base/$dir]: $!\n";
+		my @entries = grep { $_ ne '.' and $_ ne '..' } readdir DIR;
+		closedir DIR or die "[$base/$dir]: $!\n";
+		my $at_start = scalar @entries;
+		my $deleted = 0;
+		foreach my $entry (@entries) {
+			if (not $active{$dir.'/'.$entry}) {
+				unlink($base.'/'.$dir.'/'.$entry) or die "unlink $base/$dir/$entry: $!\n";
+				$deleted++;
+			}
+		}
+		rmdir($base.'/'.$dir) or die "rmdir $base/$dir: $!\n" if $at_start - $deleted == 0;
+	}
 }
 
 sub elements

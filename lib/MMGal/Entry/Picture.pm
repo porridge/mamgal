@@ -13,8 +13,7 @@ sub make
 {
 	my $self = shift;
 	my $tools = shift or croak "Tools required\n";
-	$self->refresh_scaled_pictures($tools);
-	$self->refresh_slide($tools);
+	return $self->refresh_scaled_pictures($tools), $self->refresh_slide($tools)
 }
 
 sub refresh_slide
@@ -26,8 +25,8 @@ sub refresh_slide
 
 	$self->container->ensure_subdir_exists($self->slides_dir);
 	my $name = $self->{dir_name}.'/'.$self->page_path;
-	return if $self->fresher_than_me($name);
-	$self->container->_write_contents_to(sub { $formatter->format_slide($self) }, $self->page_path);
+	$self->container->_write_contents_to(sub { $formatter->format_slide($self) }, $self->page_path) unless $self->fresher_than_me($name);
+	return $self->page_path;
 }
 
 sub fresher_than_me
@@ -48,10 +47,12 @@ sub refresh_miniatures
 	my @miniatures = @_ or croak "Need args: miniature specifications";
 	my $i = undef;
 	my $r;
+	my @ret;
 	for my $miniature (@miniatures) {
 		my ($subdir, $x, $y, $suffix) = @$miniature;
-		my $name = $self->{dir_name}.'/'.$subdir.'/'.$self->{base_name};
-		$name .= $suffix if defined $suffix;
+		my $relative_name = $subdir.'/'.$self->{base_name}.($suffix ? $suffix : '');
+		push @ret, $relative_name;
+		my $name = $self->{dir_name}.'/'.$relative_name;
 		next if $self->fresher_than_me($name);
 		# loading image data deferred until it's necessary
 		$i = $self->read_image($tools) unless defined $i;
@@ -59,6 +60,7 @@ sub refresh_miniatures
 		$self->container->ensure_subdir_exists($subdir);
 		$r = $i->Write($name)		and die "Writing \"${name}\": $r";
 	}
+	return @ret;
 }
 
 sub page_path { $_[0]->slides_dir.'/'.$_[0]->{base_name}.'.html' }
