@@ -48,14 +48,20 @@ sub creation_time
 {
 	my $self = shift;
 	my $info = $self->image_info;
-	my $exif_time = $info->{DateTimeOriginal} || $info->{DateTime} or return $self->SUPER::creation_time(@_);
-	if ($exif_time =~ /^\s*(\d+):(\d+):(\d+)\s+(\d+):(\d+):(\d+)\s*$/) {
-		my ($y, $m, $d, $H, $M, $S) = ($1, $2, $3, $4, $5, $6);
-		my $time = POSIX::mktime($S, $M, $H, $d, $m-1, $y-1900);
-		return $time if defined $time;
-		# falls through on mktime() error
+	use Image::EXIF::DateTimeParser;
+	my $parser = Image::EXIF::DateTimeParser->new;
+	my $exif_time = undef;
+	my @tags = qw(DateTimeOriginal DateTime);
+	foreach my $tag (@tags) {
+		next unless defined $info->{$tag};
+		$exif_time = eval { $parser->parse($info->{$tag}); };
+		return $exif_time if defined $exif_time;
+		my $e = $@;
+		if (defined $e) {
+			chomp $e;
+			warn sprintf('%s: %s: %s', $self->{path_name}, $tag, $e);
+		}
 	}
-	warn "Invalid EXIF DateTime [$exif_time] in [".$self->{path_name}."].\n";
 	return $self->SUPER::creation_time(@_);
 }
 
