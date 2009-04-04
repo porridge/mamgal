@@ -10,3 +10,11 @@ different locale (or with some modified options, when they are implemented).
 
 There are some features in imageindex which would be nice to have, such as
 graphic smileys, or greater ability to control the appearance of pages.
+
+Ability to rapidly move from a directory to any of its parents by clicking on a
+component of the path displayed at the top of the page.
+
+Perhaps take a representative from each subdirectory for creating a montage for
+a directory. Currently just the pictures immediately inside are shown, or a
+directory icon, if there are none such pictures. This gives a false impression
+of the directory being rather empty.
