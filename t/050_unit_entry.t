@@ -122,11 +122,11 @@ sub thumbnails_dir_method : Test(2) {
 	my $class_name = $self->{class_name};
 	{
 		my $e = $self->{entry};
-		is($e->thumbnails_dir, 'thumbnails', "$class_name thumbnails is correct");
+		is($e->thumbnails_dir, '.mmgal-thumbnails', "$class_name thumbnails is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->thumbnails_dir, 'thumbnails', "$class_name thumbnails is correct");
+		is($e->thumbnails_dir, '.mmgal-thumbnails', "$class_name thumbnails is correct");
 	}
 }
 
@@ -135,11 +135,11 @@ sub slides_dir_method : Test(2) {
 	my $class_name = $self->{class_name};
 	{
 		my $e = $self->{entry};
-		is($e->slides_dir, 'slides', "$class_name slides is correct");
+		is($e->slides_dir, '.mmgal-slides', "$class_name slides is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->slides_dir, 'slides', "$class_name slides is correct");
+		is($e->slides_dir, '.mmgal-slides', "$class_name slides is correct");
 	}
 }
 

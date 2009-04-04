@@ -29,22 +29,22 @@ my $m = MMGal::Maker->new(MMGal::Formatter->new($l), MMGal::MplayerWrapper->new,
 ok($m->make_roots('td/more'),			"maker returns success on an dir with some files");
 dir_only_contains_ok('td/more', [qw(.mmgal-root
 					index.html index.png mmgal.css
-					medium thumbnails slides
+					.mmgal-medium .mmgal-thumbnails .mmgal-slides
 					a.png b.png x.png
-					medium/a.png medium/b.png medium/x.png
-					thumbnails/a.png thumbnails/b.png thumbnails/x.png
-					slides/a.png.html slides/b.png.html slides/x.png.html
+					.mmgal-medium/a.png .mmgal-medium/b.png .mmgal-medium/x.png
+					.mmgal-thumbnails/a.png .mmgal-thumbnails/b.png .mmgal-thumbnails/x.png
+					.mmgal-slides/a.png.html .mmgal-slides/b.png.html .mmgal-slides/x.png.html
 					subdir subdir/p.png subdir/p2.png subdir/lost+found
 					subdir/index.html subdir/index.png subdir/mmgal.css
-					subdir/medium subdir/medium/p.png subdir/medium/p2.png
-					subdir/thumbnails subdir/thumbnails/p.png
-					subdir/thumbnails/p2.png
-					subdir/slides subdir/slides/p.png.html
-					subdir/slides/p2.png.html),
+					subdir/.mmgal-medium subdir/.mmgal-medium/p.png subdir/.mmgal-medium/p2.png
+					subdir/.mmgal-thumbnails subdir/.mmgal-thumbnails/p.png
+					subdir/.mmgal-thumbnails/p2.png
+					subdir/.mmgal-slides subdir/.mmgal-slides/p.png.html
+					subdir/.mmgal-slides/p2.png.html),
 					'zzz another subdir', 'zzz another subdir/index.png', 'zzz another subdir/index.html',
-					'zzz another subdir/p.png', 'zzz another subdir/mmgal.css', 'zzz another subdir/slides',
-					'zzz another subdir/slides/p.png.html', 'zzz another subdir/thumbnails',
-					'zzz another subdir/thumbnails/p.png', 'zzz another subdir/medium',
-					'zzz another subdir/medium/p.png'
+					'zzz another subdir/p.png', 'zzz another subdir/mmgal.css', 'zzz another subdir/.mmgal-slides',
+					'zzz another subdir/.mmgal-slides/p.png.html', 'zzz another subdir/.mmgal-thumbnails',
+					'zzz another subdir/.mmgal-thumbnails/p.png', 'zzz another subdir/.mmgal-medium',
+					'zzz another subdir/.mmgal-medium/p.png'
 					],
-						"maker created index.html, medium, thumbnail and slides, also for both subdirs");
+						"maker created index.html, .mmgal-medium, .mmgal-thumbnails and .mmgal-slides, also for both subdirs");

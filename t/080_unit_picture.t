@@ -185,11 +185,11 @@ sub page_path_method : Test(2) {
 	my @test_file_name = $self->file_name;
 	{
 		my $e = $self->{entry};
-		is($e->page_path, 'slides/'.$test_file_name[1].'.html', "$class_name page_path is correct");
+		is($e->page_path, '.mmgal-slides/'.$test_file_name[1].'.html', "$class_name page_path is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->page_path, 'slides/'.$test_file_name[1].'.html', "$class_name page_path is correct");
+		is($e->page_path, '.mmgal-slides/'.$test_file_name[1].'.html', "$class_name page_path is correct");
 	}
 }
 
@@ -269,11 +269,11 @@ sub thumbnail_path_method : Test(2) {
 	my @test_file_name = $self->file_name;
 	{
 		my $e = $self->{entry};
-		is($e->thumbnail_path, 'thumbnails/'.$test_file_name[1], "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '.mmgal-thumbnails/'.$test_file_name[1], "$class_name thumbnail_path is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->thumbnail_path, 'thumbnails/'.$test_file_name[1], "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '.mmgal-thumbnails/'.$test_file_name[1], "$class_name thumbnail_path is correct");
 	}
 }
 
@@ -341,11 +341,11 @@ sub thumbnail_path_method : Test(2) {
 	my @test_file_name = $self->file_name;
 	{
 		my $e = $self->{entry};
-		is($e->thumbnail_path, 'thumbnails/'.$test_file_name[1].'.jpg', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '.mmgal-thumbnails/'.$test_file_name[1].'.jpg', "$class_name thumbnail_path is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->thumbnail_path, 'thumbnails/'.$test_file_name[1].'.jpg', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '.mmgal-thumbnails/'.$test_file_name[1].'.jpg', "$class_name thumbnail_path is correct");
 	}
 }
 

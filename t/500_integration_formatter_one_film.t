@@ -31,8 +31,8 @@ my $dir = MMGal::EntryFactory->create_entry_for('td/one_film');
 my $mov = ($dir->elements)[0];
 my $t;
 lives_ok(sub { $t = $f->format($dir) },          "formatter formats index page with one film");
-tag_ok($t, "a", { href => 'slides/m.mov.html' }, "there is a link to the slide");
-tag_ok($t, "img", { src => 'thumbnails/m.mov.jpg' }, "there is a pic on the page");
+tag_ok($t, "a", { href => '.mmgal-slides/m.mov.html' }, "there is a link to the slide");
+tag_ok($t, "img", { src => '.mmgal-thumbnails/m.mov.jpg' }, "there is a pic on the page");
 text_ok($t, 'm.mov',                             "contains the filename alone");
 
 dies_ok(sub { $f->format_slide },                   "dies with no arg");

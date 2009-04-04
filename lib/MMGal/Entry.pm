@@ -91,10 +91,10 @@ sub creation_time
 }
 
 # Some constants
-our $slides_dir = 'slides';
+our $slides_dir = '.mmgal-slides';
 sub slides_dir     { $slides_dir }
-sub thumbnails_dir { 'thumbnails' }
-sub medium_dir     { 'medium' }
+sub thumbnails_dir { '.mmgal-thumbnails' }
+sub medium_dir     { '.mmgal-medium' }
 
 #######################################################################################################################
 # Abstract methods

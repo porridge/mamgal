@@ -36,8 +36,8 @@ $dir_nd->set_tools($tools);
 my $p_nd = ($dir_nd->elements)[0];
 my $t_nd;
 lives_ok(sub { $t_nd = $f->format($dir_nd) },       "formatter formats index page with one picture");
-tag_ok($t_nd, "a", { href => 'slides/p.png.html' }, "there is a link to the slide");
-tag_ok($t_nd, "img", { src => 'thumbnails/p.png' }, "there is a pic on the page");
+tag_ok($t_nd, "a", { href => '.mmgal-slides/p.png.html' }, "there is a link to the slide");
+tag_ok($t_nd, "img", { src => '.mmgal-thumbnails/p.png' }, "there is a pic on the page");
 text_ok($t_nd, 'p.png',                             "does not contain filename alone");
 
 dies_ok(sub { $f->format_slide },                    "dies with no arg");
@@ -50,7 +50,7 @@ text_ok($st_p_nd, 'p.png',                           "slide contains filename");
 for my $n ('td', 'more', 'zzz another subdir') {
 	text_ok($st_p_nd, $n,                        "slide contains parent filename");
 }
-tag_ok($st_p_nd, "img", {src => '../medium/p.png'},  "there is a medium pic on the page");
+tag_ok($st_p_nd, "img", {src => '../.mmgal-medium/p.png'},  "there is a medium pic on the page");
 no_tag($st_p_nd, "embed",                            "there is no embed tag on the page");
 tag_count($st_p_nd, "img", {}, 1,                    "just one img tag");
 tag_ok($st_p_nd, "a", {href => '../index.html'},     "there is a link up on the page");
@@ -71,8 +71,8 @@ my $d = MMGal::EntryFactory->create_entry_for('td/one_pic');
 $d->set_tools($tools);
 my $t;
 lives_ok(sub { $t = $f->format($d) },             "formatter formats index page with one picture");
-tag_ok($t, "a", { href => 'slides/a1.png.html' }, "there is a link to the slide");
-tag_ok($t, "img", { src => 'thumbnails/a1.png' }, "there is a pic on the page");
+tag_ok($t, "a", { href => '.mmgal-slides/a1.png.html' }, "there is a link to the slide");
+tag_ok($t, "img", { src => '.mmgal-thumbnails/a1.png' }, "there is a pic on the page");
 text_ok($t, 'Another test image.',                 "contains description");
 no_text($t, 'a1.png',                              "does not contain filename alone");
 
@@ -81,7 +81,7 @@ $p->set_tools($tools);
 
 my $st;
 lives_ok(sub { $st = $f->format_slide($p) },      "formatter formats a slide");
-tag_ok($st, "img", {src => '../medium/a1.png'},   "there is a medium pic on the page");
+tag_ok($st, "img", {src => '../.mmgal-medium/a1.png'},   "there is a medium pic on the page");
 tag_count($st, "img", {}, 1,                      "just one img tag");
 tag_ok($st, "a", {href => '../index.html'},       "there is a link up on the page");
 tag_ok($st, "a", {href => '../a1.png'},           "there is a link to image itself");

@@ -45,12 +45,12 @@ dir_only_contains_ok('td/one_pic', [qw(a1.png)],                "Only the pictur
 
 lives_ok(sub { $d->make },				"dir makes stuff and survives");
 
-dir_only_contains_ok('td/one_pic', [qw(medium thumbnails slides index.html index.png mmgal.css
+dir_only_contains_ok('td/one_pic', [qw(.mmgal-medium .mmgal-thumbnails .mmgal-slides index.html index.png mmgal.css
 					a1.png
-					thumbnails/a1.png
-					medium/a1.png
-					slides/a1.png.html)],
-								"index, picture, thumbnail, medium and slides");
+					.mmgal-thumbnails/a1.png
+					.mmgal-medium/a1.png
+					.mmgal-slides/a1.png.html)],
+								"index, picture, .mmgal-thumbnails, .mmgal-medium and .mmgal-slides");
 
 my $single_creation_time = $d->creation_time;
 ok($single_creation_time, "There is some non-zero create time");
