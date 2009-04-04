@@ -1,6 +1,46 @@
 mmgal - a program for creating static image galleries
 Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Performance comparison with imageindex:
+=======================================
+
+Gallery: 15GB of 9100 images in 528 folders
+
+imageindex:
+ - generating a gallery from scratch:
+    9414.61user 919.38system 2:59:02elapsed 96%CPU (0avgtext+0avgdata 0maxresident)k
+    0inputs+0outputs (174425major+226765997minor)pagefaults 0swaps
+ - on a freshly generated gallery:
+    2342.84user 437.39system 51:48.89elapsed 89%CPU (0avgtext+0avgdata 0maxresident)k
+    0inputs+0outputs (155159major+103164844minor)pagefaults 0swaps
+
+
+mmgal
+ - generating a gallery from scratch:
+    4534.19user 436.42system 1:29:05elapsed 92%CPU (0avgtext+0avgdata 0maxresident)k
+    0inputs+0outputs (146337major+102242731minor)pagefaults 0swaps
+ - on a freshly generated gallery:
+    114.45user 8.01system 3:30.87elapsed 58%CPU (0avgtext+0avgdata 0maxresident)k
+    0inputs+0outputs (115major+1786694minor)pagefaults 0swaps
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Some useful commands:
+=====================
+
+diff -u <(find * -type f|LANG=C sort) <(LANG=C sort MANIFEST )
+grep pm$ MANIFEST |xgettext --add-comments=TRANSLATORS: --copyright-holder="Marcin Owsiany <marcin@owsiany.pl>" -d mmgal -o po/mmgal.pot.new -f -
+mv po/mmgal.pot po/mmgal.pot.old
+msgmerge po/mmgal.pot.old po/mmgal.pot.new > po/mmgal.pot
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+License
+=======
+
 License for the files not specified individually below:
 
     This program is free software; you can redistribute it and/or modify
@@ -49,12 +89,4 @@ The license for dir.png and lib/MMGal/DirIcon.pm is:
     You should have received a copy of the GNU Lesser General Public
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-----------------------------------------------------------------------------------------------------------------------------------------------
-
-Some useful commands:
-diff -u <(find * -type f|LANG=C sort) <(LANG=C sort MANIFEST )
-grep pm$ MANIFEST |xgettext --add-comments=TRANSLATORS: --copyright-holder="Marcin Owsiany <marcin@owsiany.pl>" -d mmgal -o po/mmgal.pot.new -f -
-mv po/mmgal.pot po/mmgal.pot.old
-msgmerge po/mmgal.pot.old po/mmgal.pot.new > po/mmgal.pot
 
