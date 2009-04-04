@@ -29,6 +29,20 @@ sub init
 	$self->{path_name} = $dirname.'/'.$basename;
 }
 
+sub set_tools
+{
+	my $self = shift;
+	my $tools = shift;
+	$self->{tools} = $tools;
+	$self;
+}
+
+sub tools
+{
+	my $self = shift;
+	return $self->{tools};
+}
+
 # TODO: element should not have a need to know its index, container should be able to tell it simply given the object
 sub element_index { $_[0]->{element_index}  }
 sub set_element_index { $_[0]->{element_index} = $_[1]  }

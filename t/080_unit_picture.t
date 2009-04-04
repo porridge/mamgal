@@ -22,6 +22,12 @@ sub pre_class_setting : Test(startup) {
 	};
 }
 
+sub entry_tools_setup : Test(setup => 0) {
+	my $self = shift;
+	$self->{entry}->set_tools($self->{tools});
+	$self->{entry_no_stat}->set_tools($self->{tools});
+}
+
 sub _touch
 {
 	my ($self, $infix, $time, $suffix) = @_;

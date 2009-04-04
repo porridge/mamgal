@@ -72,6 +72,22 @@ sub entry_creation : Test(setup => 4) {
 	}
 }
 
+sub tools_methods : Test(4) {
+	my $self = shift;
+	{
+		my $e = $self->{entry};
+		my $class_name = $self->{class_name};
+		is($e->set_tools('tools_hashref'), $e, "tools setting is wrong for $class_name");
+		is($e->tools, 'tools_hashref', "tools are not OK for $class_name")
+	}
+	{
+		my $e = $self->{entry_no_stat};
+		my $class_name = $self->{class_name};
+		is($e->set_tools('tools_hashref'), $e, "tools setting is wrong for $class_name");
+		is($e->tools, 'tools_hashref', "tools are not OK for $class_name")
+	}
+}
+
 sub name_method : Test(2) {
 	my $self = shift;
 	my $class_name = $self->{class_name};
