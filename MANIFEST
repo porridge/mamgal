@@ -49,6 +49,6 @@ MANIFEST
 dir.png
 testlib/MMGal/TestHelper.pm
 README
-mmgal.pl
+mmgal
 po/mmgal.pot
 po/pl.po

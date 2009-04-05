@@ -6,4 +6,5 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
 	'NAME'		=> 'MMGal',
 	'VERSION_FROM'	=> 'lib/MMGal/Maker.pm',
+	'EXE_FILES'     => ['mmgal'],
 );
