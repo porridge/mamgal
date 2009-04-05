@@ -14,14 +14,13 @@ use Carp;
 sub refresh_scaled_pictures
 {
 	my $self = shift;
-	my $tools = shift or croak "Tools required.\n";
-	return $self->refresh_miniatures($tools, [$self->thumbnails_dir, 200, 150, '.jpg']);
+	return $self->refresh_miniatures([$self->thumbnails_dir, 200, 150, '.jpg']);
 }
 
 sub read_image
 {
 	my $self = shift;
-	my $tools = shift or croak "Tools required.\n";
+	my $tools = $self->tools or croak "Tools were not injected.";
 	my $w = $tools->{mplayer_wrapper} or croak "MplayerWrapper required.\n";
 	return $w->snapshot($self->{path_name});
 }

@@ -45,13 +45,14 @@ sub _make_any
 	my $dirs_are_roots = shift;
 	croak "No args" unless @_;
 
+	my $tools = { formatter => $self->{formatter}, mplayer_wrapper => $self->{mplayer_wrapper} };
 	my @dirs = map {
 		my $d = MMGal::EntryFactory->create_entry_for($_);
 		$d->set_root(1) if $dirs_are_roots;
+		$d->set_tools($tools);
 		$d
 	} @_;
-	my $tools = { formatter => $self->{formatter}, mplayer_wrapper => $self->{mplayer_wrapper} };
-	$_->make($tools) for @dirs;
+	$_->make for @dirs;
 
 	return 1;
 }

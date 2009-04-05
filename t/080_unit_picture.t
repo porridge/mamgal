@@ -76,14 +76,14 @@ sub call_refresh_miniatures
 	my $infix = shift;
 	my $suffix = shift;
 	my $e = $self->{entry};
-	$e->refresh_miniatures($self->{tools}, [$infix, 60, 60, $suffix]);
+	$e->refresh_miniatures([$infix, 60, 60, $suffix]);
 }
 
 sub call_refresh_slide
 {
 	my $self = shift;
 	my $e = $self->{entry};
-	$e->refresh_slide($self->{tools});
+	$e->refresh_slide;
 }
 
 sub miniature_writing : Test(3) {

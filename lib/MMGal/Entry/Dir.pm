@@ -53,12 +53,12 @@ sub is_root
 sub make
 {
 	my $self = shift;
-	my $tools = shift or croak "Tools required\n";
+	my $tools = $self->tools or croak "Tools were not injected";
 	my $formatter = $tools->{formatter} or croak "Formatter required\n";
 	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "[$formatter] is not a formatter";
 
 	my @active_files;
-	foreach my $el ($self->elements) { push @active_files, $el->make($tools) }
+	foreach my $el ($self->elements) { push @active_files, $el->make }
 	$self->_prune_inactive_files(\@active_files);
 	$self->_write_montage;
 	$self->_write_contents_to(sub { $formatter->stylesheet    }, 'mmgal.css');
@@ -207,6 +207,7 @@ sub elements
 			my $e = MMGal::EntryFactory->create_entry_for($_);
 			$e->set_element_index($i++);
 			$e->set_container($self);
+			$e->set_tools($self->{tools});
 			$e
 		} @entries
 	];

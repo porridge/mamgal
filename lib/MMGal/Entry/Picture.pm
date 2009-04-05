@@ -12,14 +12,13 @@ use File::stat;
 sub make
 {
 	my $self = shift;
-	my $tools = shift or croak "Tools required\n";
-	return $self->refresh_scaled_pictures($tools), $self->refresh_slide($tools)
+	return ($self->refresh_scaled_pictures, $self->refresh_slide);
 }
 
 sub refresh_slide
 {
 	my $self = shift;
-	my $tools = shift;
+	my $tools = $self->tools or croak "Tools were not injected";
 	my $formatter = $tools->{formatter} or croak "Formatter required\n";
 	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "Arg is not a formatter\n";
 
@@ -43,7 +42,6 @@ sub fresher_than_me
 sub refresh_miniatures
 {
 	my $self = shift;
-	my $tools = shift or croak "Tools required\n";
 	my @miniatures = @_ or croak "Need args: miniature specifications";
 	my $i = undef;
 	my $r;
@@ -55,7 +53,7 @@ sub refresh_miniatures
 		my $name = $self->{dir_name}.'/'.$relative_name;
 		next if $self->fresher_than_me($name);
 		# loading image data deferred until it's necessary
-		$i = $self->read_image($tools) unless defined $i;
+		$i = $self->read_image unless defined $i;
 		$self->scale_into($i, $x, $y);
 		$self->container->ensure_subdir_exists($subdir);
 		$r = $i->Write($name)		and die "Writing \"${name}\": $r";
