@@ -23,8 +23,8 @@ sub parse
 		my ($y, $m, $d, $H, $M, $S) = ($1, $3, $5, $7, $9, $11);
 		my @colons = ($2, $4, $8, $10);
 		my @space = $6;
-		# if all fields were empty (or whitespace-only), it means that time is unknown
-		return undef if not map { /^( |0)+$/ ? () : (1) } ($y, $m, $d, $H, $M, $S);
+		# if all fields were whitespace-only or zeroes, it means that time is unknown
+		return undef unless grep { ! /^( |0)+$/ } ($y, $m, $d, $H, $M, $S);
 		my $time = POSIX::mktime($S, $M, $H, $d, $m-1, $y-1900, 0, 0, -1);
 		return $time if defined $time;
 		# falls through on mktime() error
