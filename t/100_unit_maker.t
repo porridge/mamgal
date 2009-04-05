@@ -21,7 +21,9 @@ use MMGal::Formatter;
 my $f = MMGal::Formatter->new;
 use MMGal::MplayerWrapper;
 my $w = MMGal::MplayerWrapper->new;
-lives_ok(sub { $m = MMGal::Maker->new($f, $w) },"maker creation succeeds with formatter and wrapper args");
+use Image::EXIF::DateTimeParser;
+my $p = Image::EXIF::DateTimeParser->new;
+lives_ok(sub { $m = MMGal::Maker->new($f, $w, $p) },"maker creation succeeds with formatter, wrapper and parser args");
 isa_ok($m, 'MMGal::Maker');
 
 dies_ok(sub { $m->make() },			"maker dies on no args");

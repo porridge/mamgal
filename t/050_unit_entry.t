@@ -49,7 +49,7 @@ sub parameter_checks : Test(startup => 6) {
 	dies_ok(sub { $class_name->new(qw(td empty_file), $stat, 3) },"$class_name dies on creation with more than 3 args");
 }
 
-sub entry_creation : Test(setup => 4) {
+sub _entry_creation : Test(setup => 4) {
 	my $self = shift;
 	my $class_name = $self->{class_name};
 
@@ -73,19 +73,20 @@ sub entry_creation : Test(setup => 4) {
 	}
 }
 
-sub tools_methods : Test(4) {
+sub _tools_methods : Test(setup => 4) {
 	my $self = shift;
+	my $tools_hashref = { exif_dtparser => Test::MockObject->new->mock('parse') };
 	{
 		my $e = $self->{entry};
 		my $class_name = $self->{class_name};
-		is($e->set_tools('tools_hashref'), $e, "tools setting is wrong for $class_name");
-		is($e->tools, 'tools_hashref', "tools are not OK for $class_name")
+		is($e->set_tools($tools_hashref), $e, "tools setting is wrong for $class_name");
+		is($e->tools, $tools_hashref, "tools are not OK for $class_name")
 	}
 	{
 		my $e = $self->{entry_no_stat};
 		my $class_name = $self->{class_name};
-		is($e->set_tools('tools_hashref'), $e, "tools setting is wrong for $class_name");
-		is($e->tools, 'tools_hashref', "tools are not OK for $class_name")
+		is($e->set_tools($tools_hashref), $e, "tools setting is wrong for $class_name");
+		is($e->tools, $tools_hashref, "tools are not OK for $class_name")
 	}
 }
 

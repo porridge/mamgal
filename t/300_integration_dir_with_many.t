@@ -11,6 +11,7 @@ use Test::Files;
 use lib 'testlib';
 use MMGal::TestHelper;
 use File::stat;
+use Image::EXIF::DateTimeParser;
 
 prepare_test_data;
 my $time_now  = time;
@@ -25,6 +26,10 @@ use_ok('MMGal::Entry::Dir');
 my $d;
 lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td more), stat('td/more')) },	"creation ok");
 isa_ok($d, 'MMGal::Entry::Dir',                                 "a dir is a dir");
+my $mf = get_mock_formatter(qw(format stylesheet));
+my $tools = {formatter => $mf, exif_dtparser => Image::EXIF::DateTimeParser->new};
+$d->set_tools($tools);
+
 my @ret = $d->elements;
 is(scalar(@ret), 5,						"dir contains 5 elements");
 # read ordering

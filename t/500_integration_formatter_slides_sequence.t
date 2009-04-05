@@ -9,12 +9,16 @@ use Test::More tests => 11;
 use Test::HTML::Content;
 use lib 'testlib';
 use MMGal::TestHelper;
+use Image::EXIF::DateTimeParser;
 
 prepare_test_data;
 
 use MMGal::Formatter;
 use MMGal::EntryFactory;
 my $d = MMGal::EntryFactory->create_entry_for('td/more');
+my $tools = {exif_dtparser => Image::EXIF::DateTimeParser->new};
+$d->set_tools($tools);
+
 my $f = MMGal::Formatter->new;
 my @elems = $d->elements;
 my $p = $elems[1];

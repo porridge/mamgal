@@ -10,6 +10,7 @@ use Test::HTML::Content;
 use Test::Exception;
 use lib 'testlib';
 use MMGal::TestHelper;
+use Image::EXIF::DateTimeParser;
 
 prepare_test_data;
 
@@ -27,6 +28,9 @@ my $f = MMGal::Formatter->new($le);
 my $time = 1228933448;
 utime($time, $time, 'td/more/zzz another subdir/p.png') == 1 or die "Failed to touch file";
 my $dir_nd = MMGal::EntryFactory->create_entry_for('td/more/zzz another subdir');
+my $tools = {exif_dtparser => Image::EXIF::DateTimeParser->new};
+$dir_nd->set_tools($tools);
+
 # this is p.png, which has no description
 my $p_nd = ($dir_nd->elements)[0];
 my $t_nd;
@@ -63,6 +67,7 @@ text_ok($ct_p_nd, 'p.png',                           "cell contains filename");
 #
 
 my $d = MMGal::EntryFactory->create_entry_for('td/one_pic');
+$d->set_tools($tools);
 my $t;
 lives_ok(sub { $t = $f->format($d) },             "formatter formats index page with one picture");
 tag_ok($t, "a", { href => 'slides/a1.png.html' }, "there is a link to the slide");
@@ -71,6 +76,7 @@ text_ok($t, 'Another test image.',                 "contains description");
 no_text($t, 'a1.png',                              "does not contain filename alone");
 
 my $p = MMGal::EntryFactory->create_entry_for('td/one_pic/a1.png');
+$p->set_tools($tools);
 
 my $st;
 lives_ok(sub { $st = $f->format_slide($p) },      "formatter formats a slide");

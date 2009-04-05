@@ -100,7 +100,7 @@ sub valid_make_invocation : Test(5) {
 	my $self = shift;
 	my $d = $self->{entry};
 	my $mf = get_mock_formatter(qw(format stylesheet));
-	$d->set_tools({formatter => $mf});
+	$d->tools->{formatter} = $mf;
 	lives_ok(sub { $d->make },                                   "Dir lives on make invocation");
 	ok($mf->called('format'),                                    "Dir->make calls formatter->format internally");
 	ok($mf->called('stylesheet'),                                "Dir->make calls formatter->stylesheet internally");

@@ -10,6 +10,7 @@ use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
 use MMGal::TestHelper;
+use Image::EXIF::DateTimeParser;
 
 prepare_test_data;
 
@@ -18,7 +19,8 @@ dir_only_contains_ok('td/one_pic', ['a1.png'],
 use MMGal::Maker;
 use MMGal::Formatter;
 use MMGal::MplayerWrapper;
-my $m = MMGal::Maker->new(MMGal::Formatter->new, MMGal::MplayerWrapper->new);
+use Image::EXIF::DateTimeParser;
+my $m = MMGal::Maker->new(MMGal::Formatter->new, MMGal::MplayerWrapper->new, Image::EXIF::DateTimeParser->new);
 ok($m->make_without_roots('td/one_pic'),		"maker returns success on an dir with one file");
 dir_only_contains_ok('td/one_pic', [qw(index.html index.png mmgal.css medium thumbnails slides
 					a1.png
@@ -28,6 +30,6 @@ dir_only_contains_ok('td/one_pic', [qw(index.html index.png mmgal.css medium thu
 						"maker created index.html, medium, thumbnail and slides");
 
 unlink('td/one_pic/a1.png') or die;
-$m = MMGal::Maker->new(MMGal::Formatter->new, MMGal::MplayerWrapper->new);
+$m = MMGal::Maker->new(MMGal::Formatter->new, MMGal::MplayerWrapper->new, Image::EXIF::DateTimeParser->new);
 ok($m->make_without_roots('td/one_pic'),		"maker returns success on an dir with one file");
 dir_only_contains_ok('td/one_pic', [qw(index.html index.png mmgal.css)], "maker deleted medium, thumbnail and slides");

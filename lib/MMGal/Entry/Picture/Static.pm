@@ -48,16 +48,15 @@ sub creation_time
 {
 	my $self = shift;
 	my $info = $self->image_info;
-	use Image::EXIF::DateTimeParser;
-	my $parser = Image::EXIF::DateTimeParser->new;
+	my $tools = $self->tools or croak "tools not injected";
+	my $parser = $self->tools->{exif_dtparser} or croak "no parser in tools";
 	my $exif_time = undef;
-	my @tags = qw(DateTimeOriginal DateTime);
-	foreach my $tag (@tags) {
-		next unless defined $info->{$tag};
+	foreach my $tag (qw(DateTimeOriginal DateTime)) {
+		next unless exists $info->{$tag};
 		$exif_time = eval { $parser->parse($info->{$tag}); };
-		return $exif_time if defined $exif_time;
 		my $e = $@;
-		if (defined $e) {
+		return $exif_time if defined $exif_time;
+		if ($e) {
 			chomp $e;
 			warn sprintf('%s: %s: %s', $self->{path_name}, $tag, $e);
 		}

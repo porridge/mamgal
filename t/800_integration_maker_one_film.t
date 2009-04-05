@@ -18,7 +18,8 @@ dir_only_contains_ok('td/one_film', ['m.mov'],
 use MMGal::Maker;
 use MMGal::Formatter;
 use MMGal::MplayerWrapper;
-my $m = MMGal::Maker->new(MMGal::Formatter->new, MMGal::MplayerWrapper->new);
+use Image::EXIF::DateTimeParser;
+my $m = MMGal::Maker->new(MMGal::Formatter->new, MMGal::MplayerWrapper->new, Image::EXIF::DateTimeParser->new);
 ok($m->make_without_roots('td/one_film'),	"maker returns success on an dir with one film");
 dir_only_contains_ok('td/one_film', [qw(index.html index.png mmgal.css thumbnails slides
 					m.mov
