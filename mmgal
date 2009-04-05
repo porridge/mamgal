@@ -4,7 +4,6 @@
 # See the README file for license information
 use strict;
 use warnings;
-use lib 'blib/lib';
 
 use MMGal::Maker;
 use MMGal::Formatter;
