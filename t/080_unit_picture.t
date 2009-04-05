@@ -5,6 +5,7 @@
 package MMGal::Unit::Entry::Picture;
 use strict;
 use warnings;
+use Carp qw(verbose confess);
 use Test::More;
 use Test::Exception;
 use Test::Files;
@@ -34,7 +35,6 @@ sub _touch
 	my $dir = $self->{test_file_name}->[0].'/'.$infix;
 	my $name = $self->{test_file_name}->[1];
 	$name .= $suffix || '';
-	use Carp;
 	mkdir $dir or confess "Cannot mkdir [$dir]: $!";
 	open(T, '>'.$dir.'/'.$name) or die "Cannot open: $!";
 	print T 'whatever';

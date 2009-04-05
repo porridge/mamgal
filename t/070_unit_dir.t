@@ -5,6 +5,7 @@
 package MMGal::Unit::Entry::Dir;
 use strict;
 use warnings;
+use Carp 'verbose';
 use Test::More;
 use Test::Exception;
 use Test::Files;

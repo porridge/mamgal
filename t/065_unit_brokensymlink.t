@@ -5,6 +5,7 @@
 package MMGal::Unit::Entry::BrokenSymlink;
 use strict;
 use warnings;
+use Carp 'verbose';
 use Test::More;
 use lib 'testlib';
 BEGIN { our @ISA = 'MMGal::Unit::Entry::NonPicture' }

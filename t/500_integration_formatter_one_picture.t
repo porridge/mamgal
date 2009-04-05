@@ -4,6 +4,7 @@
 # See the README file for license information
 use strict;
 use warnings;
+use Carp 'verbose';
 use Test::More tests => 40;
 use Test::HTML::Content;
 use Test::Exception;
