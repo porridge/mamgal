@@ -1,3 +1,4 @@
+t/010_unit_datetime_parser.t
 t/050_unit_entry.t
 t/060_unit_nonpicture.t
 t/065_unit_brokensymlink.t
@@ -33,6 +34,7 @@ lib/MMGal/Entry/Picture.pm
 lib/MMGal/Entry/Picture/Film.pm
 lib/MMGal/Entry/Picture/Static.pm
 lib/MMGal/Entry/Unreadable.pm
+lib/Image/EXIF/DateTimeParser.pm
 td.in/.mmgal-root
 td.in/c.jpg
 td.in/root_dir/.mmgal-root
@@ -43,12 +45,14 @@ td.in/more/a.png
 td.in/more/b.png
 td.in/more/x.png
 td.in/more/subdir/p.png
+td.in/more/subdir/p2.png
 td.in/p.png
 Makefile.PL
 MANIFEST
 dir.png
 testlib/MMGal/TestHelper.pm
 README
+TODO
 mmgal
 po/mmgal.pot
 po/pl.po
