@@ -337,6 +337,7 @@ unless (defined caller) {
 	my $tests = 0;
 	$tests += $_->expected_tests foreach @classes;
 	plan tests => $tests;
-	diag("About to test $_"), $_->runtests foreach @classes;
+	# diag("About to test $_"), uncomment for debugging
+	$_->runtests foreach @classes;
 }
 
