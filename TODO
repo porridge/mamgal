@@ -18,3 +18,10 @@ Perhaps take a representative from each subdirectory for creating a montage for
 a directory. Currently just the pictures immediately inside are shown, or a
 directory icon, if there are none such pictures. This gives a false impression
 of the directory being rather empty.
+
+Parallel processing - having all CPUs busy generating the gallery would be
+nice, but need to think AT LEAST of the following possibly non-thread-safe
+calls first:
+ - fork (to call mplayer): possibly fork off a worker process before starting any threads
+ - localtime/gmtime: :-/
+ - readdir: only ever call from the main thread?
