@@ -46,7 +46,7 @@ sub refresh_miniatures
 	my $i = undef;
 	my $r;
 	my @ret;
-	for my $miniature (@miniatures) {
+	foreach my $miniature (@miniatures) {
 		my ($subdir, $x, $y, $suffix) = @$miniature;
 		my $relative_name = $subdir.'/'.$self->{base_name}.($suffix ? $suffix : '');
 		push @ret, $relative_name;

@@ -55,7 +55,7 @@ sub _make_any
 		$d->set_tools($tools);
 		$d
 	} @_;
-	$_->make for @dirs;
+	$_->make foreach @dirs;
 
 	return 1;
 }

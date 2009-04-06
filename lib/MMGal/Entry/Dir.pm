@@ -169,7 +169,7 @@ sub _prune_inactive_files
 	}
 	my %active = map { $_ => 1 } @$active_files;
 	my $base = $self->{path_name};
-	for my $dir (@known_subdirs) {
+	foreach my $dir (@known_subdirs) {
 		# If the directory is not there, we have nothing to do about it
 		next unless -d $base.'/'.$dir;
 		# Read the names from the dir

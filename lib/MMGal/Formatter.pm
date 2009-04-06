@@ -110,7 +110,7 @@ sub format
 	$ret .= "\n<tr>\n";
 	my $i = 1;
 	if (@elements) {
-		for my $e (@elements) {
+		foreach my $e (@elements) {
 			die "[$e] is not an object" unless ref $e;
 			die "[$e] is a ".ref($e) unless $e->isa('MMGal::Entry');
 			$ret .= '  '.$self->entry_cell($e)."\n";
