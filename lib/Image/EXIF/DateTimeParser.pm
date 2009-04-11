@@ -29,7 +29,7 @@ sub parse
 		return $time if defined $time;
 		# falls through on mktime() error
 	}
-	die "Invalid and unknown EXIF DateTime [$string].\n";
+	die "Unrecognized invalid string [$string].\n";
 }
 
 1;

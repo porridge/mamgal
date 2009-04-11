@@ -29,7 +29,7 @@ sub parses_as_unknown($)
 sub dies_parsing($)
 {
 	my $s = shift;
-	dies_ok(sub { $p->parse($s) });
+	throws_ok(sub { $p->parse($s) }, qr{Unrecognized invalid string \[\Q$s\E\]});
 }
 
 # EXIF standard:
