@@ -10,6 +10,7 @@ use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
 use MMGal::TestHelper;
+use MMGal::ImageInfo;
 
 prepare_test_data;
 

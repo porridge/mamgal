@@ -128,6 +128,8 @@ BEGIN { our @ISA = 'MMGal::Unit::Entry::Dir' }
 
 use MMGal::TestHelper;
 use File::stat;
+# TODO: this should be mocked or something
+use MMGal::ImageInfo;
 
 sub class_setting : Test(startup) {
 	my $self = shift;

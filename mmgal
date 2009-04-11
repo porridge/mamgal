@@ -10,6 +10,8 @@ use MMGal::Formatter;
 use MMGal::MplayerWrapper;
 use MMGal::LocaleEnv;
 use Image::EXIF::DateTimeParser;
+use MMGal::ImageInfo;
+
 my $l = MMGal::LocaleEnv->new;
 $l->set_locale('');
 my $m = MMGal::Maker->new(MMGal::Formatter->new($l), MMGal::MplayerWrapper->new, Image::EXIF::DateTimeParser->new);

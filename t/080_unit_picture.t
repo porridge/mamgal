@@ -205,6 +205,7 @@ BEGIN { our @ISA = 'MMGal::Unit::Entry::Picture' }
 
 use MMGal::TestHelper;
 use File::stat;
+use Test::Warn;
 
 sub class_setting : Test(startup) {
 	my $self = shift;
@@ -212,17 +213,54 @@ sub class_setting : Test(startup) {
 	$self->{test_file_name} = [qw(td c.jpg)];
 }
 
-sub description_method : Test(2) {
+sub image_info_class_injection : Test(setup => 1) {
 	my $self = shift;
-	my $class_name = $self->{class_name};
-	{
-		my $e = $self->{entry};
-		is($e->description, "A description of c.jpg\n", "$class_name description is correct");
-	}
-	{
-		my $e = $self->{entry_no_stat};
-		is($e->description, "A description of c.jpg\n", "$class_name description is correct");
-	}
+	is($self->{entry}->{image_info_class}, 'MMGal::ImageInfo', 'default image info class is correct');
+	$self->{mock_image_info_class} = Test::MockObject->new;
+	$self->{entry}->{image_info_class} = $self->{mock_image_info_class};
+
+	$self->{mock_image_info} = Test::MockObject->new;
+	$self->{mock_image_info_class}->mock('read', sub { $self->{mock_image_info} });
+}
+
+sub successful_image_info_object_creation : Test(2) {
+	my $self = shift;
+	my @mocks = ({}, {});
+	$self->{mock_image_info_class}->mock('read', sub { $mocks[0] });
+	is($self->{entry}->image_info, $mocks[0], 'calling image_info for the first time results in an object creation');
+	$self->{mock_image_info_class}->mock('read', sub { $mocks[1] });
+	is($self->{entry}->image_info, $mocks[0], 'calling image_info second time results returning a cached object');
+}
+
+sub crashing_image_info_object_creation : Test(6) {
+	my $self = shift;
+	$self->{mock_image_info_class}->mock('read', sub { die "oh my\n"; });
+	my $val;
+	warning_like { $val = $self->{entry}->image_info } qr{^Cannot retrieve image info from \[td/c\.jpg\]: oh my$}, 'crash instantiating an object results in a warning';
+	is($val, undef, 'crash instantiating an object results in undef returned');
+	$self->{mock_image_info_class}->called_ok('read');
+	$self->{mock_image_info_class}->clear;
+	warnings_are { $val = $self->{entry}->image_info } [], 'no warnings are produced on second image_info call';
+	is($val, undef, 'after one crash, undef is returned by image_info always');
+	ok(! $self->{mock_image_info_class}->called('read'), 'read is not called after it crashed once');
+}
+
+sub description_method : Test {
+	my $self = shift;
+	$self->{mock_image_info}->mock('description', sub { 'some text' });
+	is($self->{entry}->description, 'some text');
+}
+
+sub description_method_undefined : Test {
+	my $self = shift;
+	$self->{mock_image_info}->mock('description', sub { undef });
+	is($self->{entry}->description, undef);
+}
+
+sub description_method_crash : Test {
+	my $self = shift;
+	$self->{mock_image_info_class}->mock('read', sub { die "oh noes!\n" });
+	is($self->{entry}->description, undef, 'description is undefined');
 }
 
 sub thumbnail_path_method : Test(2) {
@@ -239,18 +277,24 @@ sub thumbnail_path_method : Test(2) {
 	}
 }
 
-sub stat_functionality : Test(2) {
+sub stat_functionality : Test(1) {
 	my $self = shift;
-	my $class_name = $self->{class_name};
-	my $e = $self->{entry};
+	$self->{mock_image_info}->mock('creation_time', sub { 1234567890 });
+	is($self->{entry}->creation_time, 1234567890, 'if image info object returns a defined time, that time is returned');
+}
 
-	my $ct = $e->creation_time;
-	# we need to use localtime() as comparing raw time_t value breaks tests when changing locale
-	is(localtime($ct), 'Thu Nov 27 20:43:51 2008', "Returned creation time is the EXIF creation time");
-	my $time = time;
-	utime($time, $time, join('/', $self->file_name)) == 1 or die "Failed to touch file";
-	$ct = $e->creation_time;
-	is(localtime($ct), 'Thu Nov 27 20:43:51 2008', "Returned creation time is still the (cached) EXIF creation time");
+sub stat_functionality_undefined : Test(2) {
+	my $self = shift;
+	$self->{mock_image_info}->mock('creation_time', sub { undef });
+	# if image info object returns undef, we turn to the stat data supplied on creation
+	$self->SUPER::stat_functionality;
+}
+
+sub stat_functionality_crashed : Test(2) {
+	my $self = shift;
+	$self->{mock_image_info_class}->mock('read', sub { die "oh noes too!\n" });
+	# if image info object returns undef, we turn to the stat data supplied on creation
+	$self->SUPER::stat_functionality;
 }
 
 sub stat_functionality_when_created_without_stat : Test { ok(1) }

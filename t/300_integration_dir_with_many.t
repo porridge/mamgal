@@ -12,6 +12,7 @@ use lib 'testlib';
 use MMGal::TestHelper;
 use File::stat;
 use Image::EXIF::DateTimeParser;
+use MMGal::ImageInfo;
 
 prepare_test_data;
 my $time_now  = time;

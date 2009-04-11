@@ -7,9 +7,6 @@ use strict;
 use warnings;
 use base 'MMGal::Entry::Picture';
 use Carp;
-#use Image::Magick;
-#use Image::Info;
-#use POSIX;
 
 sub refresh_scaled_pictures
 {

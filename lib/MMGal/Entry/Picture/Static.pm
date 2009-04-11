@@ -8,8 +8,14 @@ use warnings;
 use base 'MMGal::Entry::Picture';
 use Carp;
 use Image::Magick;
-use Image::Info;
 use POSIX;
+
+sub init
+{
+	my $self = shift;
+	$self->SUPER::init(@_);
+	$self->{image_info_class} = 'MMGal::ImageInfo';
+}
 
 sub refresh_scaled_pictures
 {
@@ -20,19 +26,21 @@ sub refresh_scaled_pictures
 sub image_info
 {
 	my $self = shift;
-	return $self->{image_info} if defined $self->{image_info};
-	$self->{image_info} = Image::Info::image_info($self->{path_name});
-	warn "Cannot retrieve image info from [".$self->{path_name}."]: ".$self->{image_info}->{error}."\n" if exists $self->{image_info}->{error};
+	return $self->{image_info} if exists $self->{image_info};
+	$self->{image_info} = eval { $self->{image_info_class}->read($self->{path_name}); };
+	warn "Cannot retrieve image info from [".$self->{path_name}."]: ".$@."\n" if $@;
+	return unless $self->{image_info};
+	my $tools = $self->tools or croak "tools not injected";
+	my $parser = $self->tools->{exif_dtparser} or croak "no parser in tools";
+	$self->{image_info}->{parser} = $parser if $self->{image_info};
 	return $self->{image_info};
 }
 
 sub description
 {
 	my $self = shift;
-	return $self->{description} if $self->{description_is_cached};
-	$self->{description} = $self->image_info->{Comment};
-	$self->{description_is_cached} = 1;
-	$self->{description};
+	my $i = $self->image_info or return;
+	return $i->description;
 }
 
 sub read_image
@@ -47,21 +55,8 @@ sub read_image
 sub creation_time
 {
 	my $self = shift;
-	my $info = $self->image_info;
-	my $tools = $self->tools or croak "tools not injected";
-	my $parser = $self->tools->{exif_dtparser} or croak "no parser in tools";
-	my $exif_time = undef;
-	foreach my $tag (qw(DateTimeOriginal DateTime)) {
-		next unless exists $info->{$tag};
-		$exif_time = eval { $parser->parse($info->{$tag}); };
-		my $e = $@;
-		return $exif_time if defined $exif_time;
-		if ($e) {
-			chomp $e;
-			warn sprintf('%s: %s: %s', $self->{path_name}, $tag, $e);
-		}
-	}
-	return $self->SUPER::creation_time(@_);
+	my $info = $self->image_info or return $self->SUPER::creation_time(@_);
+	return $info->creation_time || $self->SUPER::creation_time(@_);
 }
 
 1;
