@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mamgal 0.01\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-10 18:15+0000\n"
+"POT-Creation-Date: 2009-04-17 18:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,10 +52,10 @@ msgid "This directory is empty"
 msgstr ""
 
 #. TRANSLATORS: This is the text of the link from a slide page to the index page.
-#: lib/MaMGal/Formatter.pm:161
+#: lib/MaMGal/Formatter.pm:164
 msgid "index"
 msgstr ""
 
-#: lib/MaMGal/Formatter.pm:181
+#: lib/MaMGal/Formatter.pm:184
 msgid "Download"
 msgstr ""
