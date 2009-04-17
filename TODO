@@ -25,3 +25,4 @@ calls first:
  - fork (to call mplayer): possibly fork off a worker process before starting any threads
  - localtime/gmtime: :-/
  - readdir: only ever call from the main thread?
+ - thread-safety of other modules that we use
