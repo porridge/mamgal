@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+# mamgal - a program for creating static image galleries
+# Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
+# See the README file for license information
+use strict;
+use warnings;
+
+use MaMGal::Maker;
+use MaMGal::Formatter;
+use MaMGal::MplayerWrapper;
+use MaMGal::LocaleEnv;
+use Image::EXIF::DateTimeParser;
+use MaMGal::ImageInfo;
+
+my $l = MaMGal::LocaleEnv->new;
+$l->set_locale('');
+my $m = MaMGal::Maker->new(MaMGal::Formatter->new($l), MaMGal::MplayerWrapper->new, Image::EXIF::DateTimeParser->new);
+$m->make_roots($ARGV[0]);

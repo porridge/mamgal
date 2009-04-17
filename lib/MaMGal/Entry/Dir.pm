@@ -1,20 +1,20 @@
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # The directory encapsulating class
-package MMGal::Entry::Dir;
+package MaMGal::Entry::Dir;
 use strict;
 use warnings;
-use base 'MMGal::Entry';
+use base 'MaMGal::Entry';
 use Carp;
-use MMGal::Entry::Picture;
-use MMGal::DirIcon;
+use MaMGal::Entry::Picture;
+use MaMGal::DirIcon;
 use Image::Magick;
-use MMGal::EntryFactory;
+use MaMGal::EntryFactory;
 
 sub child            { $_[0]->{path_name}.'/'.$_[1]     }
 sub page_path        { $_[0]->{base_name}.'/index.html' }
-sub thumbnail_path   { $_[0]->{base_name}.'/.mmgal-index.png'  }
+sub thumbnail_path   { $_[0]->{base_name}.'/.mamgal-index.png'  }
 
 sub init
 {
@@ -24,7 +24,7 @@ sub init
 		$self->{path_name} = '/';
 		$self->{base_name} = '/';
 		$self->{is_root} = 1;
-	} elsif (-e $self->child('.mmgal-root')) {
+	} elsif (-e $self->child('.mamgal-root')) {
 		$self->{is_root} = 1;
 	}
 }
@@ -38,9 +38,9 @@ sub set_root
 	return if $is_root == $was_root;
 
 	if ($is_root) {
-		$self->_write_contents_to(sub {''}, '.mmgal-root');
+		$self->_write_contents_to(sub {''}, '.mamgal-root');
 	} else {
-		unlink($self->child('.mmgal-root')) or die "unlink ".$self->child(".mmgal-root").": $!";
+		unlink($self->child('.mamgal-root')) or die "unlink ".$self->child(".mamgal-root").": $!";
 	}
 }
 
@@ -55,13 +55,13 @@ sub make
 	my $self = shift;
 	my $tools = $self->tools or croak "Tools were not injected";
 	my $formatter = $tools->{formatter} or croak "Formatter required\n";
-	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "[$formatter] is not a formatter";
+	ref $formatter and $formatter->isa('MaMGal::Formatter') or croak "[$formatter] is not a formatter";
 
 	my @active_files;
 	foreach my $el ($self->elements) { push @active_files, $el->make }
 	$self->_prune_inactive_files(\@active_files);
 	$self->_write_montage;
-	$self->_write_contents_to(sub { $formatter->stylesheet    }, '.mmgal-style.css');
+	$self->_write_contents_to(sub { $formatter->stylesheet    }, '.mamgal-style.css');
 	$self->_write_contents_to(sub { $formatter->format($self) }, 'index.html');
 	return ()
 }
@@ -87,12 +87,12 @@ sub neighbours_of_index
 	my ($prev, $next);
 	my $i = $idx - 1;
 	while ($i >= 0) {
-		$prev = $elements[$i], last if $elements[$i]->isa('MMGal::Entry::Picture');
+		$prev = $elements[$i], last if $elements[$i]->isa('MaMGal::Entry::Picture');
 		$i--;
 	}
 	$i = $idx + 1;
 	while ($i < scalar @elements) {
-		$next = $elements[$i], last if $elements[$i]->isa('MMGal::Entry::Picture');
+		$next = $elements[$i], last if $elements[$i]->isa('MaMGal::Entry::Picture');
 		$i++;
 	}
 	return $prev, $next;
@@ -111,10 +111,10 @@ sub _write_contents_to
 sub _write_montage
 {
 	my $self = shift;
-	my @images = grep { $_->isa('MMGal::Entry::Picture') } $self->elements;
+	my @images = grep { $_->isa('MaMGal::Entry::Picture') } $self->elements;
 
 	unless (@images) {
-		$self->_write_contents_to(sub { MMGal::DirIcon->img }, '.mmgal-index.png');
+		$self->_write_contents_to(sub { MaMGal::DirIcon->img }, '.mamgal-index.png');
 		return;
 	}
 
@@ -140,8 +140,8 @@ sub _write_montage
 	# Do the magick, scale and write.
 	$r = $montage = $stack->Montage(tile => $side.'x'.$side, geometry => $m_x.'x'.$m_y, border => 2);
 	ref($r)									or  die "montage: $r";
-	MMGal::Entry::Picture->scale_into($montage, $m_x, $m_y);
-	$r = $montage->Write($self->child('.mmgal-index.png'))			and die $self->child('.mmgal-index.png').': '.$r;
+	MaMGal::Entry::Picture->scale_into($montage, $m_x, $m_y);
+	$r = $montage->Write($self->child('.mamgal-index.png'))			and die $self->child('.mamgal-index.png').': '.$r;
 }
 
 sub _ignorable_name($)
@@ -151,7 +151,7 @@ sub _ignorable_name($)
 	# ignore hidden files
 	return 1 if substr($_, 0, 1) eq '.';
 	# TODO: optimize out contants calls, keeping in mind that they are not really constant (eg. tests change them when testing slides/miniatures generation)
-	return 1 if grep { $_ eq $name } (qw(lost+found index.html .mmgal-index.png .mmgal-style.css), $self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
+	return 1 if grep { $_ eq $name } (qw(lost+found index.html .mamgal-index.png .mamgal-style.css), $self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
 	return 0;
 }
 
@@ -204,7 +204,7 @@ sub elements
 	# Instantiate objects and cache them
 	$self->{elements} = [ map {
 			$_ = $path.'/'.$_ ;
-			my $e = MMGal::EntryFactory->create_entry_for($_);
+			my $e = MaMGal::EntryFactory->create_entry_for($_);
 			$e->set_element_index($i++);
 			$e->set_container($self);
 			$e->set_tools($self->{tools});

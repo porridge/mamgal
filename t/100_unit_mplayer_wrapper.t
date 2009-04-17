@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 use strict;
@@ -9,16 +9,16 @@ use Test::More tests => 9;
 use Test::Exception;
 use Test::HTML::Content;
 use lib 'testlib';
-use MMGal::TestHelper;
-use MMGal::LocaleEnv;
+use MaMGal::TestHelper;
+use MaMGal::LocaleEnv;
 use Image::Magick;
 
 prepare_test_data;
 
-use_ok('MMGal::MplayerWrapper');
+use_ok('MaMGal::MplayerWrapper');
 my $w;
-lives_ok(sub { $w = MMGal::MplayerWrapper->new },	"wrapper can be created without any arg");
-dies_ok(sub { MMGal::MplayerWrapper->new(1) },		"wrapper can not be created with some junk parameter");
+lives_ok(sub { $w = MaMGal::MplayerWrapper->new },	"wrapper can be created without any arg");
+dies_ok(sub { MaMGal::MplayerWrapper->new(1) },		"wrapper can not be created with some junk parameter");
 
 my ($snap, $err);
 dies_ok(sub { $snap = $w->snapshot() },				"wrapper cannot get a snapshot of undef");

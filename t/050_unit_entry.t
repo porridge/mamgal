@@ -1,8 +1,8 @@
 #!/usr/bin/perl
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MMGal::Unit::Entry;
+package MaMGal::Unit::Entry;
 use strict;
 use warnings;
 use Carp 'verbose';
@@ -12,7 +12,7 @@ use Test::Exception;
 use base 'Test::Class';
 
 use lib 'testlib';
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 
 sub dir_preparation : Test(startup) {
 	prepare_test_data;
@@ -20,7 +20,7 @@ sub dir_preparation : Test(startup) {
 
 sub class_setting : Test(startup) {
 	my $self = shift;
-	$self->{class_name} = 'MMGal::Entry';
+	$self->{class_name} = 'MaMGal::Entry';
 	$self->{test_file_name} = [qw(td empty_file)];
 }
 
@@ -62,13 +62,13 @@ sub _entry_creation : Test(setup => 4) {
 	{
 		$e = $class_name->new($self->file_name, $fake_stat);
 		isa_ok($e, $class_name);
-		isa_ok($e, 'MMGal::Entry');
+		isa_ok($e, 'MaMGal::Entry');
 		$self->{entry} = $e;
 	}
 	{
 		$e = $class_name->new($self->file_name);
 		isa_ok($e, $class_name);
-		isa_ok($e, 'MMGal::Entry');
+		isa_ok($e, 'MaMGal::Entry');
 		$self->{entry_no_stat} = $e;
 	}
 }
@@ -122,11 +122,11 @@ sub thumbnails_dir_method : Test(2) {
 	my $class_name = $self->{class_name};
 	{
 		my $e = $self->{entry};
-		is($e->thumbnails_dir, '.mmgal-thumbnails', "$class_name thumbnails is correct");
+		is($e->thumbnails_dir, '.mamgal-thumbnails', "$class_name thumbnails is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->thumbnails_dir, '.mmgal-thumbnails', "$class_name thumbnails is correct");
+		is($e->thumbnails_dir, '.mamgal-thumbnails', "$class_name thumbnails is correct");
 	}
 }
 
@@ -135,11 +135,11 @@ sub slides_dir_method : Test(2) {
 	my $class_name = $self->{class_name};
 	{
 		my $e = $self->{entry};
-		is($e->slides_dir, '.mmgal-slides', "$class_name slides is correct");
+		is($e->slides_dir, '.mamgal-slides', "$class_name slides is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->slides_dir, '.mmgal-slides', "$class_name slides is correct");
+		is($e->slides_dir, '.mamgal-slides', "$class_name slides is correct");
 	}
 }
 
@@ -175,11 +175,11 @@ sub container_method : Test(2) {
 	my $class_name = $self->{class_name};
 	{
 		my $e = $self->{entry};
-		isa_ok($e->container, 'MMGal::Entry::Dir', "$class_name container is a dir");
+		isa_ok($e->container, 'MaMGal::Entry::Dir', "$class_name container is a dir");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		isa_ok($e->container, 'MMGal::Entry::Dir', "$class_name container is a dir");
+		isa_ok($e->container, 'MaMGal::Entry::Dir', "$class_name container is a dir");
 	}
 }
 
@@ -209,5 +209,5 @@ sub stat_functionality_when_created_without_stat : Test(2) {
 	is($ct, undef, "Returned creation time is still the (cached) undef");
 }
 
-MMGal::Unit::Entry->runtests unless defined caller;
+MaMGal::Unit::Entry->runtests unless defined caller;
 1;

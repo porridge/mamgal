@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 use strict;
@@ -9,18 +9,18 @@ use Test::More tests => 40;
 use Test::HTML::Content;
 use Test::Exception;
 use lib 'testlib';
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use Image::EXIF::DateTimeParser;
-use MMGal::ImageInfo;
+use MaMGal::ImageInfo;
 
 prepare_test_data;
 
-use MMGal::Formatter;
-use MMGal::EntryFactory;
-use MMGal::LocaleEnv;
-my $le = MMGal::LocaleEnv->new;
+use MaMGal::Formatter;
+use MaMGal::EntryFactory;
+use MaMGal::LocaleEnv;
+my $le = MaMGal::LocaleEnv->new;
 $le->set_locale('C');
-my $f = MMGal::Formatter->new($le);
+my $f = MaMGal::Formatter->new($le);
 
 #
 # a dir with a single pic _without_ description
@@ -28,7 +28,7 @@ my $f = MMGal::Formatter->new($le);
 
 my $time = 1228933448;
 utime($time, $time, 'td/more/zzz another subdir/p.png') == 1 or die "Failed to touch file";
-my $dir_nd = MMGal::EntryFactory->create_entry_for('td/more/zzz another subdir');
+my $dir_nd = MaMGal::EntryFactory->create_entry_for('td/more/zzz another subdir');
 my $tools = {exif_dtparser => Image::EXIF::DateTimeParser->new};
 $dir_nd->set_tools($tools);
 
@@ -36,8 +36,8 @@ $dir_nd->set_tools($tools);
 my $p_nd = ($dir_nd->elements)[0];
 my $t_nd;
 lives_ok(sub { $t_nd = $f->format($dir_nd) },       "formatter formats index page with one picture");
-tag_ok($t_nd, "a", { href => '.mmgal-slides/p.png.html' }, "there is a link to the slide");
-tag_ok($t_nd, "img", { src => '.mmgal-thumbnails/p.png' }, "there is a pic on the page");
+tag_ok($t_nd, "a", { href => '.mamgal-slides/p.png.html' }, "there is a link to the slide");
+tag_ok($t_nd, "img", { src => '.mamgal-thumbnails/p.png' }, "there is a pic on the page");
 text_ok($t_nd, 'p.png',                             "does not contain filename alone");
 
 dies_ok(sub { $f->format_slide },                    "dies with no arg");
@@ -50,7 +50,7 @@ text_ok($st_p_nd, 'p.png',                           "slide contains filename");
 for my $n ('td', 'more', 'zzz another subdir') {
 	text_ok($st_p_nd, $n,                        "slide contains parent filename");
 }
-tag_ok($st_p_nd, "img", {src => '../.mmgal-medium/p.png'},  "there is a medium pic on the page");
+tag_ok($st_p_nd, "img", {src => '../.mamgal-medium/p.png'},  "there is a medium pic on the page");
 no_tag($st_p_nd, "embed",                            "there is no embed tag on the page");
 tag_count($st_p_nd, "img", {}, 1,                    "just one img tag");
 tag_ok($st_p_nd, "a", {href => '../index.html'},     "there is a link up on the page");
@@ -67,21 +67,21 @@ text_ok($ct_p_nd, 'p.png',                           "cell contains filename");
 # a dir with a single pic _with_ description
 #
 
-my $d = MMGal::EntryFactory->create_entry_for('td/one_pic');
+my $d = MaMGal::EntryFactory->create_entry_for('td/one_pic');
 $d->set_tools($tools);
 my $t;
 lives_ok(sub { $t = $f->format($d) },             "formatter formats index page with one picture");
-tag_ok($t, "a", { href => '.mmgal-slides/a1.png.html' }, "there is a link to the slide");
-tag_ok($t, "img", { src => '.mmgal-thumbnails/a1.png' }, "there is a pic on the page");
+tag_ok($t, "a", { href => '.mamgal-slides/a1.png.html' }, "there is a link to the slide");
+tag_ok($t, "img", { src => '.mamgal-thumbnails/a1.png' }, "there is a pic on the page");
 text_ok($t, 'Another test image.',                 "contains description");
 no_text($t, 'a1.png',                              "does not contain filename alone");
 
-my $p = MMGal::EntryFactory->create_entry_for('td/one_pic/a1.png');
+my $p = MaMGal::EntryFactory->create_entry_for('td/one_pic/a1.png');
 $p->set_tools($tools);
 
 my $st;
 lives_ok(sub { $st = $f->format_slide($p) },      "formatter formats a slide");
-tag_ok($st, "img", {src => '../.mmgal-medium/a1.png'},   "there is a medium pic on the page");
+tag_ok($st, "img", {src => '../.mamgal-medium/a1.png'},   "there is a medium pic on the page");
 tag_count($st, "img", {}, 1,                      "just one img tag");
 tag_ok($st, "a", {href => '../index.html'},       "there is a link up on the page");
 tag_ok($st, "a", {href => '../a1.png'},           "there is a link to image itself");

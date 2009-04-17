@@ -1,8 +1,8 @@
 #!/usr/bin/perl
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MMGal::Unit::Entry::Picture;
+package MaMGal::Unit::Entry::Picture;
 use strict;
 use warnings;
 use Carp qw(verbose confess);
@@ -13,14 +13,14 @@ use Test::HTML::Content;
 use lib 'testlib';
 use File::stat;
 use Image::EXIF::DateTimeParser;
-BEGIN { our @ISA = 'MMGal::Unit::Entry' }
+BEGIN { our @ISA = 'MaMGal::Unit::Entry' }
 BEGIN { do 't/050_unit_entry.t' }
 
 sub pre_class_setting : Test(startup) {
 	my $self = shift;
 	$self->{tools} = {
-		mplayer_wrapper => MMGal::TestHelper->get_mock_mplayer_wrapper,
-		formatter => MMGal::TestHelper->get_mock_formatter('format_slide'),
+		mplayer_wrapper => MaMGal::TestHelper->get_mock_mplayer_wrapper,
+		formatter => MaMGal::TestHelper->get_mock_formatter('format_slide'),
 		exif_dtparser => Image::EXIF::DateTimeParser->new,
 	};
 }
@@ -104,8 +104,8 @@ sub miniature_writing : Test(3) {
 sub slide_writing : Test(3) {
 	my $self = shift;
 	my $infix = 'test_slide-'.$self->{class_name};
-	use MMGal::Entry;
-	local $MMGal::Entry::slides_dir = $infix;
+	use MaMGal::Entry;
+	local $MaMGal::Entry::slides_dir = $infix;
 	my $path = $self->slide_path($infix);
 	ok(! -f $path, "$path does not exist yet");
 	my @ret = $self->call_refresh_slide();
@@ -137,7 +137,7 @@ sub slide_not_rewriting : Test(3) {
 	my $path = $self->slide_path($infix);
 	my $stat_before = stat($path) or die "Cannot stat [$path]: $!";
 	is($stat_before->mtime, $slide_mtime);
-	local $MMGal::Entry::slides_dir = $infix;
+	local $MaMGal::Entry::slides_dir = $infix;
 	my @ret = $self->call_refresh_slide();
 	is($ret[0], $self->relative_slide_path($infix), "refesh_slide call returns the not-refreshed path");
 	my $stat_after = stat($path) or die "Cannot stat: $!";
@@ -171,7 +171,7 @@ sub slide_refreshing : Test(4) {
 	my $path = $self->slide_path($infix);
 	my $stat_before = stat($path) or die "Cannot stat: $!";
 	is($stat_before->mtime, $slide_mtime);
-	local $MMGal::Entry::slides_dir = $infix;
+	local $MaMGal::Entry::slides_dir = $infix;
 	my @ret = $self->call_refresh_slide();
 	is($ret[0], $self->relative_slide_path($infix), "refesh_slide call returns the refreshed path");
 	my $stat_after = stat($path) or die "Cannot stat: $!";
@@ -185,15 +185,15 @@ sub page_path_method : Test(2) {
 	my @test_file_name = $self->file_name;
 	{
 		my $e = $self->{entry};
-		is($e->page_path, '.mmgal-slides/'.$test_file_name[1].'.html', "$class_name page_path is correct");
+		is($e->page_path, '.mamgal-slides/'.$test_file_name[1].'.html', "$class_name page_path is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->page_path, '.mmgal-slides/'.$test_file_name[1].'.html', "$class_name page_path is correct");
+		is($e->page_path, '.mamgal-slides/'.$test_file_name[1].'.html', "$class_name page_path is correct");
 	}
 }
 
-package MMGal::Unit::Entry::Picture::Static;
+package MaMGal::Unit::Entry::Picture::Static;
 use strict;
 use warnings;
 use Test::More;
@@ -201,21 +201,21 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MMGal::Unit::Entry::Picture' }
+BEGIN { our @ISA = 'MaMGal::Unit::Entry::Picture' }
 
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use File::stat;
 use Test::Warn;
 
 sub class_setting : Test(startup) {
 	my $self = shift;
-	$self->{class_name} = 'MMGal::Entry::Picture::Static';
+	$self->{class_name} = 'MaMGal::Entry::Picture::Static';
 	$self->{test_file_name} = [qw(td c.jpg)];
 }
 
 sub image_info_class_injection : Test(setup => 1) {
 	my $self = shift;
-	is($self->{entry}->{image_info_class}, 'MMGal::ImageInfo', 'default image info class is correct');
+	is($self->{entry}->{image_info_class}, 'MaMGal::ImageInfo', 'default image info class is correct');
 	$self->{mock_image_info_class} = Test::MockObject->new;
 	$self->{entry}->{image_info_class} = $self->{mock_image_info_class};
 
@@ -269,11 +269,11 @@ sub thumbnail_path_method : Test(2) {
 	my @test_file_name = $self->file_name;
 	{
 		my $e = $self->{entry};
-		is($e->thumbnail_path, '.mmgal-thumbnails/'.$test_file_name[1], "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '.mamgal-thumbnails/'.$test_file_name[1], "$class_name thumbnail_path is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->thumbnail_path, '.mmgal-thumbnails/'.$test_file_name[1], "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '.mamgal-thumbnails/'.$test_file_name[1], "$class_name thumbnail_path is correct");
 	}
 }
 
@@ -299,7 +299,7 @@ sub stat_functionality_crashed : Test(2) {
 
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
 
-package MMGal::Unit::Entry::Picture::Film;
+package MaMGal::Unit::Entry::Picture::Film;
 use strict;
 use warnings;
 use Test::More;
@@ -307,14 +307,14 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MMGal::Unit::Entry::Picture' }
+BEGIN { our @ISA = 'MaMGal::Unit::Entry::Picture' }
 
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
 	my $self = shift;
-	$self->{class_name} = 'MMGal::Entry::Picture::Film';
+	$self->{class_name} = 'MaMGal::Entry::Picture::Film';
 	$self->{test_file_name} = [qw(td/one_film m.mov)];
 }
 
@@ -341,19 +341,19 @@ sub thumbnail_path_method : Test(2) {
 	my @test_file_name = $self->file_name;
 	{
 		my $e = $self->{entry};
-		is($e->thumbnail_path, '.mmgal-thumbnails/'.$test_file_name[1].'.jpg', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '.mamgal-thumbnails/'.$test_file_name[1].'.jpg', "$class_name thumbnail_path is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->thumbnail_path, '.mmgal-thumbnails/'.$test_file_name[1].'.jpg', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '.mamgal-thumbnails/'.$test_file_name[1].'.jpg', "$class_name thumbnail_path is correct");
 	}
 }
 
 package main;
 use Test::More;
 unless (defined caller) {
-	plan tests => MMGal::Unit::Entry::Picture::Static->expected_tests + MMGal::Unit::Entry::Picture::Film->expected_tests;
-	MMGal::Unit::Entry::Picture::Static->runtests;
-	MMGal::Unit::Entry::Picture::Film->runtests;
+	plan tests => MaMGal::Unit::Entry::Picture::Static->expected_tests + MaMGal::Unit::Entry::Picture::Film->expected_tests;
+	MaMGal::Unit::Entry::Picture::Static->runtests;
+	MaMGal::Unit::Entry::Picture::Film->runtests;
 }
 

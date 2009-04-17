@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 use strict;
@@ -9,10 +9,10 @@ use Test::More tests => 36;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use File::stat;
 use Image::EXIF::DateTimeParser;
-use MMGal::ImageInfo;
+use MaMGal::ImageInfo;
 
 prepare_test_data;
 my $time_now  = time;
@@ -24,10 +24,10 @@ utime $time_past, $time_past, 'td/more/subdir/p.png'  or die "Touching p.png fai
 utime $time_old,  $time_old,  'td/more/subdir/p2.png' or die "Touching p2.png failed";
 utime $time_now,  $time_now,  'td/more/subdir'        or die "Touching directory failed";
 
-use_ok('MMGal::Entry::Dir');
+use_ok('MaMGal::Entry::Dir');
 my $d;
-lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td more), stat('td/more')) },	"creation ok");
-isa_ok($d, 'MMGal::Entry::Dir',                                 "a dir is a dir");
+lives_ok(sub { $d = MaMGal::Entry::Dir->new(qw(td more), stat('td/more')) },	"creation ok");
+isa_ok($d, 'MaMGal::Entry::Dir',                                 "a dir is a dir");
 my $mf = get_mock_formatter(qw(format stylesheet));
 my $tools = {formatter => $mf, exif_dtparser => Image::EXIF::DateTimeParser->new};
 $d->set_tools($tools);
@@ -35,13 +35,13 @@ $d->set_tools($tools);
 my @ret = $d->elements;
 is(scalar(@ret), 5,						"dir contains 5 elements");
 # read ordering
-isa_ok($ret[0], 'MMGal::Entry::Picture::Static');
+isa_ok($ret[0], 'MaMGal::Entry::Picture::Static');
 is($ret[0]->element_index, 0, 					"pic 0 knows its element index");
-isa_ok($ret[1], 'MMGal::Entry::Picture::Static');
+isa_ok($ret[1], 'MaMGal::Entry::Picture::Static');
 is($ret[1]->element_index, 1, 					"pic 1 knows its element index");
-isa_ok($ret[2], 'MMGal::Entry::Dir');
+isa_ok($ret[2], 'MaMGal::Entry::Dir');
 is($ret[2]->element_index, 2, 					"pic 2 knows its element index");
-isa_ok($ret[3], 'MMGal::Entry::Picture::Static');
+isa_ok($ret[3], 'MaMGal::Entry::Picture::Static');
 is($ret[3]->element_index, 3, 					"pic 3 knows its element index");
 
 my ($prev, $next);
@@ -67,7 +67,7 @@ is($sub_creation_time_range[0], $time_old, "First time in the range is equal to 
 
 my $topdir;
 lives_ok(sub { $topdir = $d->container },			"a dir can return its container");
-isa_ok($topdir, 'MMGal::Entry::Dir',				"dir's container is a dir");
+isa_ok($topdir, 'MaMGal::Entry::Dir',				"dir's container is a dir");
 is($topdir->name, 'td',						"dir's parent name is correct");
 
 # the td/more should only (apart from td/more/subdir) have files/dirs whose

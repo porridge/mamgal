@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 use strict;
@@ -9,16 +9,16 @@ use Test::More tests => 21;
 use Test::HTML::Content;
 use Test::Exception;
 use lib 'testlib';
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 
 prepare_test_data;
 
-use MMGal::Formatter;
-use MMGal::EntryFactory;
-use MMGal::LocaleEnv;
-my $le = MMGal::LocaleEnv->new;
+use MaMGal::Formatter;
+use MaMGal::EntryFactory;
+use MaMGal::LocaleEnv;
+my $le = MaMGal::LocaleEnv->new;
 $le->set_locale('C');
-my $f = MMGal::Formatter->new($le);
+my $f = MaMGal::Formatter->new($le);
 
 #
 # a dir with a single film
@@ -26,13 +26,13 @@ my $f = MMGal::Formatter->new($le);
 
 my $time = 1228933448;
 utime($time, $time, 'td/one_film/m.mov') == 1 or die "Failed to touch file";
-my $dir = MMGal::EntryFactory->create_entry_for('td/one_film');
+my $dir = MaMGal::EntryFactory->create_entry_for('td/one_film');
 # this is m.mov
 my $mov = ($dir->elements)[0];
 my $t;
 lives_ok(sub { $t = $f->format($dir) },          "formatter formats index page with one film");
-tag_ok($t, "a", { href => '.mmgal-slides/m.mov.html' }, "there is a link to the slide");
-tag_ok($t, "img", { src => '.mmgal-thumbnails/m.mov.jpg' }, "there is a pic on the page");
+tag_ok($t, "a", { href => '.mamgal-slides/m.mov.html' }, "there is a link to the slide");
+tag_ok($t, "img", { src => '.mamgal-thumbnails/m.mov.jpg' }, "there is a pic on the page");
 text_ok($t, 'm.mov',                             "contains the filename alone");
 
 dies_ok(sub { $f->format_slide },                   "dies with no arg");

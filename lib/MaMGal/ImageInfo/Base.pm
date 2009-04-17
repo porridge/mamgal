@@ -1,11 +1,11 @@
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # A base class for the image info library wrappers.
-package MMGal::ImageInfo::Base;
+package MaMGal::ImageInfo::Base;
 use strict;
 use warnings;
-use base 'MMGal::Base';
+use base 'MaMGal::Base';
 use Carp;
 
 sub init

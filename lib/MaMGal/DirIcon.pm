@@ -1,10 +1,10 @@
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # Copyright Suzan Kare
 # See the README file for license information
 #
 # An embedded directory icon
-package MMGal::DirIcon;
+package MaMGal::DirIcon;
 
 my $uu_dir = <<'EOT';
 MB5!.1PT*&@H````-24A$4@```%H```!#"`8````<<1)1````!&=!34$``-;8

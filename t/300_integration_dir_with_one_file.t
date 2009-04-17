@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 use strict;
@@ -9,10 +9,10 @@ use Test::More tests => 19;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use File::stat;
 use Image::EXIF::DateTimeParser;
-use MMGal::ImageInfo;
+use MaMGal::ImageInfo;
 
 prepare_test_data;
 
@@ -22,17 +22,17 @@ my $pic_time = $time - 120;
 utime $time, $time, 'td/one_pic' or die "Touching directory failed";
 utime $pic_time, $pic_time, 'td/one_pic/a1.png' or die "Touching picture failed";
 
-use_ok('MMGal::Entry::Dir');
+use_ok('MaMGal::Entry::Dir');
 my $d;
-lives_ok(sub { $d = MMGal::Entry::Dir->new(qw(td one_pic), stat('td/one_pic')) },   "dir can be created with an array: existant dir with one pic");
-isa_ok($d, 'MMGal::Entry::Dir');
+lives_ok(sub { $d = MaMGal::Entry::Dir->new(qw(td one_pic), stat('td/one_pic')) },   "dir can be created with an array: existant dir with one pic");
+isa_ok($d, 'MaMGal::Entry::Dir');
 my $mf = get_mock_formatter(qw(format stylesheet format_slide));
 my $tools = {formatter => $mf, exif_dtparser => Image::EXIF::DateTimeParser->new};
 $d->set_tools($tools);
 
 my @ret = $d->elements;
 is(scalar(@ret), 1,						"dir contains one element");
-isa_ok($ret[0], 'MMGal::Entry::Picture::Static');
+isa_ok($ret[0], 'MaMGal::Entry::Picture::Static');
 is($ret[0]->element_index, 0,					"picture knows its index");
 
 my ($prev, $next);
@@ -45,12 +45,12 @@ dir_only_contains_ok('td/one_pic', [qw(a1.png)],                "Only the pictur
 
 lives_ok(sub { $d->make },				"dir makes stuff and survives");
 
-dir_only_contains_ok('td/one_pic', [qw(.mmgal-medium .mmgal-thumbnails .mmgal-slides index.html .mmgal-index.png .mmgal-style.css
+dir_only_contains_ok('td/one_pic', [qw(.mamgal-medium .mamgal-thumbnails .mamgal-slides index.html .mamgal-index.png .mamgal-style.css
 					a1.png
-					.mmgal-thumbnails/a1.png
-					.mmgal-medium/a1.png
-					.mmgal-slides/a1.png.html)],
-								"index, picture, .mmgal-thumbnails, .mmgal-medium and .mmgal-slides");
+					.mamgal-thumbnails/a1.png
+					.mamgal-medium/a1.png
+					.mamgal-slides/a1.png.html)],
+								"index, picture, .mamgal-thumbnails, .mamgal-medium and .mamgal-slides");
 
 my $single_creation_time = $d->creation_time;
 ok($single_creation_time, "There is some non-zero create time");

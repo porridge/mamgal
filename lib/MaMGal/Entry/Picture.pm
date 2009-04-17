@@ -1,11 +1,11 @@
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # The picture encapsulating class
-package MMGal::Entry::Picture;
+package MaMGal::Entry::Picture;
 use strict;
 use warnings;
-use base 'MMGal::Entry';
+use base 'MaMGal::Entry';
 use Carp;
 use File::stat;
 
@@ -20,7 +20,7 @@ sub refresh_slide
 	my $self = shift;
 	my $tools = $self->tools or croak "Tools were not injected";
 	my $formatter = $tools->{formatter} or croak "Formatter required\n";
-	ref $formatter and $formatter->isa('MMGal::Formatter') or croak "Arg is not a formatter\n";
+	ref $formatter and $formatter->isa('MaMGal::Formatter') or croak "Arg is not a formatter\n";
 
 	$self->container->ensure_subdir_exists($self->slides_dir);
 	my $name = $self->{dir_name}.'/'.$self->page_path;
@@ -65,7 +65,7 @@ sub page_path { $_[0]->slides_dir.'/'.$_[0]->{base_name}.'.html' }
 sub thumbnail_path { $_[0]->thumbnails_dir.'/'.$_[0]->{base_name} }
 sub absolute_thumbnail_path { $_[0]->{dir_name}.'/'.$_[0]->thumbnail_path }
 
-# This method does not operate on MMGal::Entry::Picture, but this was the most
+# This method does not operate on MaMGal::Entry::Picture, but this was the most
 # appropriate place to put it into.  At least until we grow a "utils" class.
 sub scale_into
 {

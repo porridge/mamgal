@@ -1,12 +1,12 @@
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # An output formatting class, for creating the actual index files from some
 # contents
-package MMGal::MplayerWrapper;
+package MaMGal::MplayerWrapper;
 use strict;
 use warnings;
-use base 'MMGal::Base';
+use base 'MaMGal::Base';
 use Carp;
 use File::Temp 'tempdir';
 

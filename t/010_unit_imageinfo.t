@@ -1,8 +1,8 @@
 #!/usr/bin/perl
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MMGal::Unit::ImageInfo;
+package MaMGal::Unit::ImageInfo;
 use strict;
 use warnings;
 use Carp 'verbose';
@@ -13,7 +13,7 @@ use Test::Warn;
 use base 'Test::Class';
 
 use lib 'testlib';
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 
 sub _dir_preparation : Test(startup) {
 	prepare_test_data;
@@ -22,23 +22,23 @@ sub _dir_preparation : Test(startup) {
 # This should be done in a BEGIN, but then planning the test count is difficult.
 # However we are not using function prototypes, so it does not matter much.
 sub _class_usage : Test(startup => 1) {
-	use_ok('MMGal::ImageInfo') or $_[0]->BAILOUT("Class use failed");
+	use_ok('MaMGal::ImageInfo') or $_[0]->BAILOUT("Class use failed");
 }
 
 sub creation_aborts : Test(startup => 2) {
 	my $self = shift;
-	dies_ok(sub { MMGal::ImageInfo->read }, 'dies without an arg');
-	dies_ok(sub { MMGal::ImageInfo->read('td') }, 'dies with a non-picture');
+	dies_ok(sub { MaMGal::ImageInfo->read }, 'dies without an arg');
+	dies_ok(sub { MaMGal::ImageInfo->read('td') }, 'dies with a non-picture');
 }
 
 sub creation : Test(setup) {
 	my $self = shift;
-	$self->{jpg} = MMGal::ImageInfo->read('td/varying_datetimes.jpg');
-	$self->{jpg_no_0x9003} = MMGal::ImageInfo->read('td/without_0x9003.jpg');
-	$self->{jpg_no_0x9003_0x9004} = MMGal::ImageInfo->read('td/without_0x9003_0x9004.jpg');
-	$self->{jpg_no_0x9003_0x9004_0x0132} = MMGal::ImageInfo->read('td/without_0x9003_0x9004_0x0132.jpg');
-	$self->{png_nodesc} = MMGal::ImageInfo->read('td/more/b.png');
-	$self->{png_desc} = MMGal::ImageInfo->read('td/more/a.png');
+	$self->{jpg} = MaMGal::ImageInfo->read('td/varying_datetimes.jpg');
+	$self->{jpg_no_0x9003} = MaMGal::ImageInfo->read('td/without_0x9003.jpg');
+	$self->{jpg_no_0x9003_0x9004} = MaMGal::ImageInfo->read('td/without_0x9003_0x9004.jpg');
+	$self->{jpg_no_0x9003_0x9004_0x0132} = MaMGal::ImageInfo->read('td/without_0x9003_0x9004_0x0132.jpg');
+	$self->{png_nodesc} = MaMGal::ImageInfo->read('td/more/b.png');
+	$self->{png_desc} = MaMGal::ImageInfo->read('td/more/a.png');
 }
 
 sub description_method : Test(6) {
@@ -211,7 +211,7 @@ sub when_no_datetime_tag_present_then_creation_time_returns_undef : Test(2) {
 	$self->_test_creation_time('jpg_no_0x9003_0x9004_0x0132', {}, undef, 'undef');
 }
 
-package MMGal::Unit::ImageInfo::ImageInfo;
+package MaMGal::Unit::ImageInfo::ImageInfo;
 use strict;
 use warnings;
 use Carp 'verbose';
@@ -219,12 +219,12 @@ use File::stat;
 use Test::More;
 use Test::Exception;
 use Test::Warn;
-use base 'MMGal::Unit::ImageInfo';
+use base 'MaMGal::Unit::ImageInfo';
 use lib 'testlib';
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 
 use vars '%ENV';
-$ENV{MMGAL_FORCE_IMAGEINFO} = 'MMGal::ImageInfo::ImageInfo';
-MMGal::Unit::ImageInfo::ImageInfo->runtests unless defined caller;
+$ENV{MAMGAL_FORCE_IMAGEINFO} = 'MaMGal::ImageInfo::ImageInfo';
+MaMGal::Unit::ImageInfo::ImageInfo->runtests unless defined caller;
 
 1;

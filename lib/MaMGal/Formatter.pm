@@ -1,26 +1,26 @@
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # An output formatting class, for creating the actual index files from some
 # contents
-package MMGal::Formatter;
+package MaMGal::Formatter;
 use strict;
 use warnings;
-use base 'MMGal::Base';
+use base 'MaMGal::Base';
 use Carp;
 use Locale::gettext;
-use MMGal::LocaleEnv;
+use MaMGal::LocaleEnv;
 
 sub init
 {
 	my $self = shift;
 	my $le = shift;
 	if ($le) {
-		unless (ref $le and $le->isa('MMGal::LocaleEnv')) {
+		unless (ref $le and $le->isa('MaMGal::LocaleEnv')) {
 			croak "Optional argument must be a LocaleEnv, if provided";
 		}
 	} else {
-		$le = MMGal::LocaleEnv->new;
+		$le = MaMGal::LocaleEnv->new;
 	}
 	$self->set_locale_env($le);
 }
@@ -101,7 +101,7 @@ sub format
 	my $dir  = shift;
 	croak "Only one arg is required" if @_;
 	my @elements = $dir->elements;
-	my $ret = $self->HEADER('<link rel="stylesheet" href=".mmgal-style.css" type="text/css">')."\n";
+	my $ret = $self->HEADER('<link rel="stylesheet" href=".mamgal-style.css" type="text/css">')."\n";
 	$ret .= '<table class="index">';
 	$ret .= '<tr><th colspan="4" class="header_cell">';
 	$ret .= join(' / ', map { $self->CURDIR($_->name) } $dir->containers, $dir);
@@ -112,7 +112,7 @@ sub format
 	if (@elements) {
 		foreach my $e (@elements) {
 			die "[$e] is not an object" unless ref $e;
-			die "[$e] is a ".ref($e) unless $e->isa('MMGal::Entry');
+			die "[$e] is a ".ref($e) unless $e->isa('MaMGal::Entry');
 			$ret .= '  '.$self->entry_cell($e)."\n";
 			$ret .= "</tr>\n<tr>\n" if $i % 4 == 0;
 			$i++;
@@ -152,11 +152,11 @@ sub format_slide
 	my $self = shift;
 	my $pic  = shift or croak "No pic";
 	croak "Only one arg required." if @_;
-	ref $pic and $pic->isa('MMGal::Entry::Picture') or croak "Arg is not a pic";
+	ref $pic and $pic->isa('MaMGal::Entry::Picture') or croak "Arg is not a pic";
 
 	my ($prev, $next) = map { defined $_ ? $_->name : '' } $pic->neighbours;
 
-	my $r = $self->HEADER('<link rel="stylesheet" href="../.mmgal-style.css" type="text/css">')."\n";
+	my $r = $self->HEADER('<link rel="stylesheet" href="../.mamgal-style.css" type="text/css">')."\n";
 	$r .= '<div style="float:left">';
 	$r .= $self->MAYBE_LINK($prev, $self->PREV);
 	$r .= ' | ';
@@ -178,7 +178,7 @@ sub format_slide
 	}
 	$r .= "</p>\n";
 
-	if ($pic->isa('MMGal::Entry::Picture::Film')) {
+	if ($pic->isa('MaMGal::Entry::Picture::Film')) {
 		$r .= $self->MAYBE_EMBED('../'.$pic->name);
 		$r .= '<br>';
 		$r .= $self->LINK('../'.$pic->name, gettext('Download'));

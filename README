@@ -1,4 +1,4 @@
-mmgal - a program for creating static image galleries
+mamgal - a program for creating static image galleries
 Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 
 Supported backend image information libraries
@@ -25,7 +25,7 @@ imageindex:
     0inputs+0outputs (155159major+103164844minor)pagefaults 0swaps
 
 
-mmgal
+mamgal
  - generating a gallery from scratch:
     4534.19user 436.42system 1:29:05elapsed 92%CPU (0avgtext+0avgdata 0maxresident)k
     0inputs+0outputs (146337major+102242731minor)pagefaults 0swaps
@@ -39,9 +39,9 @@ Some useful commands:
 =====================
 
 diff -u <(find * -type f|LANG=C sort) <(LANG=C sort MANIFEST )
-grep pm$ MANIFEST |xgettext --add-comments=TRANSLATORS: --copyright-holder="Marcin Owsiany <marcin@owsiany.pl>" -d mmgal -o po/mmgal.pot.new -f -
-mv po/mmgal.pot po/mmgal.pot.old
-msgmerge po/mmgal.pot.old po/mmgal.pot.new > po/mmgal.pot
+grep pm$ MANIFEST |xgettext --add-comments=TRANSLATORS: --copyright-holder="Marcin Owsiany <marcin@owsiany.pl>" -d mamgal -o po/mamgal.pot.new -f -
+mv po/mamgal.pot po/mamgal.pot.old
+msgmerge po/mamgal.pot.old po/mamgal.pot.new > po/mamgal.pot
 
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -78,10 +78,10 @@ It was taken from file called
 icon-themes/Sandy/72x72/filesystems/gnome-fs-directory-accept.png in the
 gnome-themes package.
 
-The lib/MMGal/DirIcon.pm file contains an uuencoded version of that file, as
+The lib/MaMGal/DirIcon.pm file contains an uuencoded version of that file, as
 well as code Copyright 2007 Marcin Owsiany.
 
-The license for dir.png and lib/MMGal/DirIcon.pm is:
+The license for dir.png and lib/MaMGal/DirIcon.pm is:
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public

@@ -1,19 +1,19 @@
 #!/usr/bin/perl
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MMGal::Unit::Entry::NonPicture;
+package MaMGal::Unit::Entry::NonPicture;
 use strict;
 use warnings;
 use Carp 'verbose';
 use Test::More;
 use lib 'testlib';
-BEGIN { our @ISA = 'MMGal::Unit::Entry' }
+BEGIN { our @ISA = 'MaMGal::Unit::Entry' }
 BEGIN { do 't/050_unit_entry.t' }
 
 sub class_setting : Test(startup) {
 	my $self = shift;
-	$self->{class_name} = 'MMGal::Entry::NonPicture';
+	$self->{class_name} = 'MaMGal::Entry::NonPicture';
 	$self->{test_file_name} = [qw(td empty_file)];
 }
 
@@ -45,7 +45,7 @@ sub thumbnail_path_method : Test(2) {
 }
 
 # TODO: do it in integration tests
-##lives_ok(sub { MMGal::Formatter->new->entry_cell($n) },                 "NonPicture can be interrogated as an entry cell target");
+##lives_ok(sub { MaMGal::Formatter->new->entry_cell($n) },                 "NonPicture can be interrogated as an entry cell target");
 
-MMGal::Unit::Entry::NonPicture->runtests unless defined caller;
+MaMGal::Unit::Entry::NonPicture->runtests unless defined caller;
 1;

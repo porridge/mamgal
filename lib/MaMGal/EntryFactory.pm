@@ -1,18 +1,18 @@
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # A helper class which knows how to create Entry subclass objects from paths
-package MMGal::EntryFactory;
+package MaMGal::EntryFactory;
 use strict;
 use warnings;
 use Carp;
-use MMGal::Entry::Dir;
-use MMGal::Entry::Picture;
-use MMGal::Entry::Picture::Static;
-use MMGal::Entry::Picture::Film;
-use MMGal::Entry::NonPicture;
-use MMGal::Entry::BrokenSymlink;
-use MMGal::Entry::Unreadable;
+use MaMGal::Entry::Dir;
+use MaMGal::Entry::Picture;
+use MaMGal::Entry::Picture::Static;
+use MaMGal::Entry::Picture::Film;
+use MaMGal::Entry::NonPicture;
+use MaMGal::Entry::BrokenSymlink;
+use MaMGal::Entry::Unreadable;
 use File::stat;
 use Fcntl ':mode';
 use Cwd;
@@ -69,19 +69,19 @@ sub create_entry_for
 	}
 
 	if (not $stat) {
-		MMGal::Entry::BrokenSymlink->new($dirname, $basename, $lstat)
+		MaMGal::Entry::BrokenSymlink->new($dirname, $basename, $lstat)
 
 	} elsif ($stat->mode & S_IFDIR) {
-		MMGal::Entry::Dir->new($dirname, $basename, $stat)
+		MaMGal::Entry::Dir->new($dirname, $basename, $stat)
 
 	} elsif (($stat->mode & S_IFREG) and sounds_like_picture($path)) {
-		MMGal::Entry::Picture::Static->new($dirname, $basename, $stat)
+		MaMGal::Entry::Picture::Static->new($dirname, $basename, $stat)
 
 	} elsif (($stat->mode & S_IFREG) and sounds_like_film($path)) {
-		MMGal::Entry::Picture::Film->new($dirname, $basename, $stat)
+		MaMGal::Entry::Picture::Film->new($dirname, $basename, $stat)
 
 	} else {
-		MMGal::Entry::NonPicture->new($dirname, $basename, $stat)
+		MaMGal::Entry::NonPicture->new($dirname, $basename, $stat)
 	}
 }
 

@@ -1,7 +1,7 @@
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2008-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MMGal::TestHelper;
+package MaMGal::TestHelper;
 use Test::MockObject;
 use lib 'Exporter';
 @EXPORT = qw(get_mock_formatter prepare_test_data);
@@ -9,14 +9,14 @@ use lib 'Exporter';
 sub get_mock_formatter {
 	my @methods = @_;
 	my $mf = Test::MockObject->new();
-	$mf->set_isa('MMGal::Formatter');
+	$mf->set_isa('MaMGal::Formatter');
 	$mf->mock($_, sub { "whatever" }) for @methods;
 	return $mf;
 }
 
 sub get_mock_mplayer_wrapper {
 	my $mmw = Test::MockObject->new;
-	$mmw->set_isa('MMGal::MplayerWrapper');
+	$mmw->set_isa('MaMGal::MplayerWrapper');
 	my $mock_image = Test::MockObject->new;
 	$mock_image->set_isa('Image::Magick');
 	$mock_image->mock('Get', sub { '100', '100' });

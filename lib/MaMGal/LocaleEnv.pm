@@ -1,11 +1,11 @@
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # A class encapsulating locale environment settings.
-package MMGal::LocaleEnv;
+package MaMGal::LocaleEnv;
 use strict;
 use warnings;
-use base 'MMGal::Base';
+use base 'MaMGal::Base';
 use Carp;
 use Locale::gettext;
 use POSIX;

@@ -1,15 +1,15 @@
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # Any interesting entry (picture or subdirectory)
-package MMGal::Entry;
+package MaMGal::Entry;
 use strict;
 use warnings;
-use base 'MMGal::Base';
+use base 'MaMGal::Base';
 use Carp;
 use File::Basename;
 use File::stat;
-use MMGal::EntryFactory;
+use MaMGal::EntryFactory;
 
 sub init
 {
@@ -56,7 +56,7 @@ sub container
 	unless (defined $self->{container}) {
 		# TODO this will lead to creation of a strange split tree if it
 		# is traversed again from container to this child
-		$self->set_container(MMGal::EntryFactory->create_entry_for($self->{dir_name}));
+		$self->set_container(MaMGal::EntryFactory->create_entry_for($self->{dir_name}));
 	}
 	return $self->{container};
 }
@@ -91,10 +91,10 @@ sub creation_time
 }
 
 # Some constants
-our $slides_dir = '.mmgal-slides';
+our $slides_dir = '.mamgal-slides';
 sub slides_dir     { $slides_dir }
-sub thumbnails_dir { '.mmgal-thumbnails' }
-sub medium_dir     { '.mmgal-medium' }
+sub thumbnails_dir { '.mamgal-thumbnails' }
+sub medium_dir     { '.mamgal-medium' }
 
 #######################################################################################################################
 # Abstract methods

@@ -1,11 +1,11 @@
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # The picture encapsulating class
-package MMGal::Entry::Picture::Static;
+package MaMGal::Entry::Picture::Static;
 use strict;
 use warnings;
-use base 'MMGal::Entry::Picture';
+use base 'MaMGal::Entry::Picture';
 use Carp;
 use Image::Magick;
 use POSIX;
@@ -14,7 +14,7 @@ sub init
 {
 	my $self = shift;
 	$self->SUPER::init(@_);
-	$self->{image_info_class} = 'MMGal::ImageInfo';
+	$self->{image_info_class} = 'MaMGal::ImageInfo';
 }
 
 sub refresh_scaled_pictures

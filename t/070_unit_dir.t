@@ -1,8 +1,8 @@
 #!/usr/bin/perl
-# mmgal - a program for creating static image galleries
+# mamgal - a program for creating static image galleries
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MMGal::Unit::Entry::Dir;
+package MaMGal::Unit::Entry::Dir;
 use strict;
 use warnings;
 use Carp 'verbose';
@@ -11,15 +11,15 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MMGal::Unit::Entry::NonPicture' }
+BEGIN { our @ISA = 'MaMGal::Unit::Entry::NonPicture' }
 BEGIN { do 't/060_unit_nonpicture.t' }
 
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
 	my $self = shift;
-	$self->{class_name} = 'MMGal::Entry::Dir';
+	$self->{class_name} = 'MaMGal::Entry::Dir';
 }
 
 sub page_path_method : Test(2) {
@@ -42,11 +42,11 @@ sub thumbnail_path_method : Test(2) {
 	my @test_file_name = $self->file_name;
 	{
 		my $e = $self->{entry};
-		is($e->thumbnail_path, $test_file_name[1].'/.mmgal-index.png', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, $test_file_name[1].'/.mamgal-index.png', "$class_name thumbnail_path is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->thumbnail_path, $test_file_name[1].'/.mmgal-index.png', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, $test_file_name[1].'/.mamgal-index.png', "$class_name thumbnail_path is correct");
 	}
 }
 
@@ -65,7 +65,7 @@ sub empty_creation_time_range_test {
 	is($creation_time_range[0], $single_creation_time, "Range-type creation time is equal to the scalar one");
 }
 
-package MMGal::Unit::Entry::Dir::Empty;
+package MaMGal::Unit::Entry::Dir::Empty;
 use strict;
 use warnings;
 use Test::More;
@@ -73,9 +73,9 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
 
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
@@ -104,7 +104,7 @@ sub valid_make_invocation : Test(5) {
 	lives_ok(sub { $d->make },                                   "Dir lives on make invocation");
 	ok($mf->called('format'),                                    "Dir->make calls formatter->format internally");
 	ok($mf->called('stylesheet'),                                "Dir->make calls formatter->stylesheet internally");
-	dir_only_contains_ok('td/empty', [qw{index.html .mmgal-index.png .mmgal-style.css}],
+	dir_only_contains_ok('td/empty', [qw{index.html .mamgal-index.png .mamgal-style.css}],
                                                                      "Directory contains only the index file and thumb afterwards");
 	use Text::Diff::Table; # work around a warning from UNIVERSAL::can
 	file_ok('td/empty/index.html', "whatever",                   "Dir->make creates an index file");
@@ -116,7 +116,7 @@ sub creation_time_range : Test(3) {
 	$self->empty_creation_time_range_test;
 }
 
-package MMGal::Unit::Entry::Dir::MoreSubdir;
+package MaMGal::Unit::Entry::Dir::MoreSubdir;
 use strict;
 use warnings;
 use Test::More;
@@ -124,12 +124,12 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
 
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use File::stat;
 # TODO: this should be mocked or something
-use MMGal::ImageInfo;
+use MaMGal::ImageInfo;
 
 sub class_setting : Test(startup) {
 	my $self = shift;
@@ -160,7 +160,7 @@ sub creation_time_range : Test(2) {
 sub stat_functionality : Test { ok(1) }
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
 
-package MMGal::Unit::Entry::Dir::ARootDir;
+package MaMGal::Unit::Entry::Dir::ARootDir;
 use strict;
 use warnings;
 use Test::More;
@@ -168,9 +168,9 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
 
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
@@ -198,7 +198,7 @@ sub creation_time_range : Test(3) {
 sub stat_functionality : Test { ok(1) }
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
 
-package MMGal::Unit::Entry::Dir::Bin;
+package MaMGal::Unit::Entry::Dir::Bin;
 use strict;
 use warnings;
 use Test::More;
@@ -206,9 +206,9 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
 
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
@@ -230,7 +230,7 @@ sub slash_bin_tests : Test(2) {
 sub stat_functionality : Test { ok(1) }
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
 
-package MMGal::Unit::Entry::Dir::Slash;
+package MaMGal::Unit::Entry::Dir::Slash;
 use strict;
 use warnings;
 use Test::More;
@@ -238,9 +238,9 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
 
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
@@ -290,11 +290,11 @@ sub thumbnail_path_method : Test(2) {
 	my @test_file_name = $self->file_name;
 	{
 		my $e = $self->{entry};
-		is($e->thumbnail_path, '//.mmgal-index.png', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '//.mamgal-index.png', "$class_name thumbnail_path is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->thumbnail_path, '//.mmgal-index.png', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '//.mamgal-index.png', "$class_name thumbnail_path is correct");
 	}
 }
 
@@ -303,7 +303,7 @@ sub thumbnail_path_method : Test(2) {
 sub stat_functionality : Test { ok(1) }
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
 
-package MMGal::Unit::Entry::Dir::Dot;
+package MaMGal::Unit::Entry::Dir::Dot;
 use strict;
 use warnings;
 use Test::More;
@@ -311,9 +311,9 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
 
-use MMGal::TestHelper;
+use MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
@@ -337,7 +337,7 @@ sub stat_functionality_when_created_without_stat : Test { ok(1) }
 package main;
 use Test::More;
 unless (defined caller) {
-	my @classes = map { 'MMGal::Unit::Entry::Dir::'.$_ } qw(Empty MoreSubdir ARootDir Bin Slash Dot);
+	my @classes = map { 'MaMGal::Unit::Entry::Dir::'.$_ } qw(Empty MoreSubdir ARootDir Bin Slash Dot);
 	my $tests = 0;
 	$tests += $_->expected_tests foreach @classes;
 	plan tests => $tests;
