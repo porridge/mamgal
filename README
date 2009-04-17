@@ -1,6 +1,13 @@
 mmgal - a program for creating static image galleries
 Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 
+Supported backend image information libraries
+=============================================
+
+The program works with either Image::ExifTool or Image::Info. However
+Image::ExifTool is recommended, and Image::Info is only supported on a
+"best-effort" basis. (In fact the Image::Info documentation states that
+Image::ExifTool is a better and less buggy library.)
 
 ----------------------------------------------------------------------------------------------------------------------------------------------
 

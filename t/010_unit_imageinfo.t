@@ -211,5 +211,20 @@ sub when_no_datetime_tag_present_then_creation_time_returns_undef : Test(2) {
 	$self->_test_creation_time('jpg_no_0x9003_0x9004_0x0132', {}, undef, 'undef');
 }
 
-MMGal::Unit::ImageInfo->runtests unless defined caller;
+package MMGal::Unit::ImageInfo::ImageInfo;
+use strict;
+use warnings;
+use Carp 'verbose';
+use File::stat;
+use Test::More;
+use Test::Exception;
+use Test::Warn;
+use base 'MMGal::Unit::ImageInfo';
+use lib 'testlib';
+use MMGal::TestHelper;
+
+use vars '%ENV';
+$ENV{MMGAL_FORCE_IMAGEINFO} = 'MMGal::ImageInfo::ImageInfo';
+MMGal::Unit::ImageInfo::ImageInfo->runtests unless defined caller;
+
 1;

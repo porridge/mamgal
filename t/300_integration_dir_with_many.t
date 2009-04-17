@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 35;
+use Test::More tests => 36;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
@@ -16,7 +16,8 @@ use MMGal::ImageInfo;
 
 prepare_test_data;
 my $time_now  = time;
-my $time_past = $time_now - 3600;
+my $time_past = 1239951985;
+cmp_ok($time_past + 3600, '<', $time_now, 'your clock is wrong');
 my $time_old  = 1103328000; # in 2004 - "very old"
 # touch up the directory and picture with different times
 utime $time_past, $time_past, 'td/more/subdir/p.png'  or die "Touching p.png failed";

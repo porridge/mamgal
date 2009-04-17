@@ -12,7 +12,16 @@ Quick HOWTO
   
     perl Makefile.PL
     make test
- 
+
+Dependencies
+------------
+
+  Apart from the test modules (Test::More, Test::Exception and so on), the
+  Image::ExifTool library is required. Even though the program itself supports
+  running with either Image::ExifTool as well as Image::Info, it would be to
+  complex to support both backend libraties for unit tests. Therefore the
+  latter library is only supported on a "best-effort" basis.
+
 Purpose
 -------
 
