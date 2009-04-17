@@ -21,7 +21,7 @@ $d->set_root(1);
 my $t = $f->format($d);
 text_ok($t, 'one_dir',					"there is the directory name");
 tag_count($t, "a", { href => 'subdir/index.html' }, 2,	"there are two links to the subdir");
-tag_ok($t, "img", { src => 'subdir/index.png' },	"there is a pic on the page");
+tag_ok($t, "img", { src => 'subdir/.mmgal-index.png' },	"there is a pic on the page");
 no_tag($t, "a", { href => "../index.html" },		"there is no link down");
 no_text($t, '/',					"there is no (leading) slash on root dir page");
 

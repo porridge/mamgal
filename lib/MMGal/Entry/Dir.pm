@@ -14,7 +14,7 @@ use MMGal::EntryFactory;
 
 sub child            { $_[0]->{path_name}.'/'.$_[1]     }
 sub page_path        { $_[0]->{base_name}.'/index.html' }
-sub thumbnail_path   { $_[0]->{base_name}.'/index.png'  }
+sub thumbnail_path   { $_[0]->{base_name}.'/.mmgal-index.png'  }
 
 sub init
 {
@@ -61,7 +61,7 @@ sub make
 	foreach my $el ($self->elements) { push @active_files, $el->make }
 	$self->_prune_inactive_files(\@active_files);
 	$self->_write_montage;
-	$self->_write_contents_to(sub { $formatter->stylesheet    }, 'mmgal.css');
+	$self->_write_contents_to(sub { $formatter->stylesheet    }, '.mmgal-style.css');
 	$self->_write_contents_to(sub { $formatter->format($self) }, 'index.html');
 	return ()
 }
@@ -114,7 +114,7 @@ sub _write_montage
 	my @images = grep { $_->isa('MMGal::Entry::Picture') } $self->elements;
 
 	unless (@images) {
-		$self->_write_contents_to(sub { MMGal::DirIcon->img }, 'index.png');
+		$self->_write_contents_to(sub { MMGal::DirIcon->img }, '.mmgal-index.png');
 		return;
 	}
 
@@ -141,7 +141,7 @@ sub _write_montage
 	$r = $montage = $stack->Montage(tile => $side.'x'.$side, geometry => $m_x.'x'.$m_y, border => 2);
 	ref($r)									or  die "montage: $r";
 	MMGal::Entry::Picture->scale_into($montage, $m_x, $m_y);
-	$r = $montage->Write($self->child('index.png'))			and die $self->child('index.png').': '.$r;
+	$r = $montage->Write($self->child('.mmgal-index.png'))			and die $self->child('.mmgal-index.png').': '.$r;
 }
 
 sub _ignorable_name($)
@@ -151,7 +151,7 @@ sub _ignorable_name($)
 	# ignore hidden files
 	return 1 if substr($_, 0, 1) eq '.';
 	# TODO: optimize out contants calls, keeping in mind that they are not really constant (eg. tests change them when testing slides/miniatures generation)
-	return 1 if grep { $_ eq $name } (qw(lost+found index.html index.png mmgal.css), $self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
+	return 1 if grep { $_ eq $name } (qw(lost+found index.html .mmgal-index.png .mmgal-style.css), $self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
 	return 0;
 }
 

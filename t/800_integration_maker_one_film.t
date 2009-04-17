@@ -21,7 +21,7 @@ use MMGal::MplayerWrapper;
 use Image::EXIF::DateTimeParser;
 my $m = MMGal::Maker->new(MMGal::Formatter->new, MMGal::MplayerWrapper->new, Image::EXIF::DateTimeParser->new);
 ok($m->make_without_roots('td/one_film'),	"maker returns success on an dir with one film");
-dir_only_contains_ok('td/one_film', [qw(index.html index.png mmgal.css .mmgal-thumbnails .mmgal-slides
+dir_only_contains_ok('td/one_film', [qw(index.html .mmgal-index.png .mmgal-style.css .mmgal-thumbnails .mmgal-slides
 					m.mov
 					.mmgal-thumbnails/m.mov.jpg
 					.mmgal-slides/m.mov.html)],

@@ -42,11 +42,11 @@ sub thumbnail_path_method : Test(2) {
 	my @test_file_name = $self->file_name;
 	{
 		my $e = $self->{entry};
-		is($e->thumbnail_path, $test_file_name[1].'/index.png', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, $test_file_name[1].'/.mmgal-index.png', "$class_name thumbnail_path is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->thumbnail_path, $test_file_name[1].'/index.png', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, $test_file_name[1].'/.mmgal-index.png', "$class_name thumbnail_path is correct");
 	}
 }
 
@@ -104,7 +104,7 @@ sub valid_make_invocation : Test(5) {
 	lives_ok(sub { $d->make },                                   "Dir lives on make invocation");
 	ok($mf->called('format'),                                    "Dir->make calls formatter->format internally");
 	ok($mf->called('stylesheet'),                                "Dir->make calls formatter->stylesheet internally");
-	dir_only_contains_ok('td/empty', [qw{index.html index.png mmgal.css}],
+	dir_only_contains_ok('td/empty', [qw{index.html .mmgal-index.png .mmgal-style.css}],
                                                                      "Directory contains only the index file and thumb afterwards");
 	use Text::Diff::Table; # work around a warning from UNIVERSAL::can
 	file_ok('td/empty/index.html', "whatever",                   "Dir->make creates an index file");
@@ -290,11 +290,11 @@ sub thumbnail_path_method : Test(2) {
 	my @test_file_name = $self->file_name;
 	{
 		my $e = $self->{entry};
-		is($e->thumbnail_path, '//index.png', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '//.mmgal-index.png', "$class_name thumbnail_path is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->thumbnail_path, '//index.png', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '//.mmgal-index.png', "$class_name thumbnail_path is correct");
 	}
 }
 

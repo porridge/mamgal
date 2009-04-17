@@ -30,5 +30,5 @@ dies_ok(sub { $m->make() },			"maker dies on no args");
 dies_ok(sub { $m->make('td/nonexistant')},	"maker dies on an inexistant dir");
 dir_only_contains_ok('td/empty', [],		"directory is empty initially");
 ok($m->make_without_roots('td/empty'),		"maker returns success on an empty dir");
-dir_only_contains_ok('td/empty', [qw(index.html index.png mmgal.css)],
+dir_only_contains_ok('td/empty', [qw(index.html .mmgal-index.png .mmgal-style.css)],
 						"directory contains index files only after running");

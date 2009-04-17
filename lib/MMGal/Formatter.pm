@@ -101,7 +101,7 @@ sub format
 	my $dir  = shift;
 	croak "Only one arg is required" if @_;
 	my @elements = $dir->elements;
-	my $ret = $self->HEADER('<link rel="stylesheet" href="mmgal.css" type="text/css">')."\n";
+	my $ret = $self->HEADER('<link rel="stylesheet" href=".mmgal-style.css" type="text/css">')."\n";
 	$ret .= '<table class="index">';
 	$ret .= '<tr><th colspan="4" class="header_cell">';
 	$ret .= join(' / ', map { $self->CURDIR($_->name) } $dir->containers, $dir);
@@ -156,7 +156,7 @@ sub format_slide
 
 	my ($prev, $next) = map { defined $_ ? $_->name : '' } $pic->neighbours;
 
-	my $r = $self->HEADER('<link rel="stylesheet" href="../mmgal.css" type="text/css">')."\n";
+	my $r = $self->HEADER('<link rel="stylesheet" href="../.mmgal-style.css" type="text/css">')."\n";
 	$r .= '<div style="float:left">';
 	$r .= $self->MAYBE_LINK($prev, $self->PREV);
 	$r .= ' | ';

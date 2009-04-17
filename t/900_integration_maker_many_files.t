@@ -28,21 +28,21 @@ $l->set_locale('');
 my $m = MMGal::Maker->new(MMGal::Formatter->new($l), MMGal::MplayerWrapper->new, Image::EXIF::DateTimeParser->new);
 ok($m->make_roots('td/more'),			"maker returns success on an dir with some files");
 dir_only_contains_ok('td/more', [qw(.mmgal-root
-					index.html index.png mmgal.css
+					index.html .mmgal-index.png .mmgal-style.css
 					.mmgal-medium .mmgal-thumbnails .mmgal-slides
 					a.png b.png x.png
 					.mmgal-medium/a.png .mmgal-medium/b.png .mmgal-medium/x.png
 					.mmgal-thumbnails/a.png .mmgal-thumbnails/b.png .mmgal-thumbnails/x.png
 					.mmgal-slides/a.png.html .mmgal-slides/b.png.html .mmgal-slides/x.png.html
 					subdir subdir/p.png subdir/p2.png subdir/lost+found
-					subdir/index.html subdir/index.png subdir/mmgal.css
+					subdir/index.html subdir/.mmgal-index.png subdir/.mmgal-style.css
 					subdir/.mmgal-medium subdir/.mmgal-medium/p.png subdir/.mmgal-medium/p2.png
 					subdir/.mmgal-thumbnails subdir/.mmgal-thumbnails/p.png
 					subdir/.mmgal-thumbnails/p2.png
 					subdir/.mmgal-slides subdir/.mmgal-slides/p.png.html
 					subdir/.mmgal-slides/p2.png.html),
-					'zzz another subdir', 'zzz another subdir/index.png', 'zzz another subdir/index.html',
-					'zzz another subdir/p.png', 'zzz another subdir/mmgal.css', 'zzz another subdir/.mmgal-slides',
+					'zzz another subdir', 'zzz another subdir/.mmgal-index.png', 'zzz another subdir/index.html',
+					'zzz another subdir/p.png', 'zzz another subdir/.mmgal-style.css', 'zzz another subdir/.mmgal-slides',
 					'zzz another subdir/.mmgal-slides/p.png.html', 'zzz another subdir/.mmgal-thumbnails',
 					'zzz another subdir/.mmgal-thumbnails/p.png', 'zzz another subdir/.mmgal-medium',
 					'zzz another subdir/.mmgal-medium/p.png'

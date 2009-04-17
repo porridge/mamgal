@@ -23,7 +23,7 @@ use MMGal::MplayerWrapper;
 use Image::EXIF::DateTimeParser;
 my $m = MMGal::Maker->new(MMGal::Formatter->new, MMGal::MplayerWrapper->new, Image::EXIF::DateTimeParser->new);
 ok($m->make_without_roots('td/one_pic'),		"maker returns success on an dir with one file");
-dir_only_contains_ok('td/one_pic', [qw(index.html index.png mmgal.css .mmgal-medium .mmgal-thumbnails .mmgal-slides
+dir_only_contains_ok('td/one_pic', [qw(index.html .mmgal-index.png .mmgal-style.css .mmgal-medium .mmgal-thumbnails .mmgal-slides
 					a1.png
 					.mmgal-medium/a1.png
 					.mmgal-thumbnails/a1.png
@@ -33,4 +33,4 @@ dir_only_contains_ok('td/one_pic', [qw(index.html index.png mmgal.css .mmgal-med
 unlink('td/one_pic/a1.png') or die;
 $m = MMGal::Maker->new(MMGal::Formatter->new, MMGal::MplayerWrapper->new, Image::EXIF::DateTimeParser->new);
 ok($m->make_without_roots('td/one_pic'),		"maker returns success on an dir with one file");
-dir_only_contains_ok('td/one_pic', [qw(index.html index.png mmgal.css)], "maker deleted .mmgal-medium, .mmgal-thumbnails and .mmgal-slides");
+dir_only_contains_ok('td/one_pic', [qw(index.html .mmgal-index.png .mmgal-style.css)], "maker deleted .mmgal-medium, .mmgal-thumbnails and .mmgal-slides");
