@@ -44,6 +44,10 @@ parses_as_unknown '    :  :     :  :  ';
 # Nikon camera, unknown model
 parses_ok '2009.04.04 09.49.08', '2009-04-04 09:49:08';
 
+# Adobe Photoshop CS2 Windows
+# Let's ignore the timezone for now
+parses_ok '2006:11:16 10:42:24-02:00', '2006-11-16 10:42:24';
+
 # Unknown manufacturer's camera, model "Cam 3200"
 # The characters separating fields seem to be semi-random binary garbage.
 parses_ok '2009J04U04N09K49A08B', '2009-04-04 09:49:08';
