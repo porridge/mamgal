@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 31;
+use Test::More tests => 33;
 use Test::Exception;
 use Test::HTML::Content;
 use lib 'testlib';
@@ -46,8 +46,8 @@ my $mp = Test::MockObject->new;
 $mp->set_isa('MaMGal::Picture::Static');
 my $time = 1227684276;
 $mp->mock('creation_time', sub { $time });
-$mp->mock('page_path', sub { 'page_path' });
-$mp->mock('thumbnail_path', sub { 'tn_path' });
+$mp->mock('page_path', sub { "pag'e_path" });
+$mp->mock('thumbnail_path', sub { "tn'_path" });
 $mp->mock('description', sub { 'some description' });
 $mp->mock('name', sub { 'foobar' });
 my $cell;
@@ -57,6 +57,8 @@ ok($le->called('format_time'),				"formatter interrogated the locale env for tim
 ok($le->called('format_date'),				"formatter interrogated the locale env for date formatting");
 tag_ok($cell, 'span', { 'class' => 'time', _content => '12:00:00' }, "generated cell contains creation time");
 tag_ok($cell, 'span', { 'class' => 'date', _content => '18 gru 2004' }, "generated cell contains creation date");
+tag_ok($cell, 'a', { href => "pag'e_path" }, "generated link is correctly encoded");
+tag_ok($cell, 'img', { src => "tn'_path" }, "generated img src is correctly encoded");
 
 my $mp2 = Test::MockObject->new;
 $mp2->set_isa('MaMGal::Picture::Static');

@@ -11,6 +11,7 @@ use Carp;
 use Locale::gettext;
 use MaMGal::LocaleEnv;
 use URI;
+use HTML::Entities qw(encode_entities_numeric);
 
 sub init
 {
@@ -57,7 +58,7 @@ sub MAYBE_IMG
 	my $self = shift;
 	my $img = shift;
 	if ($img) {
-		sprintf("<img src='%s'/>", URI->new($img)->as_string);
+		sprintf("<img src='%s'/>", encode_entities_numeric(URI->new($img)->as_string));
 	} else {
 		# TRANSLATORS: This text will appear literally where no thumbnail is avaialable
 		# for a given object.
@@ -71,7 +72,7 @@ sub MAYBE_EMBED
 	my $self = shift;
 	my $film = shift;
 	if ($film) {
-		sprintf("<embed src='%s'/>", $film);
+		sprintf("<embed src='%s'/>", encode_entities_numeric(URI->new($film)->as_string));
 	} else {
 		# TRANSLATORS: This text will appear literally where no path is
 		# avaialable for a given film.
@@ -83,7 +84,7 @@ sub MAYBE_EMBED
 sub LINK
 {
 	my $self = shift;
-	my $link = URI->new(shift)->as_string;
+	my $link = encode_entities_numeric(URI->new(shift)->as_string);
 	my $text = shift;
 	"<a href='$link'>$text</a>";
 }
