@@ -13,12 +13,13 @@ use MaMGal::TestHelper;
 use File::stat;
 use Image::EXIF::DateTimeParser;
 use MaMGal::ImageInfo;
+use POSIX;
 
 prepare_test_data;
 my $time_now  = time;
-my $time_past = 1239951985;
+my $time_past = POSIX::mktime(25,6,8,17,3,109,0,0,1);
 cmp_ok($time_past + 3600, '<', $time_now, 'your clock is wrong');
-my $time_old  = 1103328000; # in 2004 - "very old"
+my $time_old  = POSIX::mktime(0,0,0,18,11,104);# in 2004 - "very old"
 # touch up the directory and picture with different times
 utime $time_past, $time_past, 'td/more/subdir/p.png'  or die "Touching p.png failed";
 utime $time_old,  $time_old,  'td/more/subdir/p2.png' or die "Touching p2.png failed";

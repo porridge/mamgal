@@ -51,8 +51,8 @@ tag_count($st_mov, "embed", {}, 1,                  "just one embed tag");
 tag_ok($st_mov, "a", {href => '../index.html'},     "there is a link up on the page");
 tag_ok($st_mov, "a", {href => '../m.mov', _content => "Download"}, "there is a link to film itself");
 tag_count($st_mov, "a", {}, 2,                      "two links in total");
-tag_ok($st_mov, "span", {class => 'date', _content => '12/10/08'},"there is a date");
-tag_ok($st_mov, "span", {class => 'time', _content => '18:24:08'},"there is a time");
+tag_ok($st_mov, "span", {class => 'date', _content => qr'12/(09|1[01])/08'},"there is a date");
+tag_ok($st_mov, "span", {class => 'time', _content => qr'\d{2}:\d{2}:08'},"there is a time");
 
 my $ct_mov;
 lives_ok(sub { $ct_mov = $f->entry_cell($mov) },   "lives through cell entry generation");

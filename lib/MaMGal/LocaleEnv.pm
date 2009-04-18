@@ -43,14 +43,14 @@ sub format_time
 {
 	my $self = shift;
 	my $time = shift or return '??:??:??';
-	strftime('%X', gmtime($time))
+	strftime('%X', localtime($time))
 }
 
 sub format_date
 {
 	my $self = shift;
 	my $time = shift or return '???';
-	strftime('%x', gmtime($time))
+	strftime('%x', localtime($time))
 }
 
 1;

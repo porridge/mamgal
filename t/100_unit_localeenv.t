@@ -34,7 +34,8 @@ is($ch, "ANSI_X3.4-1968",                            "Charset name retrieved by 
 my ($t, $d);
 lives_ok(sub { $t = $le->format_time(1227723614) },  "Locale env can format time");
 lives_ok(sub { $d = $le->format_date(1227723614) },  "Locale env can format date");
-is($t, '18:20:14',                                   "Time is correct");
-is($d, '11/26/08',                                   "Date is correct");
+# cannot test exact date and time, as it will differ depending on the timezone
+like($t, qr'\d{2}:\d{2}:14',                         "Time is correct");
+like($d, qr'11/2[567]/08',                           "Date is correct");
 is($le->format_time(), '??:??:??',                   "Locale env can format unknown time");
 is($le->format_date(), '???',                        "Locale env can format unknown date");
