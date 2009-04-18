@@ -10,6 +10,7 @@ use base 'MaMGal::Base';
 use Carp;
 use Locale::gettext;
 use MaMGal::LocaleEnv;
+use URI;
 
 sub init
 {
@@ -56,7 +57,7 @@ sub MAYBE_IMG
 	my $self = shift;
 	my $img = shift;
 	if ($img) {
-		sprintf("<img src='%s'/>", $img);
+		sprintf("<img src='%s'/>", URI->new($img)->as_string);
 	} else {
 		# TRANSLATORS: This text will appear literally where no thumbnail is avaialable
 		# for a given object.
@@ -82,7 +83,7 @@ sub MAYBE_EMBED
 sub LINK
 {
 	my $self = shift;
-	my $link = shift;
+	my $link = URI->new(shift)->as_string;
 	my $text = shift;
 	"<a href='$link'>$text</a>";
 }

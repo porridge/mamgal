@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 28;
+use Test::More tests => 31;
 use Test::Exception;
 use Test::HTML::Content;
 use lib 'testlib';
@@ -62,10 +62,10 @@ my $mp2 = Test::MockObject->new;
 $mp2->set_isa('MaMGal::Picture::Static');
 my ($time1, $time2) = (1080907993, 1227684276);
 $mp2->mock('creation_time', sub { ($time1, $time2) });
-$mp2->mock('page_path', sub { 'page_path' });
-$mp2->mock('thumbnail_path', sub { 'tn_path' });
-$mp2->mock('description', sub { 'some description' });
-$mp2->mock('name', sub { 'foobar' });
+$mp2->mock('page_path', sub { 'page_path ¿ó³w na staro¶æ wydziela wstrêtn± woñ' });
+$mp2->mock('thumbnail_path', sub { 'tn_path ¿ó³w na staro¶æ wydziela wstrêtn± woñ' });
+$mp2->mock('description', sub { 'some description ¿ó³w na staro¶æ wydziela wstrêtn± woñaae' });
+$mp2->mock('name', sub { 'name ¿ó³w na staro¶æ wydziela wstrêtn± woñ' });
 my $cell2;
 lives_ok(sub { $cell2 = $f->entry_cell($mp2) },		"formatter can format a cell");
 ok($mp2->called('creation_time'),			"formatter interrogated the entry for creation time");
@@ -75,4 +75,6 @@ tag_ok($cell2, 'span', { 'class' => 'time', _content => '12:00:00' }, "generated
 tag_ok($cell2, 'span', { 'class' => 'date', _content => '18 gru 2004' }, "generated cell contains creation date");
 tag_ok($cell2, 'span', { 'class' => 'time', _content => '13:13:13' }, "generated cell contains creation time");
 tag_ok($cell2, 'span', { 'class' => 'date', _content => '2 kwi 2004' }, "generated cell contains creation date");
-
+tag_ok($cell2, 'a', { href => 'page_path%20%BF%F3%B3w%20na%20staro%B6%E6%20wydziela%20wstr%EAtn%B1%20wo%F1' }, "generated link is correctly encoded");
+tag_ok($cell2, 'img', { src => 'tn_path%20%BF%F3%B3w%20na%20staro%B6%E6%20wydziela%20wstr%EAtn%B1%20wo%F1' }, "generated image url is correctly encoded");
+tag_ok($cell2, 'span', { class => 'desc', _content => qr'some description ¿ó³w na staro¶æ wydziela wstrêtn± woñaae' }, "generated description is not encoded");
