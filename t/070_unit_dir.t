@@ -22,6 +22,21 @@ sub class_setting : Test(startup) {
 	$self->{class_name} = 'MaMGal::Entry::Dir';
 }
 
+sub side_length_method : Test(10) {
+	my $self = shift;
+	my $e = $self->{entry};
+	is($e->_side_length(1), 2);
+	is($e->_side_length(2), 2);
+	is($e->_side_length(3), 2);
+	is($e->_side_length(4), 2);
+	is($e->_side_length(5), 3);
+	is($e->_side_length(9), 3);
+	is($e->_side_length(10), 4);
+	is($e->_side_length(35), 6);
+	is($e->_side_length(36), 6);
+	is($e->_side_length(37), 7);
+}
+
 sub page_path_method : Test(2) {
 	my $self = shift;
 	my $class_name = $self->{class_name};

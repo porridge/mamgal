@@ -108,6 +108,21 @@ sub _write_contents_to
 	$self->SUPER::_write_contents_to($code, $full_name);
 }
 
+sub _side_length
+{
+	my $self = shift;
+	my $picture_count = shift;
+
+	# The montage is a visual clue that the object is a container.
+	# Therefore ensure we do not get a 1x1 montage, because it would be
+	# indistinguishable from a single image.
+	my $sqrt = sqrt($picture_count);
+	my $int = int($sqrt);
+	my $side = $int == $sqrt ? $int : $int + 1;
+	$side = 2 if $side < 2;
+	return $side;
+}
+
 sub _write_montage
 {
 	my $self = shift;
@@ -128,11 +143,7 @@ sub _write_montage
 		$rr = $img->Read($_->absolute_thumbnail_path)			and die $_->absolute_thumbnail_path.': '.$rr;
 		$img } @images[0..($montage_count-1)];
 
-	# The montage is a visual clue that the object is a container.
-	# Therefore ensure we do not get a 1x1 montage, because it would be
-	# indistinguishable from a single image.
-	my $side = 1 + int(sqrt($montage_count));
-	$side = 2 if $side < 2;
+	my $side = $self->_side_length($montage_count);
 
 	my ($m_x, $m_y) = (200, 150);
 
