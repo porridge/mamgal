@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 19;
+use Test::More tests => 21;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
@@ -34,6 +34,8 @@ my @ret = $d->elements;
 is(scalar(@ret), 1,						"dir contains one element");
 isa_ok($ret[0], 'MaMGal::Entry::Picture::Static');
 is($ret[0]->element_index, 0,					"picture knows its index");
+ok($d->is_interesting, 'dir with one picture is interesting');
+is($d->tile_path, $ret[0]->tile_path, 'interesting thumbnail path of a dir with one picture is that pictures interesting thumbnail path');
 
 my ($prev, $next);
 dies_ok(sub { ($prev, $next) = $d->neighbours_of_index(1) },	"there is no index one");

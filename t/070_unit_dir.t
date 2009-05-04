@@ -80,6 +80,11 @@ sub empty_creation_time_range_test {
 	is($creation_time_range[0], $single_creation_time, "Range-type creation time is equal to the scalar one");
 }
 
+# It's difficult to test these two without introducing dependencies on other
+# classes, so we test these in integration tests.
+sub is_intetresting_method : Test(1) { ok(1); }
+sub tile_path_method : Test(1) { ok(1); }
+
 package MaMGal::Unit::Entry::Dir::Empty;
 use strict;
 use warnings;
@@ -158,7 +163,7 @@ sub more_subdir_tests : Test(3) {
 	my $deep_dir = $self->{entry};
 	ok(! $deep_dir->is_root,                                           "Freshly created dir is not a root");
 	is_deeply([map { $_->name } $deep_dir->containers], [qw(td more)], "Non-root directory has some container names, in correct order");
-	is(scalar($deep_dir->elements), 2,                                 "td/more/subdir has 2 elements - lost+found is ignored");
+	is(scalar($deep_dir->elements), 4,                                 "td/more/subdir has 4 elements - lost+found is ignored");
 }
 
 sub creation_time_range : Test(2) {
@@ -168,6 +173,12 @@ sub creation_time_range : Test(2) {
 	ok($single_creation_time, "There is some non-zero create time");
 	my @creation_time_range = $d->creation_time;
 	is(scalar @creation_time_range, 2, "Creation time range is non-empty");
+}
+
+sub is_intetresting_method : Test(1) {
+	my $self = shift;
+	my $e = $self->{entry};
+	ok($e->is_interesting, "a dir with pictures in it is interesting");
 }
 
 # We cannot run these, as the general condition for Entry does not hold for non-empty dirs
@@ -244,6 +255,7 @@ sub slash_bin_tests : Test(2) {
 # Instead we test this in the integration tests
 sub stat_functionality : Test { ok(1) }
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
+sub is_intetresting_method : Test(1) { ok(1) }
 
 package MaMGal::Unit::Entry::Dir::Slash;
 use strict;
@@ -317,6 +329,7 @@ sub thumbnail_path_method : Test(2) {
 # Instead we test this in the integration tests
 sub stat_functionality : Test { ok(1) }
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
+sub is_intetresting_method : Test(1) { ok(1) }
 
 package MaMGal::Unit::Entry::Dir::Dot;
 use strict;
@@ -348,6 +361,7 @@ sub dot_dir_tests : Test(1) {
 # Instead we test this in the integration tests
 sub stat_functionality : Test { ok(1) }
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
+sub is_intetresting_method : Test(1) { ok(1) }
 
 package main;
 use Test::More;

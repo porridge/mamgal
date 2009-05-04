@@ -15,6 +15,8 @@ use MaMGal::ImageInfo;
 prepare_test_data;
 
 dir_only_contains_ok('td/more', [qw(a.png b.png x.png subdir subdir/p.png subdir/p2.png subdir/lost+found),
+                                 qw(subdir/uninteresting subdir/uninteresting/bar.txt),
+                                 qw(subdir/interesting subdir/interesting/b.png),
                                  'zzz another subdir', 'zzz another subdir/p.png'], "not much exists initially");
 use MaMGal::Maker;
 use MaMGal::Formatter;
@@ -40,7 +42,13 @@ dir_only_contains_ok('td/more', [qw(.mamgal-root
 					subdir/.mamgal-thumbnails subdir/.mamgal-thumbnails/p.png
 					subdir/.mamgal-thumbnails/p2.png
 					subdir/.mamgal-slides subdir/.mamgal-slides/p.png.html
-					subdir/.mamgal-slides/p2.png.html),
+					subdir/.mamgal-slides/p2.png.html
+					subdir/uninteresting subdir/uninteresting/bar.txt subdir/interesting subdir/interesting/b.png
+					subdir/interesting/.mamgal-index.png subdir/interesting/.mamgal-style.css subdir/interesting/.mamgal-medium
+					subdir/interesting/.mamgal-medium/b.png subdir/uninteresting/.mamgal-index.png subdir/uninteresting/.mamgal-style.css
+					subdir/uninteresting/index.html subdir/interesting/index.html subdir/interesting/.mamgal-thumbnails
+					subdir/interesting/.mamgal-slides subdir/interesting/.mamgal-slides/b.png.html
+					subdir/interesting/.mamgal-thumbnails/b.png),
 					'zzz another subdir', 'zzz another subdir/.mamgal-index.png', 'zzz another subdir/index.html',
 					'zzz another subdir/p.png', 'zzz another subdir/.mamgal-style.css', 'zzz another subdir/.mamgal-slides',
 					'zzz another subdir/.mamgal-slides/p.png.html', 'zzz another subdir/.mamgal-thumbnails',

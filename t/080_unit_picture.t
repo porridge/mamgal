@@ -193,6 +193,19 @@ sub page_path_method : Test(2) {
 	}
 }
 
+sub is_intetresting_method : Test(1) {
+	my $self = shift;
+	my $e = $self->{entry};
+	ok($e->is_interesting, "pictures generally are interesting");
+}
+
+sub tile_path_method : Test(1) {
+	my $self = shift;
+	my $class_name = $self->{class_name};
+	my $e = $self->{entry};
+	ok($e->tile_path, "$class_name tile_path is something");
+}
+
 package MaMGal::Unit::Entry::Picture::Static;
 use strict;
 use warnings;

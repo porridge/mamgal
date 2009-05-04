@@ -170,6 +170,20 @@ sub thumbnail_path_method : Test(2) {
 	}
 }
 
+sub tile_path_method : Test(2) {
+	my $self = shift;
+	my $class_name = $self->{class_name};
+	my @test_file_name = $self->file_name;
+	{
+		my $e = $self->{entry};
+		dies_ok(sub { $e->tile_path }, "$class_name tile_path dies");
+	}
+	{
+		my $e = $self->{entry_no_stat};
+		dies_ok(sub { $e->tile_path }, "$class_name thumbnail_path dies");
+	}
+}
+
 sub container_method : Test(2) {
 	my $self = shift;
 	my $class_name = $self->{class_name};
@@ -207,6 +221,12 @@ sub stat_functionality_when_created_without_stat : Test(2) {
 	utime($time, $time, join('/', $self->file_name)) == 1 or die "Failed to touch file";
 	$ct = $e->creation_time;
 	is($ct, undef, "Returned creation time is still the (cached) undef");
+}
+
+sub is_intetresting_method : Test(1) {
+	my $self = shift;
+	my $e = $self->{entry};
+	ok(! $e->is_interesting, "things are generally not interesting");
 }
 
 MaMGal::Unit::Entry->runtests unless defined caller;

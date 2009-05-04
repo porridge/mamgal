@@ -126,7 +126,7 @@ sub _side_length
 sub _write_montage
 {
 	my $self = shift;
-	my @images = grep { $_->isa('MaMGal::Entry::Picture') } $self->elements;
+	my @images = $self->_all_interesting_elements;
 
 	unless (@images) {
 		$self->_write_contents_to(sub { MaMGal::DirIcon->img }, '.mamgal-index.png');
@@ -140,7 +140,7 @@ sub _write_montage
 	push @$stack, map {
 		my $img = Image::Magick->new;
 		my $rr;
-		$rr = $img->Read($_->absolute_thumbnail_path)			and die $_->absolute_thumbnail_path.': '.$rr;
+		$rr = $img->Read($_->tile_path) and die $_->tile_path.': '.$rr;
 		$img } @images[0..($montage_count-1)];
 
 	my $side = $self->_side_length($montage_count);
@@ -248,6 +248,32 @@ sub creation_time
 		return $youngest;
 	}
 	return $self->SUPER::creation_time;
+}
+
+sub is_interesting
+{
+	my $self = shift;
+	defined $self->_first_interesting_element ? 1 : 0
+}
+
+sub tile_path
+{
+	my $self = shift;
+	# XXX choice of the first element is arbitrary, there might be a better heuristic
+	$self->_first_interesting_element->tile_path
+}
+
+sub _first_interesting_element
+{
+	my $self = shift;
+	foreach ($self->elements) { return $_ if $_->is_interesting }
+	return undef;
+}
+
+sub _all_interesting_elements
+{
+	my $self = shift;
+	grep { $_->is_interesting } $self->elements
 }
 
 1;

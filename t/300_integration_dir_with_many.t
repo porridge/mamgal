@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 36;
+use Test::More tests => 38;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
@@ -82,6 +82,11 @@ cmp_ok($creation_time_range[0], '<=', $single_creation_time, "Second time in ran
 is($creation_time_range[1], $single_creation_time, "Second time in the range is equal to the scalar one, although I no longer remember why I wanted it this way...");
 is($creation_time_range[0], $time_old, "First time in the range is equal to the one of the oldest picture");
 is($creation_time_range[1], $time_past, "Second time in the range is equal to the one of the newer picture");
+
+my $subdir_interesting = MaMGal::Entry::Dir->new(qw(td/more/subdir interesting), stat('td/more/subdir/interesting'));
+ok($subdir_interesting->is_interesting, 'interesting dir is interesting');
+my $subdir_uninteresting = MaMGal::Entry::Dir->new(qw(td/more/subdir uninteresting), stat('td/more/subdir/uninteresting'));
+ok(! $subdir_uninteresting->is_interesting, 'uninteresting dir is uninteresting');
 
 #my ($one_pic_entry) = $d->elements();
 #ok($one_pic_entry, "There is one picture");

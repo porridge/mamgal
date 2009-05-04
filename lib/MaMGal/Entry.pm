@@ -90,6 +90,9 @@ sub creation_time
 	return $stat->mtime;
 }
 
+# Whether this entry should be shown in a directory contents montage
+sub is_interesting { }
+
 # Some constants
 our $slides_dir = '.mamgal-slides';
 sub slides_dir     { $slides_dir }
