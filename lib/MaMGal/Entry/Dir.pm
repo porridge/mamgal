@@ -57,8 +57,7 @@ sub make
 	my $formatter = $tools->{formatter} or croak "Formatter required\n";
 	ref $formatter and $formatter->isa('MaMGal::Formatter') or croak "[$formatter] is not a formatter";
 
-	my @active_files;
-	foreach my $el ($self->elements) { push @active_files, $el->make }
+	my @active_files = map { $_->make } $self->elements;
 	$self->_prune_inactive_files(\@active_files);
 	$self->_write_montage;
 	$self->_write_contents_to(sub { $formatter->stylesheet    }, '.mamgal-style.css');
@@ -104,8 +103,9 @@ sub _write_contents_to
 	my $self = shift;
 	my $code = shift;
 	my $suffix = shift;
+	my $tmp_name = $self->child('.mamgal-tmp');
 	my $full_name = $self->child($suffix);
-	$self->SUPER::_write_contents_to($code, $full_name);
+	$self->SUPER::_write_contents_to($code, $tmp_name, $full_name);
 }
 
 sub _side_length
@@ -170,6 +170,8 @@ sub _prune_inactive_files
 {
 	my $self = shift;
 	my $active_files = shift;
+	# delete old temporary file, if any
+	unlink $self->child('.mamgal-tmp') if (-e $self->child('.mamgal-tmp'));
 	my @known_subdirs = ($self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
 	# first, sanity check so we know if we start creating files outside the known subdirs
 	foreach my $f (@$active_files) {

@@ -26,10 +26,13 @@ sub _write_contents_to
 {
 	my $self = shift;
 	my $code = shift;
+	my $tmp_name = shift;
 	my $full_name = shift;
-	open(OUT, '>'.$full_name) or die "${full_name}: $!\n";
+
+	open(OUT, '>', $tmp_name) or die "${tmp_name}: $!\n";
 	print OUT &$code;
-	close(OUT)                or die "${full_name}: $!\n";
+	close(OUT)                or die "${tmp_name}: $!\n";
+	rename($tmp_name, $full_name) or die "${tmp_name} -> ${full_name}: $!\n";
 }
 
 1;
