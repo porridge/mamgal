@@ -11,7 +11,7 @@ use Test::Files;
 use lib 'testlib';
 use MaMGal::TestHelper;
 use File::stat;
-use Image::EXIF::DateTimeParser;
+use Image::EXIF::DateTime::Parser;
 use MaMGal::ImageInfo;
 
 prepare_test_data;
@@ -27,7 +27,7 @@ my $d;
 lives_ok(sub { $d = MaMGal::Entry::Dir->new(qw(td one_pic), stat('td/one_pic')) },   "dir can be created with an array: existant dir with one pic");
 isa_ok($d, 'MaMGal::Entry::Dir');
 my $mf = get_mock_formatter(qw(format stylesheet format_slide));
-my $tools = {formatter => $mf, exif_dtparser => Image::EXIF::DateTimeParser->new};
+my $tools = {formatter => $mf, exif_dtparser => Image::EXIF::DateTime::Parser->new};
 $d->set_tools($tools);
 
 my @ret = $d->elements;

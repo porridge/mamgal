@@ -1,4 +1,3 @@
-t/010_unit_datetime_parser.t
 t/010_unit_imageinfo.t
 t/010_unit_imageinfo_exiftool.t
 t/050_unit_entry.t
@@ -40,7 +39,6 @@ lib/MaMGal/Entry/Picture.pm
 lib/MaMGal/Entry/Picture/Film.pm
 lib/MaMGal/Entry/Picture/Static.pm
 lib/MaMGal/Entry/Unreadable.pm
-lib/Image/EXIF/DateTimeParser.pm
 td.in/.mamgal-root
 td.in/c.jpg
 td.in/root_dir/.mamgal-root

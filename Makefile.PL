@@ -1,10 +1,33 @@
 # mamgal - a program for creating static image galleries
-# Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
+# Copyright 20,07, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 
 use ExtUtils::MakeMaker;
 WriteMakefile(
-	'NAME'		=> 'MaMGal',
-	'VERSION_FROM'	=> 'lib/MaMGal/Maker.pm',
-	'EXE_FILES'     => ['mamgal'],
+	NAME          => 'MaMGal',
+	VERSION_FROM  => 'lib/MaMGal/Maker.pm',
+	EXE_FILES     => ['mamgal'],
+	PREREQ_PM     => {
+		'Carp' => 0,
+		'Cwd' => 0,
+		'Fcntl' => 0,
+		'File::Basename' => 0,
+		'File::stat' => 0,
+		'File::Temp' => 0,
+		'HTML::Entities' => 0,
+		'Image::EXIF::DateTime::Parser' => 0,
+		'Image::ExifTool' => 0,
+		'Image::Info' => 0,
+		'Image::Magick' => 0,
+		'Locale::gettext' => 0,
+		'POSIX' => 0,
+		'Test::Class' => 0,
+		'Test::Exception' => 0,
+		'Test::Files' => 0,
+		'Test::HTML::Content' => 0,
+		'Test::MockObject' => 0,
+		'Test::More' => 0,
+		'Test::Warn' => 0,
+		'URI::file' => 0,
+	},
 );

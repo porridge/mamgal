@@ -21,8 +21,8 @@ use MaMGal::Formatter;
 my $f = MaMGal::Formatter->new;
 use MaMGal::MplayerWrapper;
 my $w = MaMGal::MplayerWrapper->new;
-use Image::EXIF::DateTimeParser;
-my $p = Image::EXIF::DateTimeParser->new;
+use Image::EXIF::DateTime::Parser;
+my $p = Image::EXIF::DateTime::Parser->new;
 lives_ok(sub { $m = MaMGal::Maker->new($f, $w, $p) },"maker creation succeeds with formatter, wrapper and parser args");
 isa_ok($m, 'MaMGal::Maker');
 

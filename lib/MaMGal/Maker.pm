@@ -20,7 +20,7 @@ sub init
 	my $mplayer_wrapper = shift or croak "Need an mplayer wrapper arg";
 	ref $mplayer_wrapper and $mplayer_wrapper->isa('MaMGal::MplayerWrapper') or croak "Arg is not an mplayer wrapper, but a [$mplayer_wrapper]";
 	my $exif_dtparser = shift or croak "Need an EXIF DateTimeParser arg ";
-	ref $exif_dtparser and $exif_dtparser->isa('Image::EXIF::DateTimeParser') or croak "Arg is not an Image::EXIF::DateTimeParser, but a [$exif_dtparser]";
+	ref $exif_dtparser and $exif_dtparser->isa('Image::EXIF::DateTime::Parser') or croak "Arg is not an Image::EXIF::DateTime::Parser, but a [$exif_dtparser]";
 	$self->{formatter} = $formatter;
 	$self->{mplayer_wrapper} = $mplayer_wrapper;
 	$self->{exif_dtparser} = $exif_dtparser;

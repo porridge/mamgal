@@ -39,6 +39,7 @@ Some useful commands:
 =====================
 
 diff -u <(find * -type f|LANG=C sort) <(LANG=C sort MANIFEST )
+git grep -h '^use' lib t mamgal testlib |awk '$2 == "base" {print $3}; $2 != "base" {print $2}'|sed "s/'//g;s/;//"|sort -u|grep -v ^MaMGal|egrep '^[A-Z]'
 grep pm$ MANIFEST |xgettext --add-comments=TRANSLATORS: --copyright-holder="Marcin Owsiany <marcin@owsiany.pl>" -d mamgal -o po/mamgal.pot.new -f -
 mv po/mamgal.pot po/mamgal.pot.old
 msgmerge po/mamgal.pot.old po/mamgal.pot.new > po/mamgal.pot

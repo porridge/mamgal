@@ -18,8 +18,8 @@ dir_only_contains_ok('td/one_film', ['m.mov'],
 use MaMGal::Maker;
 use MaMGal::Formatter;
 use MaMGal::MplayerWrapper;
-use Image::EXIF::DateTimeParser;
-my $m = MaMGal::Maker->new(MaMGal::Formatter->new, MaMGal::MplayerWrapper->new, Image::EXIF::DateTimeParser->new);
+use Image::EXIF::DateTime::Parser;
+my $m = MaMGal::Maker->new(MaMGal::Formatter->new, MaMGal::MplayerWrapper->new, Image::EXIF::DateTime::Parser->new);
 ok($m->make_without_roots('td/one_film'),	"maker returns success on an dir with one film");
 dir_only_contains_ok('td/one_film', [qw(index.html .mamgal-index.png .mamgal-style.css .mamgal-thumbnails .mamgal-slides
 					m.mov

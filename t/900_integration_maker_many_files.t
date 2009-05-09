@@ -21,13 +21,13 @@ dir_only_contains_ok('td/more', [qw(a.png b.png x.png subdir subdir/p.png subdir
 use MaMGal::Maker;
 use MaMGal::Formatter;
 use MaMGal::MplayerWrapper;
-use Image::EXIF::DateTimeParser;
+use Image::EXIF::DateTime::Parser;
 
 use MaMGal::LocaleEnv;
 my $l = MaMGal::LocaleEnv->new;
 # Get locale from environment so that you can see some representatative output in your language
 $l->set_locale('');
-my $m = MaMGal::Maker->new(MaMGal::Formatter->new($l), MaMGal::MplayerWrapper->new, Image::EXIF::DateTimeParser->new);
+my $m = MaMGal::Maker->new(MaMGal::Formatter->new($l), MaMGal::MplayerWrapper->new, Image::EXIF::DateTime::Parser->new);
 ok($m->make_roots('td/more'),			"maker returns success on an dir with some files");
 dir_only_contains_ok('td/more', [qw(.mamgal-root
 					index.html .mamgal-index.png .mamgal-style.css

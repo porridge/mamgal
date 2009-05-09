@@ -11,7 +11,7 @@ use Test::Files;
 use lib 'testlib';
 use MaMGal::TestHelper;
 use File::stat;
-use Image::EXIF::DateTimeParser;
+use Image::EXIF::DateTime::Parser;
 use MaMGal::ImageInfo;
 use POSIX;
 
@@ -30,7 +30,7 @@ my $d;
 lives_ok(sub { $d = MaMGal::Entry::Dir->new(qw(td more), stat('td/more')) },	"creation ok");
 isa_ok($d, 'MaMGal::Entry::Dir',                                 "a dir is a dir");
 my $mf = get_mock_formatter(qw(format stylesheet));
-my $tools = {formatter => $mf, exif_dtparser => Image::EXIF::DateTimeParser->new};
+my $tools = {formatter => $mf, exif_dtparser => Image::EXIF::DateTime::Parser->new};
 $d->set_tools($tools);
 
 my @ret = $d->elements;

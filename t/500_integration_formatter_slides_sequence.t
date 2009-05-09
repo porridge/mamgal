@@ -9,7 +9,7 @@ use Test::More tests => 11;
 use Test::HTML::Content;
 use lib 'testlib';
 use MaMGal::TestHelper;
-use Image::EXIF::DateTimeParser;
+use Image::EXIF::DateTime::Parser;
 use MaMGal::ImageInfo;
 
 prepare_test_data;
@@ -17,7 +17,7 @@ prepare_test_data;
 use MaMGal::Formatter;
 use MaMGal::EntryFactory;
 my $d = MaMGal::EntryFactory->create_entry_for('td/more');
-my $tools = {exif_dtparser => Image::EXIF::DateTimeParser->new};
+my $tools = {exif_dtparser => Image::EXIF::DateTime::Parser->new};
 $d->set_tools($tools);
 
 my $f = MaMGal::Formatter->new;
