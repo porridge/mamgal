@@ -11,6 +11,17 @@ Image::ExifTool is a better and less buggy library.)
 
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
+Installation
+============
+
+Please follow instructions in perlmodinstall. Afterwards, if your language is
+listed in LINGUAS in po/Makefile you may want to run the following command to
+install translation catalogs:
+
+  make -C po install
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
 Performance comparison with imageindex:
 =======================================
 

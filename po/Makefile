@@ -1,13 +1,12 @@
+LINGUAS = pl
+MOS     = pl.mo
 
 .PHONY: all
-all: pl.mo
-
-%.mo: %.po
-	msgfmt -o $@ $<
+all: $(MOS)
 
 .PHONY: install
-install:
-	for locale in pl ; do \
+install: $(MOS)
+	for locale in $(LINGUAS) ; do \
 	 install -m 0644 -o root -g root $$locale.mo $(DEST)/usr/share/locale/$$locale/LC_MESSAGES/mamgal.mo ; \
 	done
 
@@ -20,3 +19,7 @@ refresh-pot:
 	  -L Perl -d mamgal -o po/mamgal.pot.new -f -
 	mv mamgal.pot mamgal.pot.old
 	msgmerge mamgal.pot.old mamgal.pot.new > mamgal.pot
+
+%.mo: %.po
+	msgfmt -o $@ $<
+
