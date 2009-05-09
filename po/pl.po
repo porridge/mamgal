@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mamgal 0.01\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-17 18:54+0100\n"
+"POT-Creation-Date: 2009-05-09 14:13+0100\n"
 "PO-Revision-Date: 2008-12-10 18:18+0000\n"
 "Last-Translator: Marcin Owsiany <marcin@owsiany.pl>\n"
 "MIME-Version: 1.0\n"
@@ -21,39 +21,39 @@ msgstr "Błąd wewnętrzny: [%s] nie kończy się nazwą bazową.\n"
 #. TRANSLATORS: This text will appear literally where no thumbnail is avaialable
 #. for a given object.
 #. Please use &nbsp; for whitespace, to avoid line breaks.
-#: lib/MaMGal/Formatter.pm:64
+#: lib/MaMGal/Formatter.pm:66
 msgid "[no&nbsp;icon]"
 msgstr "[brak&nbsp;obrazka]"
 
 #. TRANSLATORS: This text will appear literally where no path is
 #. avaialable for a given film.
 #. Please use &nbsp; for whitespace, to avoid line breaks.
-#: lib/MaMGal/Formatter.pm:78
+#: lib/MaMGal/Formatter.pm:80
 msgid "[no&nbsp;film]"
 msgstr "[brak&nbsp;filmu]"
 
 #. TRANSLATORS: The following three are for navigation on a slide page (&lt; is shown as <, and &gt; as >)
-#: lib/MaMGal/Formatter.pm:91
+#: lib/MaMGal/Formatter.pm:93
 msgid "&lt;&lt; prev"
 msgstr "&lt;&lt poprzednie"
 
-#: lib/MaMGal/Formatter.pm:92
+#: lib/MaMGal/Formatter.pm:94
 msgid "next &gt;&gt;"
 msgstr "następne &gt;&gt;"
 
-#: lib/MaMGal/Formatter.pm:93
+#: lib/MaMGal/Formatter.pm:95
 msgid "Up a dir"
 msgstr "do góry"
 
-#: lib/MaMGal/Formatter.pm:95
+#: lib/MaMGal/Formatter.pm:97
 msgid "This directory is empty"
 msgstr "Ten katalog jest pusty"
 
 #. TRANSLATORS: This is the text of the link from a slide page to the index page.
-#: lib/MaMGal/Formatter.pm:164
+#: lib/MaMGal/Formatter.pm:166
 msgid "index"
 msgstr "do listy zdjęć"
 
-#: lib/MaMGal/Formatter.pm:184
+#: lib/MaMGal/Formatter.pm:186
 msgid "Download"
 msgstr "Pobierz"

@@ -62,5 +62,5 @@ testlib/MaMGal/TestHelper.pm
 README
 TODO
 mamgal
-po/mamgal.pot
+po/Makefile
 po/pl.po
