@@ -8,6 +8,7 @@ WriteMakefile(
 	VERSION_FROM  => 'lib/MaMGal/Maker.pm',
 	EXE_FILES     => ['mamgal'],
 	PREREQ_PM     => {
+# Required for runtime
 		'Carp' => 0,
 		'Cwd' => 0,
 		'Fcntl' => 0,
@@ -16,11 +17,14 @@ WriteMakefile(
 		'File::Temp' => 0,
 		'HTML::Entities' => 0,
 		'Image::EXIF::DateTime::Parser' => 0,
-		'Image::ExifTool' => 0,
-		'Image::Info' => 0,
 		'Image::Magick' => 0,
 		'Locale::gettext' => 0,
 		'POSIX' => 0,
+		'URI::file' => 0,
+# Only one of these is necessary at runtime, but both are required for tests.
+		'Image::ExifTool' => 0,
+		'Image::Info' => 0,
+# Required for tests only
 		'Test::Class' => 0,
 		'Test::Exception' => 0,
 		'Test::Files' => 0,
@@ -28,6 +32,5 @@ WriteMakefile(
 		'Test::MockObject' => 0,
 		'Test::More' => 0,
 		'Test::Warn' => 0,
-		'URI::file' => 0,
 	},
 );
