@@ -103,6 +103,7 @@ sub _write_contents_to
 	my $self = shift;
 	my $code = shift;
 	my $suffix = shift;
+	# TODO: this will be an issue when mamgal goes multi-threaded
 	my $tmp_name = $self->child('.mamgal-tmp');
 	my $full_name = $self->child($suffix);
 	$self->SUPER::_write_contents_to($code, $tmp_name, $full_name);
