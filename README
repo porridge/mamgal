@@ -1,15 +1,38 @@
 mamgal - a program for creating static image galleries
 Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 
-Supported backend image information libraries
-=============================================
+Features:
+=========
 
-The program works with either Image::ExifTool or Image::Info. However
-Image::ExifTool is recommended, and Image::Info is only supported on a
-"best-effort" basis. (In fact the Image::Info documentation states that
-Image::ExifTool is a better and less buggy library.)
+MaMGal was inspired by imageindex(1) and as such aims for a similar featureset
+but higher efficiency and better code architecture.
 
-----------------------------------------------------------------------------------------------------------------------------------------------
+*   Index and slide views, simple layouts.
+
+*   Image captions extracted from comments embedded in images themselves. This
+    way your photo descriptions will never get lost.
+
+*   Static HTML output, no need for PHP or other server-side execution support.
+
+*   Designed with efficiency in mind - only reads and processes the files which
+    were modified since the last run.
+
+*   Image creation time extracted from EXIF metadata.
+
+--------------------------------------------------------------------------------
+
+Dependencies:
+=============
+
+MaMGal needs a backend image information library. It works with either
+Image::ExifTool or Image::Info. However Image::ExifTool is recommended, and
+Image::Info is only supported on a "best-effort" basis. (In fact its own
+documentation states that Image::ExifTool is a more featureful and less buggy
+library.)
+
+Other dependencies are documented in Makefile.PL
+
+mplayer is required for galleries containing films.
 
 Installation
 ============
@@ -20,31 +43,7 @@ install translation catalogs:
 
   make -C po install
 
-----------------------------------------------------------------------------------------------------------------------------------------------
-
-Performance comparison with imageindex:
-=======================================
-
-Gallery: 15GB of 9100 images in 528 folders
-
-imageindex:
- - generating a gallery from scratch:
-    9414.61user 919.38system 2:59:02elapsed 96%CPU (0avgtext+0avgdata 0maxresident)k
-    0inputs+0outputs (174425major+226765997minor)pagefaults 0swaps
- - on a freshly generated gallery:
-    2342.84user 437.39system 51:48.89elapsed 89%CPU (0avgtext+0avgdata 0maxresident)k
-    0inputs+0outputs (155159major+103164844minor)pagefaults 0swaps
-
-
-mamgal
- - generating a gallery from scratch:
-    4534.19user 436.42system 1:29:05elapsed 92%CPU (0avgtext+0avgdata 0maxresident)k
-    0inputs+0outputs (146337major+102242731minor)pagefaults 0swaps
- - on a freshly generated gallery:
-    114.45user 8.01system 3:30.87elapsed 58%CPU (0avgtext+0avgdata 0maxresident)k
-    0inputs+0outputs (115major+1786694minor)pagefaults 0swaps
-
-----------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 License
 =======
@@ -68,9 +67,12 @@ License for the files not specified individually below:
 --------------------------------------------------------------------------------
 
 As a special exception, any files produced by running the program (i.e. the
-produced gallery) are not covered by the above license, even when they are
-being made by copying parts of the program itself. Anyone may use and/or
-redistribute such files in whatever way they please.
+produced gallery) are instead covered by the following license, even when they
+are being made by copying parts of the program itself:
+
+    Redistribution and use in any form, with or without modification, are
+    permitted in any medium. They are offered as-are, without warranty of any
+    kind.
 
 --------------------------------------------------------------------------------
 
@@ -98,7 +100,7 @@ The license for dir.png and lib/MaMGal/DirIcon.pm is:
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-----------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 Some commands useful to the maintainer:
 =======================================
