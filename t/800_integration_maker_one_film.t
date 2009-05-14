@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 3;
+use Test::More tests => 4;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
@@ -15,11 +15,8 @@ prepare_test_data;
 
 dir_only_contains_ok('td/one_film', ['m.mov'],
 						"index does not exist initially");
-use MaMGal::Maker;
-use MaMGal::Formatter;
-use MaMGal::MplayerWrapper;
-use Image::EXIF::DateTime::Parser;
-my $m = MaMGal::Maker->new(MaMGal::Formatter->new, MaMGal::MplayerWrapper->new, Image::EXIF::DateTime::Parser->new);
+use_ok('MaMGal');
+my $m = MaMGal->new;
 ok($m->make_without_roots('td/one_film'),	"maker returns success on an dir with one film");
 dir_only_contains_ok('td/one_film', [qw(index.html .mamgal-index.png .mamgal-style.css .mamgal-thumbnails .mamgal-slides
 					m.mov

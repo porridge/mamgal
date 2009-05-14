@@ -5,7 +5,7 @@
 use ExtUtils::MakeMaker;
 WriteMakefile(
 	NAME          => 'MaMGal',
-	VERSION_FROM  => 'lib/MaMGal/Maker.pm',
+	VERSION_FROM  => 'lib/MaMGal.pm',
 	EXE_FILES     => ['mamgal'],
 	PREREQ_PM     => {
 # Required for runtime

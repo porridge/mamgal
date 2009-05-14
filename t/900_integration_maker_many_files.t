@@ -5,12 +5,11 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 3;
+use Test::More tests => 4;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
 use MaMGal::TestHelper;
-use MaMGal::ImageInfo;
 
 prepare_test_data;
 
@@ -18,17 +17,11 @@ dir_only_contains_ok('td/more', [qw(a.png b.png x.png subdir subdir/p.png subdir
                                  qw(subdir/uninteresting subdir/uninteresting/bar.txt),
                                  qw(subdir/interesting subdir/interesting/b.png),
                                  'zzz another subdir', 'zzz another subdir/p.png'], "not much exists initially");
-use MaMGal::Maker;
-use MaMGal::Formatter;
-use MaMGal::MplayerWrapper;
-use Image::EXIF::DateTime::Parser;
 
-use MaMGal::LocaleEnv;
-my $l = MaMGal::LocaleEnv->new;
+use_ok('MaMGal');
 # Get locale from environment so that you can see some representatative output in your language
-$l->set_locale('');
-my $m = MaMGal::Maker->new(MaMGal::Formatter->new($l), MaMGal::MplayerWrapper->new, Image::EXIF::DateTime::Parser->new);
-ok($m->make_roots('td/more'),			"maker returns success on an dir with some files");
+my $M = MaMGal->new('');
+ok($M->make_roots('td/more'), "maker returns success on an dir with some files");
 dir_only_contains_ok('td/more', [qw(.mamgal-root
 					index.html .mamgal-index.png .mamgal-style.css
 					.mamgal-medium .mamgal-thumbnails .mamgal-slides

@@ -5,24 +5,20 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
 use MaMGal::TestHelper;
-use Image::EXIF::DateTime::Parser;
-use MaMGal::ImageInfo;
 
 prepare_test_data;
 
-dir_only_contains_ok('td/one_pic', ['a1.png'],
-						"index does not exist initially");
-use MaMGal::Maker;
-use MaMGal::Formatter;
-use MaMGal::MplayerWrapper;
-use Image::EXIF::DateTime::Parser;
-my $m = MaMGal::Maker->new(MaMGal::Formatter->new, MaMGal::MplayerWrapper->new, Image::EXIF::DateTime::Parser->new);
-ok($m->make_without_roots('td/one_pic'),		"maker returns success on an dir with one file");
+dir_only_contains_ok('td/one_pic', ['a1.png'], "index does not exist initially");
+
+use_ok('MaMGal');
+my $M = MaMGal->new;
+
+ok($M->make_without_roots('td/one_pic'),		"maker returns success on an dir with one file");
 dir_only_contains_ok('td/one_pic', [qw(index.html .mamgal-index.png .mamgal-style.css .mamgal-medium .mamgal-thumbnails .mamgal-slides
 					a1.png
 					.mamgal-medium/a1.png
@@ -31,6 +27,7 @@ dir_only_contains_ok('td/one_pic', [qw(index.html .mamgal-index.png .mamgal-styl
 						"maker created index.html, .mamgal-medium, .mamgal-thumbnails and .mamgal-slides");
 
 unlink('td/one_pic/a1.png') or die;
-$m = MaMGal::Maker->new(MaMGal::Formatter->new, MaMGal::MplayerWrapper->new, Image::EXIF::DateTime::Parser->new);
-ok($m->make_without_roots('td/one_pic'),		"maker returns success on an dir with one file");
+
+$M = MaMGal->new;
+ok($M->make_without_roots('td/one_pic'),		"maker returns success on an dir with one file");
 dir_only_contains_ok('td/one_pic', [qw(index.html .mamgal-index.png .mamgal-style.css)], "maker deleted .mamgal-medium, .mamgal-thumbnails and .mamgal-slides");

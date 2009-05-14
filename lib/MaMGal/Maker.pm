@@ -10,7 +10,6 @@ use Carp;
 use MaMGal::Entry::Dir;
 use MaMGal::Formatter;
 use Locale::gettext;
-our $VERSION = '0.01';
 
 sub init
 {

@@ -10,23 +10,12 @@ mamgal - a program for creating static image galleries
 
 =cut
 
-use MaMGal::Maker;
-use MaMGal::Formatter;
-use MaMGal::MplayerWrapper;
-use MaMGal::LocaleEnv;
-use Image::EXIF::DateTime::Parser;
-use MaMGal::ImageInfo;
-
-my $l = MaMGal::LocaleEnv->new;
-$l->set_locale('');
-my $m = MaMGal::Maker->new(MaMGal::Formatter->new($l), MaMGal::MplayerWrapper->new, Image::EXIF::DateTime::Parser->new);
+use MaMGal;
+MaMGal->new('')->make_roots($ARGV[0]);
 
 =head1 SYNOPSIS
 
   mamgal <directory>
-
-=cut
-$m->make_roots($ARGV[0]);
 
 =head1 DESCRIPTION
 
