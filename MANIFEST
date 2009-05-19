@@ -1,3 +1,4 @@
+t/010_unit_command_checker.t
 t/010_unit_imageinfo.t
 t/010_unit_imageinfo_exiftool.t
 t/050_unit_entry.t
@@ -20,8 +21,11 @@ t/800_integration_maker_one_film.t
 t/800_integration_maker_one_picture.t
 t/900_integration_maker_many_files.t
 t/README
+lib/MaMGal.pm
 lib/MaMGal/Base.pm
+lib/MaMGal/CommandChecker.pm
 lib/MaMGal/DirIcon.pm
+lib/MaMGal/VideoIcon.pm
 lib/MaMGal/EntryFactory.pm
 lib/MaMGal/Entry.pm
 lib/MaMGal/Formatter.pm
@@ -54,10 +58,13 @@ td.in/more/b.png
 td.in/more/x.png
 td.in/more/subdir/p.png
 td.in/more/subdir/p2.png
+td.in/more/subdir/interesting/b.png
+td.in/more/subdir/uninteresting/bar.txt
 td.in/p.png
 Makefile.PL
 MANIFEST
 dir.png
+video.png
 testlib/MaMGal/TestHelper.pm
 README
 TODO

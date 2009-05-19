@@ -20,6 +20,7 @@ WriteMakefile(
 		'Image::Magick' => 0,
 		'Locale::gettext' => 0,
 		'POSIX' => 0,
+		'Scalar::Util' => 0,
 		'URI::file' => 0,
 # Only one of these is necessary at runtime, but both are required for tests.
 		'Image::ExifTool' => 0,
