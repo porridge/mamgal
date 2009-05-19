@@ -270,10 +270,12 @@ sub description_method_undefined : Test {
 	is($self->{entry}->description, undef);
 }
 
-sub description_method_crash : Test {
+sub description_method_crash : Test(2) {
 	my $self = shift;
 	$self->{mock_image_info_class}->mock('read', sub { die "oh noes!\n" });
-	is($self->{entry}->description, undef, 'description is undefined');
+	my $d;
+	warning_like { $d = $self->{entry}->description } qr{Cannot.*oh noes}, 'crash when getting a description produces a warning';
+	is($d, undef, 'description is undefined');
 }
 
 sub thumbnail_path_method : Test(2) {
@@ -303,11 +305,11 @@ sub stat_functionality_undefined : Test(2) {
 	$self->SUPER::stat_functionality;
 }
 
-sub stat_functionality_crashed : Test(2) {
+sub stat_functionality_crashed : Test(3) {
 	my $self = shift;
-	$self->{mock_image_info_class}->mock('read', sub { die "oh noes too!\n" });
-	# if image info object returns undef, we turn to the stat data supplied on creation
-	$self->SUPER::stat_functionality;
+	$self->{mock_image_info_class}->mock('read', sub { die "oh noes too!" });
+	# if image info object construction fails, we turn to the stat data supplied on creation
+	warning_like { $self->SUPER::stat_functionality } qr{Cannot retrieve image info.*oh noes too}, 'crash when getting stat data produces a warning';
 }
 
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
@@ -318,6 +320,7 @@ use warnings;
 use Test::More;
 use Test::Exception;
 use Test::Files;
+use Test::Warn;
 use Test::HTML::Content;
 use lib 'testlib';
 BEGIN { our @ISA = 'MaMGal::Unit::Entry::Picture' }
@@ -334,18 +337,18 @@ sub class_setting : Test(startup) {
 sub relative_miniature_path
 {
 	my $self = shift;
-	$self->SUPER::relative_miniature_path(@_).'.jpg'
+	$self->SUPER::relative_miniature_path(@_).'.png'
 }
 
 sub _touch {
 	my $self = shift;
-	$self->SUPER::_touch(@_, '.jpg')
+	$self->SUPER::_touch(@_, '.png')
 }
 
 sub call_refresh_miniatures
 {
 	my $self = shift;
-	$self->SUPER::call_refresh_miniatures(@_, '.jpg')
+	$self->SUPER::call_refresh_miniatures(@_, '.png')
 }
 
 sub thumbnail_path_method : Test(2) {
@@ -354,11 +357,80 @@ sub thumbnail_path_method : Test(2) {
 	my @test_file_name = $self->file_name;
 	{
 		my $e = $self->{entry};
-		is($e->thumbnail_path, '.mamgal-thumbnails/'.$test_file_name[1].'.jpg', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '.mamgal-thumbnails/'.$test_file_name[1].'.png', "$class_name thumbnail_path is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		is($e->thumbnail_path, '.mamgal-thumbnails/'.$test_file_name[1].'.jpg', "$class_name thumbnail_path is correct");
+		is($e->thumbnail_path, '.mamgal-thumbnails/'.$test_file_name[1].'.png', "$class_name thumbnail_path is correct");
+	}
+}
+
+sub read_image_method_normal : Test(2)
+{
+	my $self = shift;
+	my $class_name = $self->{class_name};
+	{
+		my $e = $self->{entry};
+		is($e->read_image, $self->{tools}->{mplayer_wrapper}->snapshot, 'read_image got correct image');
+	}
+	{
+		my $e = $self->{entry_no_stat};
+		is($e->read_image, $self->{tools}->{mplayer_wrapper}->snapshot, 'read_image got correct image');
+	}
+}
+
+sub read_image_method_no_mplayer : Test(12)
+{
+	my $self = shift;
+	my $class_name = $self->{class_name};
+	{
+		my $e = $self->{entry};
+		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
+		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::NotAvailableException'); die $e } );
+		my $i;
+		warning_like { $i = $e->read_image; } qr{^mplayer.*not available.*$}, 'reading image without an mplayer produces a warning';
+		ok($i, 'read_image got SOME image');
+		isa_ok($i, 'Image::Magick');
+		warnings_are { $i = $e->read_image; } [], 'reading image without an mplayer on the second time produces no warning';
+		ok($i, 'read_image got SOME image');
+		isa_ok($i, 'Image::Magick');
+	}
+	undef $MaMGal::Entry::Picture::Film::warned_before;
+	{
+		my $e = $self->{entry_no_stat};
+		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
+		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::NotAvailableException'); die $e } );
+		my $i;
+		warning_like { $i = $e->read_image; } qr{^mplayer.*not available.*$}, 'reading image without an mplayer produces a warning';
+		ok($i, 'read_image got SOME image');
+		isa_ok($i, 'Image::Magick');
+		warnings_are { $i = $e->read_image; } [], 'reading image without an mplayer on the second time produces no warning';
+		ok($i, 'read_image got SOME image');
+		isa_ok($i, 'Image::Magick');
+	}
+}
+
+sub read_image_method_error : Test(6)
+{
+	my $self = shift;
+	my $class_name = $self->{class_name};
+	{
+		my $e = $self->{entry};
+		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
+		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::ExecutionFailureException');$e->mock('message', sub { 'la di da' }); die $e } );
+		my $i;
+		warning_like { $i = $e->read_image; } qr{td/one_film/m\.mov.*snapshot.*la di da}, 'image read failure results in a warning';
+		ok($i, 'read_image got SOME image');
+		isa_ok($i, 'Image::Magick');
+	}
+	{
+		my $e = $self->{entry_no_stat};
+		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
+		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::ExecutionFailureException');$e->mock('message', sub { 'la di da' }); die $e } );
+		my $i;
+		warning_like { $i = $e->read_image; } qr{td/one_film/m\.mov.*snapshot.*la di da}, 'image read failure results in a warning';
+		ok($i, 'read_image got SOME image');
+		isa_ok($i, 'Image::Magick');
 	}
 }
 

@@ -6,6 +6,7 @@ package MaMGal;
 use strict;
 use warnings;
 use base 'MaMGal::Base';
+use MaMGal::CommandChecker;
 use MaMGal::Formatter;
 use MaMGal::ImageInfo;
 use MaMGal::LocaleEnv;
@@ -26,7 +27,8 @@ sub init
 	} else {
 		$f = MaMGal::Formatter->new;
 	}
-	my $m = MaMGal::Maker->new($f, MaMGal::MplayerWrapper->new, Image::EXIF::DateTime::Parser->new);
+	my $cc = MaMGal::CommandChecker->new;
+	my $m = MaMGal::Maker->new($f, MaMGal::MplayerWrapper->new($cc), Image::EXIF::DateTime::Parser->new);
 	$self->{maker} = $m;
 }
 

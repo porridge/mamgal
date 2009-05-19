@@ -20,6 +20,6 @@ my $m = MaMGal->new;
 ok($m->make_without_roots('td/one_film'),	"maker returns success on an dir with one film");
 dir_only_contains_ok('td/one_film', [qw(index.html .mamgal-index.png .mamgal-style.css .mamgal-thumbnails .mamgal-slides
 					m.mov
-					.mamgal-thumbnails/m.mov.jpg
+					.mamgal-thumbnails/m.mov.png
 					.mamgal-slides/m.mov.html)],
 						"maker created index.html, .mamgal-thumbnails and .mamgal-slides");

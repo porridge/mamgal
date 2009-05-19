@@ -4,7 +4,7 @@
 package MaMGal::TestHelper;
 use Test::MockObject;
 use lib 'Exporter';
-@EXPORT = qw(get_mock_formatter prepare_test_data);
+@EXPORT = qw(get_mock_formatter get_mock_cc prepare_test_data);
 
 sub get_mock_formatter {
 	my @methods = @_;
@@ -24,6 +24,13 @@ sub get_mock_mplayer_wrapper {
 	$mock_image->mock('Write', sub { system('touch', $_[1] ) });
 	$mmw->mock('snapshot', sub { $mock_image });
 	return $mmw;
+}
+
+sub get_mock_cc($) {
+	my $ret = shift;
+	my $mcc = Test::MockObject->new;
+	$mcc->set_isa('MaMGal::CommandChecker');
+	$mcc->mock('is_available', sub { $ret });
 }
 
 sub prepare_test_data {
