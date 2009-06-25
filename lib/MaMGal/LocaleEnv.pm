@@ -19,6 +19,7 @@ sub init
 		I18N::Langinfo->import(qw(langinfo CODESET));
 	};
 	if ($@) {
+		# XXX logger->log_message
 		warn "nl_langinfo(CODESET) is not available. ANSI_X3.4-1968 (a.k.a. US-ASCII) will be used as HTML encoding. $@";
 		$self->{get_codeset} = sub { "ANSI_X3.4-1968" };
 	} else {
