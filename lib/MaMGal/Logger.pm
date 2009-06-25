@@ -13,4 +13,11 @@ sub init
 	my $self = shift;
 }
 
+sub log_message
+{
+	my $self = shift;
+	my $msg = shift;
+	warn $msg."\n";
+}
+
 1;
