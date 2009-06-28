@@ -58,7 +58,7 @@ sub canonicalize_path($)
 
 sub create_entry_for
 {
-	shift;
+	my $self = shift;
 	my $path_arg = shift or croak "Need path"; # absolute, or relative to CWD
 	croak "Need 1 arg, got more: [$_[0]]" if @_;
 
@@ -69,21 +69,24 @@ sub create_entry_for
 		$stat = stat($path);
 	}
 
+	my $e;
 	if (not $stat) {
-		MaMGal::Entry::BrokenSymlink->new($dirname, $basename, $lstat)
+		$e = MaMGal::Entry::BrokenSymlink->new($dirname, $basename, $lstat)
 
 	} elsif ($stat->mode & S_IFDIR) {
-		MaMGal::Entry::Dir->new($dirname, $basename, $stat)
+		$e = MaMGal::Entry::Dir->new($dirname, $basename, $stat)
 
 	} elsif (($stat->mode & S_IFREG) and sounds_like_picture($path)) {
-		MaMGal::Entry::Picture::Static->new($dirname, $basename, $stat)
+		$e = MaMGal::Entry::Picture::Static->new($dirname, $basename, $stat)
 
 	} elsif (($stat->mode & S_IFREG) and sounds_like_film($path)) {
-		MaMGal::Entry::Picture::Film->new($dirname, $basename, $stat)
+		$e = MaMGal::Entry::Picture::Film->new($dirname, $basename, $stat)
 
 	} else {
-		MaMGal::Entry::NonPicture->new($dirname, $basename, $stat)
+		$e = MaMGal::Entry::NonPicture->new($dirname, $basename, $stat)
 	}
+	$e->add_tools({entry_factory => $self});
+	return $e;
 }
 
 1;
