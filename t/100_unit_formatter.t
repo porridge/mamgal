@@ -18,8 +18,7 @@ my $f;
 lives_ok(sub { $f = MaMGal::Formatter->new },		"formatter can be created without any arg");
 dies_ok(sub { MaMGal::Formatter->new(1) },		"formatter can not be created some junk parameter");
 
-my $le = Test::MockObject->new;
-$le->set_isa('MaMGal::LocaleEnv');
+my $le = get_mock_localeenv;
 $le->mock('get_charset', sub { 'UTF-8' });
 $le->mock('format_time', sub { $_[1] == 1227684276 ? '12:00:00' : '13:13:13' });
 $le->mock('format_date', sub { $_[1] == 1227684276 ? '18 gru 2004' : '2 kwi 2004' });

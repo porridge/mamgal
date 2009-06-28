@@ -4,7 +4,7 @@
 package MaMGal::TestHelper;
 use Test::MockObject;
 use lib 'Exporter';
-@EXPORT = qw(get_mock_formatter get_mock_cc prepare_test_data);
+@EXPORT = qw(get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data);
 
 sub get_mock_formatter {
 	my @methods = @_;
@@ -12,6 +12,16 @@ sub get_mock_formatter {
 	$mf->set_isa('MaMGal::Formatter');
 	$mf->mock($_, sub { "whatever" }) for @methods;
 	return $mf;
+}
+
+sub get_mock_localeenv {
+	my $ml = Test::MockObject->new();
+	$ml->set_isa('MaMGal::LocaleEnv');
+	$ml->mock('get_charset', sub { "ISO-8859-123" });
+	$ml->mock('set_locale');
+	$ml->mock('format_time', sub { "12:12:12" });
+	$ml->mock('format_date', sub { "18 dec 2004" });
+	return $ml;
 }
 
 sub get_mock_mplayer_wrapper {
