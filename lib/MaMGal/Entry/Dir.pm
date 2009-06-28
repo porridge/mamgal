@@ -176,7 +176,7 @@ sub _prune_inactive_files
 	my @known_subdirs = ($self->slides_dir, $self->thumbnails_dir, $self->medium_dir);
 	# first, sanity check so we know if we start creating files outside the known subdirs
 	foreach my $f (@$active_files) {
-		die "internal error [$f] has an unknown prefix" unless
+		die "internal error: [$f] has an unknown prefix" unless
 			substr($f, 0, length($known_subdirs[0]) + 1) eq $known_subdirs[0].'/' or
 			substr($f, 0, length($known_subdirs[1]) + 1) eq $known_subdirs[1].'/' or
 			substr($f, 0, length($known_subdirs[2]) + 1) eq $known_subdirs[2].'/';
@@ -190,6 +190,7 @@ sub _prune_inactive_files
 		opendir DIR, $base.'/'.$dir or die "[$base/$dir]: $!\n";
 		my @entries = grep { $_ ne '.' and $_ ne '..' } readdir DIR;
 		closedir DIR or die "[$base/$dir]: $!\n";
+		# Delete the files which are not "active"
 		my $at_start = scalar @entries;
 		my $deleted = 0;
 		foreach my $entry (@entries) {
@@ -198,7 +199,7 @@ sub _prune_inactive_files
 				$deleted++;
 			}
 		}
-		rmdir($base.'/'.$dir) or die "rmdir $base/$dir: $!\n" if $at_start - $deleted == 0;
+		rmdir($base.'/'.$dir) or die "rmdir $base/$dir: $!\n" if $at_start == $deleted;
 	}
 }
 
