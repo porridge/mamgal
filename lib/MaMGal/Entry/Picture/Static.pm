@@ -14,7 +14,7 @@ sub init
 {
 	my $self = shift;
 	$self->SUPER::init(@_);
-	$self->{image_info_class} = 'MaMGal::ImageInfo';
+	$self->{image_info_class} = 'MaMGal::ImageInfoFactory';
 }
 
 sub refresh_scaled_pictures

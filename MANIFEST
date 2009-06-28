@@ -29,7 +29,7 @@ lib/MaMGal/VideoIcon.pm
 lib/MaMGal/EntryFactory.pm
 lib/MaMGal/Entry.pm
 lib/MaMGal/Formatter.pm
-lib/MaMGal/ImageInfo.pm
+lib/MaMGal/ImageInfoFactory.pm
 lib/MaMGal/ImageInfo/Base.pm
 lib/MaMGal/ImageInfo/ExifTool.pm
 lib/MaMGal/ImageInfo/ImageInfo.pm

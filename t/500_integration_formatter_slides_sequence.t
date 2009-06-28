@@ -10,7 +10,7 @@ use Test::HTML::Content;
 use lib 'testlib';
 use MaMGal::TestHelper;
 use Image::EXIF::DateTime::Parser;
-use MaMGal::ImageInfo;
+use MaMGal::ImageInfoFactory;
 
 prepare_test_data;
 

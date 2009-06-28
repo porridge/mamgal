@@ -15,7 +15,7 @@ use Peco::Container;
 use MaMGal::CommandChecker;
 use MaMGal::EntryFactory;
 use MaMGal::Formatter;
-use MaMGal::ImageInfo;
+use MaMGal::ImageInfoFactory;
 use MaMGal::LocaleEnv;
 use MaMGal::Maker;
 use MaMGal::MplayerWrapper;

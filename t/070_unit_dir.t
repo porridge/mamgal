@@ -167,7 +167,7 @@ BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
 use MaMGal::TestHelper;
 use File::stat;
 # TODO: this should be mocked or something
-use MaMGal::ImageInfo;
+use MaMGal::ImageInfoFactory;
 
 sub class_setting : Test(startup) {
 	my $self = shift;

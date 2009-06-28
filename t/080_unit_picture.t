@@ -238,7 +238,7 @@ sub class_setting : Test(startup) {
 
 sub image_info_class_injection : Test(setup => 1) {
 	my $self = shift;
-	is($self->{entry}->{image_info_class}, 'MaMGal::ImageInfo', 'default image info class is correct');
+	is($self->{entry}->{image_info_class}, 'MaMGal::ImageInfoFactory', 'default image info class is correct');
 	$self->{mock_image_info_class} = Test::MockObject->new;
 	$self->{entry}->{image_info_class} = $self->{mock_image_info_class};
 

@@ -3,7 +3,7 @@
 # See the README file for license information
 # A factory class for the image info library wrappers, makes it possible to
 # decouple the rest of the program from particular implementation.
-package MaMGal::ImageInfo;
+package MaMGal::ImageInfoFactory;
 use strict;
 use warnings;
 use base 'MaMGal::Base';

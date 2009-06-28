@@ -22,23 +22,23 @@ sub _dir_preparation : Test(startup) {
 # This should be done in a BEGIN, but then planning the test count is difficult.
 # However we are not using function prototypes, so it does not matter much.
 sub _class_usage : Test(startup => 1) {
-	use_ok('MaMGal::ImageInfo') or $_[0]->BAILOUT("Class use failed");
+	use_ok('MaMGal::ImageInfoFactory') or $_[0]->BAILOUT("Class use failed");
 }
 
 sub creation_aborts : Test(startup => 2) {
 	my $self = shift;
-	dies_ok(sub { MaMGal::ImageInfo->read }, 'dies without an arg');
-	dies_ok(sub { MaMGal::ImageInfo->read('td') }, 'dies with a non-picture');
+	dies_ok(sub { MaMGal::ImageInfoFactory->read }, 'dies without an arg');
+	dies_ok(sub { MaMGal::ImageInfoFactory->read('td') }, 'dies with a non-picture');
 }
 
 sub creation : Test(setup) {
 	my $self = shift;
-	$self->{jpg} = MaMGal::ImageInfo->read('td/varying_datetimes.jpg');
-	$self->{jpg_no_0x9003} = MaMGal::ImageInfo->read('td/without_0x9003.jpg');
-	$self->{jpg_no_0x9003_0x9004} = MaMGal::ImageInfo->read('td/without_0x9003_0x9004.jpg');
-	$self->{jpg_no_0x9003_0x9004_0x0132} = MaMGal::ImageInfo->read('td/without_0x9003_0x9004_0x0132.jpg');
-	$self->{png_nodesc} = MaMGal::ImageInfo->read('td/more/b.png');
-	$self->{png_desc} = MaMGal::ImageInfo->read('td/more/a.png');
+	$self->{jpg} = MaMGal::ImageInfoFactory->read('td/varying_datetimes.jpg');
+	$self->{jpg_no_0x9003} = MaMGal::ImageInfoFactory->read('td/without_0x9003.jpg');
+	$self->{jpg_no_0x9003_0x9004} = MaMGal::ImageInfoFactory->read('td/without_0x9003_0x9004.jpg');
+	$self->{jpg_no_0x9003_0x9004_0x0132} = MaMGal::ImageInfoFactory->read('td/without_0x9003_0x9004_0x0132.jpg');
+	$self->{png_nodesc} = MaMGal::ImageInfoFactory->read('td/more/b.png');
+	$self->{png_desc} = MaMGal::ImageInfoFactory->read('td/more/a.png');
 }
 
 sub description_method : Test(6) {

@@ -12,7 +12,7 @@ use lib 'testlib';
 use MaMGal::TestHelper;
 use File::stat;
 use Image::EXIF::DateTime::Parser;
-use MaMGal::ImageInfo;
+use MaMGal::ImageInfoFactory;
 use MaMGal::EntryFactory;
 
 prepare_test_data;
