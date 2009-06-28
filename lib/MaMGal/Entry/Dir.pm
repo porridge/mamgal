@@ -208,6 +208,11 @@ sub elements
 	# Lookup the cache
 	return @{$self->{elements}} if exists $self->{elements};
 
+	# Get entry factory
+	my $tools = $self->tools or croak "Tools were not injected";
+	my $entry_factory = $tools->{entry_factory} or croak "Entry factory required\n";
+	ref $entry_factory and $entry_factory->isa('MaMGal::EntryFactory') or croak "[$entry_factory] is not an entry factory";
+
 	# Read the names from the dir
 	my $path = $self->{path_name};
 	opendir DIR, $path or die "[$path]: $!\n";
@@ -218,11 +223,9 @@ sub elements
 	# Instantiate objects and cache them
 	$self->{elements} = [ map {
 			$_ = $path.'/'.$_ ;
-			croak "undefined entry_factory" unless defined $self->{tools}->{entry_factory};
-			my $e = $self->{tools}->{entry_factory}->create_entry_for($_);
+			my $e = $entry_factory->create_entry_for($_);
 			$e->set_element_index($i++);
 			$e->set_container($self);
-			$e->add_tools($self->{tools});
 			$e
 		} @entries
 	];

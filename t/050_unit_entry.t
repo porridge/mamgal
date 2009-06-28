@@ -84,7 +84,7 @@ sub _tools_methods : Test(setup => 4) {
 		my $e = $self->{entry};
 		my $class_name = $self->{class_name};
 		my $tools_hashref = {
-			exif_dtparser => Test::MockObject->new->mock('parse'),
+			exif_dtparser => get_mock_datetime_parser,
 			entry_factory => $mock_ef,
 		};
 		is_deeply($e->tools, {}, "newly created entry has an empty tools hash");

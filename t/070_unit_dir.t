@@ -27,11 +27,11 @@ sub unmocked_entry_factory_for_dirs : Test(setup => 0) {
 	my $self = shift;
 	{
 		my $e = $self->{entry};
-		$e->add_tools({entry_factory => MaMGal::EntryFactory->new});
+		$e->add_tools({entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, get_mock_datetime_parser)});
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		$e->add_tools({entry_factory => MaMGal::EntryFactory->new});
+		$e->add_tools({entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, get_mock_datetime_parser)});
 	}
 }
 
@@ -138,7 +138,7 @@ sub valid_make_invocation : Test(5) {
 	my $self = shift;
 	my $d = $self->{entry};
 	my $mf = get_mock_formatter(qw(format stylesheet));
-	$d->tools->{formatter} = $mf;
+	$d->add_tools({formatter => $mf});
 	lives_ok(sub { $d->make },                                   "Dir lives on make invocation");
 	ok($mf->called('format'),                                    "Dir->make calls formatter->format internally");
 	ok($mf->called('stylesheet'),                                "Dir->make calls formatter->stylesheet internally");

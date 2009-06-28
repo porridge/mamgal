@@ -34,8 +34,8 @@ sub init
 	$c->register(datetime_parser => 'Image::EXIF::DateTime::Parser');
 	$c->register(command_checker => 'MaMGal::CommandChecker');
 	$c->register(mplayer_wrapper => 'MaMGal::MplayerWrapper', [qw(command_checker)]);
-	$c->register(entry_factory => 'MaMGal::EntryFactory');
-	$c->register(maker => 'MaMGal::Maker', [qw(formatter mplayer_wrapper datetime_parser entry_factory)]);
+	$c->register(entry_factory => 'MaMGal::EntryFactory', [qw(formatter mplayer_wrapper datetime_parser)]);
+	$c->register(maker => 'MaMGal::Maker', ['entry_factory']);
 	$self->{maker} = $c->service('maker');
 }
 

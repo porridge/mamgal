@@ -21,6 +21,8 @@ use MaMGal::LocaleEnv;
 my $le = MaMGal::LocaleEnv->new;
 $le->set_locale('C');
 my $f = MaMGal::Formatter->new($le);
+my $edtp = Image::EXIF::DateTime::Parser->new;
+my $ef = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, $edtp);
 
 #
 # a dir with a single pic _without_ description
@@ -28,13 +30,7 @@ my $f = MaMGal::Formatter->new($le);
 
 my $time = 1228933448;
 utime($time, $time, 'td/more/zzz another subdir/p.png') == 1 or die "Failed to touch file";
-my $dir_nd = MaMGal::EntryFactory->create_entry_for('td/more/zzz another subdir');
-# XXX dtparser from factory
-my $tools = {
-	exif_dtparser => Image::EXIF::DateTime::Parser->new,
-	entry_factory => MaMGal::EntryFactory->new,
-};
-$dir_nd->add_tools($tools);
+my $dir_nd = $ef->create_entry_for('td/more/zzz another subdir');
 
 # this is p.png, which has no description
 my $p_nd = ($dir_nd->elements)[0];
@@ -71,9 +67,7 @@ text_ok($ct_p_nd, 'p.png',                           "cell contains filename");
 # a dir with a single pic _with_ description
 #
 
-my $d = MaMGal::EntryFactory->create_entry_for('td/one_pic');
-# XXX from factory
-$d->add_tools($tools);
+my $d = $ef->create_entry_for('td/one_pic');
 my $t;
 lives_ok(sub { $t = $f->format($d) },             "formatter formats index page with one picture");
 tag_ok($t, "a", { href => '.mamgal-slides/a1.png.html' }, "there is a link to the slide");
@@ -81,9 +75,7 @@ tag_ok($t, "img", { src => '.mamgal-thumbnails/a1.png' }, "there is a pic on the
 text_ok($t, 'Another test image.',                 "contains description");
 no_text($t, 'a1.png',                              "does not contain filename alone");
 
-my $p = MaMGal::EntryFactory->create_entry_for('td/one_pic/a1.png');
-# XXX from factory
-$p->add_tools($tools);
+my $p = $ef->create_entry_for('td/one_pic/a1.png');
 
 my $st;
 lives_ok(sub { $st = $f->format_slide($p) },      "formatter formats a slide");

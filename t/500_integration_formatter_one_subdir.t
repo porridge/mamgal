@@ -16,7 +16,7 @@ use MaMGal::Formatter;
 my $f = MaMGal::Formatter->new;
 
 use MaMGal::EntryFactory;
-my $d = MaMGal::EntryFactory->create_entry_for('td/one_dir');
+my $d = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, get_mock_datetime_parser)->create_entry_for('td/one_dir');
 $d->set_root(1);
 my $t = $f->format($d);
 text_ok($t, 'one_dir',					"there is the directory name");

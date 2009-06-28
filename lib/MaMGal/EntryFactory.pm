@@ -19,6 +19,20 @@ use Fcntl ':mode';
 use Cwd;
 use Locale::gettext;
 
+sub init
+{
+	my $self = shift;
+	my $formatter = shift or croak "Need a formatter arg";
+	ref $formatter and $formatter->isa('MaMGal::Formatter') or croak "Arg is not a formatter, but a [$formatter]";
+	my $mplayer_wrapper = shift or croak "Need an mplayer wrapper arg";
+	ref $mplayer_wrapper and $mplayer_wrapper->isa('MaMGal::MplayerWrapper') or croak "Arg is not an mplayer wrapper, but a [$mplayer_wrapper]";
+	my $exif_dtparser = shift or croak "Need an EXIF DateTimeParser arg ";
+	ref $exif_dtparser and $exif_dtparser->isa('Image::EXIF::DateTime::Parser') or croak "Arg is not an Image::EXIF::DateTime::Parser, but a [$exif_dtparser]";
+	$self->{formatter} = $formatter;
+	$self->{mplayer_wrapper} = $mplayer_wrapper;
+	$self->{exif_dtparser} = $exif_dtparser;
+}
+
 sub sounds_like_picture($)
 {
 	my $base_name = shift;
@@ -85,7 +99,7 @@ sub create_entry_for
 	} else {
 		$e = MaMGal::Entry::NonPicture->new($dirname, $basename, $stat)
 	}
-	$e->add_tools({entry_factory => $self});
+	$e->add_tools({ entry_factory => $self, map { $_ => $self->{$_} } qw(formatter mplayer_wrapper exif_dtparser) });
 	return $e;
 }
 

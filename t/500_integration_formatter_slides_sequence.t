@@ -16,15 +16,11 @@ prepare_test_data;
 
 use MaMGal::Formatter;
 use MaMGal::EntryFactory;
-my $d = MaMGal::EntryFactory->create_entry_for('td/more');
-my $tools = {
-	exif_dtparser => Image::EXIF::DateTime::Parser->new,
-	entry_factory => MaMGal::EntryFactory->new,
-};
-# XXX from factory
-$d->add_tools($tools);
-
+my $edtp = Image::EXIF::DateTime::Parser->new,
 my $f = MaMGal::Formatter->new;
+my $ef = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, $edtp);
+my $d = $ef->create_entry_for('td/more');
+
 my @elems = $d->elements;
 my $p = $elems[1];
 my $t = $f->format_slide($p);
