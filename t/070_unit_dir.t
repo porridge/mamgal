@@ -35,8 +35,9 @@ sub unmocked_entry_factory_for_dirs : Test(setup => 0) {
 	}
 }
 
-sub container_method : Test(0) {
+sub container_method : Test(1) {
 	# this is not mocked for Dir tests
+	ok(1);
 }
 
 sub side_length_method : Test(10) {
