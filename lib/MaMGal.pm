@@ -6,6 +6,12 @@ package MaMGal;
 use strict;
 use warnings;
 use base 'MaMGal::Base';
+our $VERSION = '0.01';
+use Carp;
+use Image::EXIF::DateTime::Parser;
+use Locale::gettext;
+use Peco::Container;
+
 use MaMGal::CommandChecker;
 use MaMGal::EntryFactory;
 use MaMGal::Formatter;
@@ -13,11 +19,6 @@ use MaMGal::ImageInfo;
 use MaMGal::LocaleEnv;
 use MaMGal::Maker;
 use MaMGal::MplayerWrapper;
-use Image::EXIF::DateTime::Parser;
-use Carp;
-use Peco::Container;
-our $VERSION = '0.01';
-use Locale::gettext;
 
 sub init
 {
