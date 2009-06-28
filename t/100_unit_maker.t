@@ -29,7 +29,7 @@ dies_ok(sub { MaMGal::Maker->new($f, $w, $p) },	"maker creation fails with just 
 my $mock_entry = Test::MockObject->new
 	->mock('set_root')
 	->mock('make')
-	->mock('set_tools');
+	->mock('add_tools');
 my $ef = Test::MockObject->new
 	->mock('create_entry_for', sub { $mock_entry });
 $ef->set_isa('MaMGal::EntryFactory');
@@ -44,7 +44,7 @@ my ($method, $args) = $ef->next_call;
 is($method, 'create_entry_for', 'create_entry_for called on the factory');
 is($args->[1], 'td/empty', 'correct path passed to the factory');
 ok(! $mock_entry->called('set_root'), 'root not set');
-$mock_entry->called_ok('set_tools', 'tools set');
+$mock_entry->called_ok('add_tools', 'tools set');
 $mock_entry->clear;
 
 ok($m->make_roots('td/empty'),			"maker returns success on an empty dir");
@@ -52,6 +52,6 @@ ok($m->make_roots('td/empty'),			"maker returns success on an empty dir");
 is($method, 'create_entry_for', 'create_entry_for called on the factory');
 is($args->[1], 'td/empty', 'correct path passed to the factory');
 $mock_entry->called_ok('set_root', 'root set');
-$mock_entry->called_ok('set_tools', 'tools set');
+$mock_entry->called_ok('add_tools', 'tools set');
 $mock_entry->clear;
 

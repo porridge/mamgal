@@ -29,14 +29,6 @@ sub init
 	$self->{tools}     = {};
 }
 
-sub set_tools
-{
-	my $self = shift;
-	my $tools = shift;
-	$self->{tools} = $tools;
-	$self;
-}
-
 sub add_tools
 {
 	my $self = shift;

@@ -34,7 +34,7 @@ my $tools = {
 	exif_dtparser => Image::EXIF::DateTime::Parser->new,
 	entry_factory => MaMGal::EntryFactory->new,
 };
-$dir_nd->set_tools($tools);
+$dir_nd->add_tools($tools);
 
 # this is p.png, which has no description
 my $p_nd = ($dir_nd->elements)[0];
@@ -73,7 +73,7 @@ text_ok($ct_p_nd, 'p.png',                           "cell contains filename");
 
 my $d = MaMGal::EntryFactory->create_entry_for('td/one_pic');
 # XXX from factory
-$d->set_tools($tools);
+$d->add_tools($tools);
 my $t;
 lives_ok(sub { $t = $f->format($d) },             "formatter formats index page with one picture");
 tag_ok($t, "a", { href => '.mamgal-slides/a1.png.html' }, "there is a link to the slide");
@@ -83,7 +83,7 @@ no_text($t, 'a1.png',                              "does not contain filename al
 
 my $p = MaMGal::EntryFactory->create_entry_for('td/one_pic/a1.png');
 # XXX from factory
-$p->set_tools($tools);
+$p->add_tools($tools);
 
 my $st;
 lives_ok(sub { $st = $f->format_slide($p) },      "formatter formats a slide");

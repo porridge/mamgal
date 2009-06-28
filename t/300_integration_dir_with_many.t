@@ -36,7 +36,7 @@ my $tools = {
 	exif_dtparser => Image::EXIF::DateTime::Parser->new,
 	entry_factory => MaMGal::EntryFactory->new,
 };
-$d->set_tools($tools);
+$d->add_tools($tools);
 
 my @ret = $d->elements;
 is(scalar(@ret), 5,						"dir contains 5 elements");
@@ -91,10 +91,10 @@ is($creation_time_range[0], $time_old, "First time in the range is equal to the 
 is($creation_time_range[1], $time_past, "Second time in the range is equal to the one of the newer picture");
 
 my $subdir_interesting = MaMGal::Entry::Dir->new(qw(td/more/subdir interesting), stat('td/more/subdir/interesting'));
-$subdir_interesting->set_tools($tools);
+$subdir_interesting->add_tools($tools);
 ok($subdir_interesting->is_interesting, 'interesting dir is interesting');
 my $subdir_uninteresting = MaMGal::Entry::Dir->new(qw(td/more/subdir uninteresting), stat('td/more/subdir/uninteresting'));
-$subdir_uninteresting->set_tools($tools);
+$subdir_uninteresting->add_tools($tools);
 ok(! $subdir_uninteresting->is_interesting, 'uninteresting dir is uninteresting');
 
 #my ($one_pic_entry) = $d->elements();

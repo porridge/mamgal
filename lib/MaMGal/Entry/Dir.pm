@@ -222,7 +222,7 @@ sub elements
 			my $e = $self->{tools}->{entry_factory}->create_entry_for($_);
 			$e->set_element_index($i++);
 			$e->set_container($self);
-			$e->set_tools($self->{tools});
+			$e->add_tools($self->{tools});
 			$e
 		} @entries
 	];

@@ -55,7 +55,7 @@ sub _make_any
 	my @dirs = map {
 		my $d = $self->{entry_factory}->create_entry_for($_);
 		$d->set_root(1) if $dirs_are_roots;
-		$d->set_tools($tools);
+		$d->add_tools($tools);
 		$d
 	} @_;
 	$_->make foreach @dirs;

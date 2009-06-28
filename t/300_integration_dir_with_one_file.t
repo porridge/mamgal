@@ -29,7 +29,7 @@ lives_ok(sub { $d = MaMGal::Entry::Dir->new(qw(td one_pic), stat('td/one_pic')) 
 isa_ok($d, 'MaMGal::Entry::Dir');
 my $mf = get_mock_formatter(qw(format stylesheet format_slide));
 my $tools = {formatter => $mf, exif_dtparser => Image::EXIF::DateTime::Parser->new, entry_factory => MaMGal::EntryFactory->new};
-$d->set_tools($tools);
+$d->add_tools($tools);
 
 my @ret = $d->elements;
 is(scalar(@ret), 1,						"dir contains one element");

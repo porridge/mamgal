@@ -22,7 +22,7 @@ my $tools = {
 	entry_factory => MaMGal::EntryFactory->new,
 };
 # XXX from factory
-$d->set_tools($tools);
+$d->add_tools($tools);
 
 my $f = MaMGal::Formatter->new;
 my @elems = $d->elements;
