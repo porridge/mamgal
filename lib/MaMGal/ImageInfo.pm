@@ -15,9 +15,9 @@ BEGIN {
 	if (exists $ENV{MAMGAL_FORCE_IMAGEINFO}) {
 		$implementation = $ENV{MAMGAL_FORCE_IMAGEINFO};
 		eval "require $implementation" or die;
-	} elsif (require MaMGal::ImageInfo::ExifTool) {
+	} elsif (eval "require MaMGal::ImageInfo::ExifTool") {
 		$implementation = 'MaMGal::ImageInfo::ExifTool';
-	} elsif (require MaMGal::ImageInfo::ImageInfo) {
+	} elsif (eval "require MaMGal::ImageInfo::ImageInfo") {
 		$implementation = 'MaMGal::ImageInfo::ImageInfo';
 	} else {
 		die "No usable image info library found (tried Image::ExifTool and Image::Info.\n";
