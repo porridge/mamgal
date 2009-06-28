@@ -73,20 +73,36 @@ sub _entry_creation : Test(setup => 4) {
 	}
 }
 
-sub _tools_methods : Test(setup => 4) {
+sub _tools_methods : Test(setup => 14) {
 	my $self = shift;
-	my $tools_hashref = { exif_dtparser => Test::MockObject->new->mock('parse') };
+	my $other_hashref = { other_tool => Test::MockObject->new->mock('frob') };
 	{
 		my $e = $self->{entry};
 		my $class_name = $self->{class_name};
+		my $tools_hashref = { exif_dtparser => Test::MockObject->new->mock('parse') };
+		is_deeply($e->tools, {}, "newly created entry has an empty tools hash");
+		$e->add_tools($other_hashref);
+		ok(exists($e->tools->{other_tool}), "new tool is present");
 		is($e->set_tools($tools_hashref), $e, "tools setting is wrong for $class_name");
-		is($e->tools, $tools_hashref, "tools are not OK for $class_name")
+		is($e->tools, $tools_hashref, "tools replaced for $class_name");
+		ok((! exists($e->tools->{other_tool})), "previous tool is not present");
+		$e->add_tools($other_hashref);
+		is($e->tools, $tools_hashref, "tools hash is still the same");
+		ok(exists($e->tools->{other_tool}), "new tool is present");
 	}
 	{
 		my $e = $self->{entry_no_stat};
 		my $class_name = $self->{class_name};
+		my $tools_hashref = { exif_dtparser => Test::MockObject->new->mock('parse') };
+		is_deeply($e->tools, {}, "newly created entry has an empty tools hash");
+		$e->add_tools($other_hashref);
+		ok(exists($e->tools->{other_tool}), "new tool is present");
 		is($e->set_tools($tools_hashref), $e, "tools setting is wrong for $class_name");
-		is($e->tools, $tools_hashref, "tools are not OK for $class_name")
+		is($e->tools, $tools_hashref, "tools replaced for $class_name");
+		ok((! exists($e->tools->{other_tool})), "previous tool is not present");
+		$e->add_tools($other_hashref);
+		is($e->tools, $tools_hashref, "tools hash is still the same");
+		ok(exists($e->tools->{other_tool}), "new tool is present");
 	}
 }
 

@@ -27,6 +27,7 @@ sub init
 	$self->{base_name} = $basename;
 	$self->{stat}      = $stat;
 	$self->{path_name} = $dirname.'/'.$basename;
+	$self->{tools}     = {};
 }
 
 sub set_tools
@@ -35,6 +36,13 @@ sub set_tools
 	my $tools = shift;
 	$self->{tools} = $tools;
 	$self;
+}
+
+sub add_tools
+{
+	my $self = shift;
+	my $tools = shift;
+	foreach (keys %$tools) { $self->{tools}->{$_} = $tools->{$_} }
 }
 
 sub tools
