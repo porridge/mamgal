@@ -10,7 +10,6 @@ use Carp;
 use MaMGal::Entry::Picture;
 use MaMGal::DirIcon;
 use Image::Magick;
-use MaMGal::EntryFactory;
 
 sub child            { $_[0]->{path_name}.'/'.$_[1]     }
 sub page_path        { $_[0]->{base_name}.'/index.html' }
@@ -219,7 +218,8 @@ sub elements
 	# Instantiate objects and cache them
 	$self->{elements} = [ map {
 			$_ = $path.'/'.$_ ;
-			my $e = MaMGal::EntryFactory->create_entry_for($_);
+			croak "undefined entry_factory" unless defined $self->{tools}->{entry_factory};
+			my $e = $self->{tools}->{entry_factory}->create_entry_for($_);
 			$e->set_element_index($i++);
 			$e->set_container($self);
 			$e->set_tools($self->{tools});

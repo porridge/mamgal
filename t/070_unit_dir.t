@@ -16,10 +16,27 @@ BEGIN { do 't/060_unit_nonpicture.t' }
 
 use MaMGal::TestHelper;
 use File::stat;
+use MaMGal::EntryFactory;
 
 sub class_setting : Test(startup) {
 	my $self = shift;
 	$self->{class_name} = 'MaMGal::Entry::Dir';
+}
+
+sub unmocked_entry_factory_for_dirs : Test(setup => 0) {
+	my $self = shift;
+	{
+		my $e = $self->{entry};
+		$e->add_tools({entry_factory => MaMGal::EntryFactory->new});
+	}
+	{
+		my $e = $self->{entry_no_stat};
+		$e->add_tools({entry_factory => MaMGal::EntryFactory->new});
+	}
+}
+
+sub container_method : Test(0) {
+	# this is not mocked for Dir tests
 }
 
 sub side_length_method : Test(10) {

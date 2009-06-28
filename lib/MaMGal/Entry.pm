@@ -9,7 +9,6 @@ use base 'MaMGal::Base';
 use Carp;
 use File::Basename;
 use File::stat;
-use MaMGal::EntryFactory;
 
 sub init
 {
@@ -64,7 +63,7 @@ sub container
 	unless (defined $self->{container}) {
 		# TODO this will lead to creation of a strange split tree if it
 		# is traversed again from container to this child
-		$self->set_container(MaMGal::EntryFactory->create_entry_for($self->{dir_name}));
+		$self->set_container($self->tools->{entry_factory}->create_entry_for($self->{dir_name}));
 	}
 	return $self->{container};
 }

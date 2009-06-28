@@ -29,8 +29,11 @@ my $f = MaMGal::Formatter->new($le);
 my $time = 1228933448;
 utime($time, $time, 'td/more/zzz another subdir/p.png') == 1 or die "Failed to touch file";
 my $dir_nd = MaMGal::EntryFactory->create_entry_for('td/more/zzz another subdir');
-# XXX from factory
-my $tools = {exif_dtparser => Image::EXIF::DateTime::Parser->new};
+# XXX dtparser from factory
+my $tools = {
+	exif_dtparser => Image::EXIF::DateTime::Parser->new,
+	entry_factory => MaMGal::EntryFactory->new,
+};
 $dir_nd->set_tools($tools);
 
 # this is p.png, which has no description

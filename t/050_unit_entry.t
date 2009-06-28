@@ -76,10 +76,18 @@ sub _entry_creation : Test(setup => 4) {
 sub _tools_methods : Test(setup => 14) {
 	my $self = shift;
 	my $other_hashref = { other_tool => Test::MockObject->new->mock('frob') };
+	my $dir = $self->{test_file_name}->[0];
+	$self->{mock_container} = Test::MockObject->new
+		->mock('ensure_subdir_exists', sub { mkdir $dir.'/'.$_[1] })
+		->mock('_write_contents_to');
+	my $mock_ef = Test::MockObject->new->mock('create_entry_for', sub { $self->{mock_container} });
 	{
 		my $e = $self->{entry};
 		my $class_name = $self->{class_name};
-		my $tools_hashref = { exif_dtparser => Test::MockObject->new->mock('parse') };
+		my $tools_hashref = {
+			exif_dtparser => Test::MockObject->new->mock('parse'),
+			entry_factory => $mock_ef,
+		};
 		is_deeply($e->tools, {}, "newly created entry has an empty tools hash");
 		$e->add_tools($other_hashref);
 		ok(exists($e->tools->{other_tool}), "new tool is present");
@@ -93,7 +101,10 @@ sub _tools_methods : Test(setup => 14) {
 	{
 		my $e = $self->{entry_no_stat};
 		my $class_name = $self->{class_name};
-		my $tools_hashref = { exif_dtparser => Test::MockObject->new->mock('parse') };
+		my $tools_hashref = {
+			exif_dtparser => Test::MockObject->new->mock('parse'),
+			entry_factory => $mock_ef,
+		};
 		is_deeply($e->tools, {}, "newly created entry has an empty tools hash");
 		$e->add_tools($other_hashref);
 		ok(exists($e->tools->{other_tool}), "new tool is present");
@@ -205,11 +216,11 @@ sub container_method : Test(2) {
 	my $class_name = $self->{class_name};
 	{
 		my $e = $self->{entry};
-		isa_ok($e->container, 'MaMGal::Entry::Dir', "$class_name container is a dir");
+		is($e->container, $self->{mock_container}, "$class_name container is correct");
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		isa_ok($e->container, 'MaMGal::Entry::Dir', "$class_name container is a dir");
+		is($e->container, $self->{mock_container}, "$class_name container is correct");
 	}
 }
 

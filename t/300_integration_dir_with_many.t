@@ -5,13 +5,14 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 38;
+use Test::More tests => 40;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
 use MaMGal::TestHelper;
 use File::stat;
 use Image::EXIF::DateTime::Parser;
+use MaMGal::EntryFactory;
 use MaMGal::ImageInfo;
 use POSIX;
 
@@ -30,7 +31,11 @@ my $d;
 lives_ok(sub { $d = MaMGal::Entry::Dir->new(qw(td more), stat('td/more')) },	"creation ok");
 isa_ok($d, 'MaMGal::Entry::Dir',                                 "a dir is a dir");
 my $mf = get_mock_formatter(qw(format stylesheet));
-my $tools = {formatter => $mf, exif_dtparser => Image::EXIF::DateTime::Parser->new};
+my $tools = {
+	formatter => $mf,
+	exif_dtparser => Image::EXIF::DateTime::Parser->new,
+	entry_factory => MaMGal::EntryFactory->new,
+};
 $d->set_tools($tools);
 
 my @ret = $d->elements;
@@ -41,7 +46,9 @@ is($ret[0]->element_index, 0, 					"pic 0 knows its element index");
 isa_ok($ret[1], 'MaMGal::Entry::Picture::Static');
 is($ret[1]->element_index, 1, 					"pic 1 knows its element index");
 isa_ok($ret[2], 'MaMGal::Entry::Dir');
-is($ret[2]->element_index, 2, 					"pic 2 knows its element index");
+is($ret[2]->element_index, 2, 					"element 2 knows its element index");
+ok(! $ret[2]->is_root,						"element 2 is not root");
+is_deeply([map { $_->name } $ret[2]->containers], [qw(td more)], "element 2 has some container names, in correct order");
 isa_ok($ret[3], 'MaMGal::Entry::Picture::Static');
 is($ret[3]->element_index, 3, 					"pic 3 knows its element index");
 
@@ -84,8 +91,10 @@ is($creation_time_range[0], $time_old, "First time in the range is equal to the 
 is($creation_time_range[1], $time_past, "Second time in the range is equal to the one of the newer picture");
 
 my $subdir_interesting = MaMGal::Entry::Dir->new(qw(td/more/subdir interesting), stat('td/more/subdir/interesting'));
+$subdir_interesting->set_tools($tools);
 ok($subdir_interesting->is_interesting, 'interesting dir is interesting');
 my $subdir_uninteresting = MaMGal::Entry::Dir->new(qw(td/more/subdir uninteresting), stat('td/more/subdir/uninteresting'));
+$subdir_uninteresting->set_tools($tools);
 ok(! $subdir_uninteresting->is_interesting, 'uninteresting dir is uninteresting');
 
 #my ($one_pic_entry) = $d->elements();

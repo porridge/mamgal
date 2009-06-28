@@ -17,7 +17,10 @@ prepare_test_data;
 use MaMGal::Formatter;
 use MaMGal::EntryFactory;
 my $d = MaMGal::EntryFactory->create_entry_for('td/more');
-my $tools = {exif_dtparser => Image::EXIF::DateTime::Parser->new};
+my $tools = {
+	exif_dtparser => Image::EXIF::DateTime::Parser->new,
+	entry_factory => MaMGal::EntryFactory->new,
+};
 # XXX from factory
 $d->set_tools($tools);
 

@@ -101,7 +101,7 @@ sub miniature_writing : Test(3) {
 	ok(-f $path, "$path exists now");
 }
 
-sub slide_writing : Test(3) {
+sub slide_writing : Test(6) {
 	my $self = shift;
 	my $infix = 'test_slide-'.$self->{class_name};
 	use MaMGal::Entry;
@@ -110,7 +110,13 @@ sub slide_writing : Test(3) {
 	ok(! -f $path, "$path does not exist yet");
 	my @ret = $self->call_refresh_slide();
 	is($ret[0], $self->relative_slide_path($infix), "refesh_slide call returns the perhaps-refreshed path");
-	ok(-f $path, "$path exists now");
+	my ($m, $args) = $self->{mock_container}->next_call;
+	is($m, 'ensure_subdir_exists', 'subdir existence was ensured');
+	is($args->[1], $infix, 'correct subdir was requested');
+	($m, $args) = $self->{mock_container}->next_call;
+	is($m, '_write_contents_to', 'slide was written');
+	is($args->[2], $infix.'/'.$self->{test_file_name}->[1].'.html', 'correct slide path was requested');
+	$self->{mock_container}->clear;
 }
 
 sub miniature_not_rewriting : Test(3) {
@@ -161,7 +167,7 @@ sub miniature_refreshing : Test(4) {
 	cmp_ok($stat_after->mtime, '>', $file_mtime, 'refreshed miniature mtime is newer than its source file\'s mtime');
 }
 
-sub slide_refreshing : Test(4) {
+sub slide_refreshing : Test(6) {
 	my $self = shift;
 	my $file_mtime = $self->{entry}->{stat}->mtime;
 	# make the slide older than the source file
@@ -174,9 +180,13 @@ sub slide_refreshing : Test(4) {
 	local $MaMGal::Entry::slides_dir = $infix;
 	my @ret = $self->call_refresh_slide();
 	is($ret[0], $self->relative_slide_path($infix), "refesh_slide call returns the refreshed path");
-	my $stat_after = stat($path) or die "Cannot stat: $!";
-	cmp_ok($stat_after->mtime, '>', $slide_mtime, 'refreshed slide mtime is newer than its previous mtime');
-	cmp_ok($stat_after->mtime, '>', $file_mtime, 'refreshed slide mtime is newer than its source file\'s mtime');
+	my ($m, $args) = $self->{mock_container}->next_call;
+	is($m, 'ensure_subdir_exists', 'subdir existence was ensured');
+	is($args->[1], $infix, 'correct subdir was requested');
+	($m, $args) = $self->{mock_container}->next_call;
+	is($m, '_write_contents_to', 'slide was written');
+	is($args->[2], $infix.'/'.$self->{test_file_name}->[1].'.html', 'correct slide path was requested');
+	$self->{mock_container}->clear;
 }
 
 sub page_path_method : Test(2) {
@@ -322,6 +332,7 @@ use Test::Exception;
 use Test::Files;
 use Test::Warn;
 use Test::HTML::Content;
+use MaMGal::Entry::Picture::Film;
 use lib 'testlib';
 BEGIN { our @ISA = 'MaMGal::Unit::Entry::Picture' }
 

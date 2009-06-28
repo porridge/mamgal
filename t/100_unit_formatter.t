@@ -8,6 +8,7 @@ use Carp 'verbose';
 use Test::More tests => 33;
 use Test::Exception;
 use Test::HTML::Content;
+use Test::MockObject;
 use lib 'testlib';
 use MaMGal::TestHelper;
 
@@ -27,8 +28,14 @@ lives_ok(sub { $f->set_locale_env($le) },               "Formatter accepts a set
 lives_ok(sub { $f = MaMGal::Formatter->new($le) },	"formatter can be created with a locale env parameter");
 isa_ok($f, 'MaMGal::Formatter');
 
-use MaMGal::EntryFactory;
-my $d = MaMGal::EntryFactory->create_entry_for('td/empty');
+my $mock_td = Test::MockObject->new
+	->mock('name', sub { 'td' })
+	->mock('is_root', sub { 1 });
+my $d = Test::MockObject->new
+	->mock('elements', sub { () })
+	->mock('containers', sub { $mock_td })
+	->mock('name', sub { 'empty' })
+	->mock('is_root', sub { 0 });
 dies_ok(sub { $f->format },                             "dies with no args");
 dies_ok(sub { $f->format(1) },                          "dies with non-dir arg");
 dies_ok(sub { $f->format($d, 1) },                      "dies with more than one arg");
