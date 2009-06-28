@@ -16,6 +16,7 @@ use MaMGal::MplayerWrapper;
 use Image::EXIF::DateTime::Parser;
 use Carp;
 our $VERSION = '0.01';
+use Locale::gettext;
 
 sub init
 {
@@ -23,7 +24,8 @@ sub init
 	my $f;
 	if (@_) {
 		my $l = MaMGal::LocaleEnv->new;
-		$l->set_locale('');
+		$l->set_locale($_[0]);
+		textdomain('mamgal');
 		$f = MaMGal::Formatter->new($l);
 	} else {
 		$f = MaMGal::Formatter->new;

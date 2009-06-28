@@ -9,7 +9,6 @@ use base 'MaMGal::Base';
 use Carp;
 use MaMGal::Entry::Dir;
 use MaMGal::Formatter;
-use Locale::gettext;
 
 sub init
 {
@@ -26,10 +25,6 @@ sub init
 	$self->{mplayer_wrapper} = $mplayer_wrapper;
 	$self->{exif_dtparser} = $exif_dtparser;
 	$self->{entry_factory} = $entry_factory;
-	my $le = MaMGal::LocaleEnv->new;
-	$le->set_locale('');
-	$formatter->set_locale_env($le);
-	textdomain('mamgal');
 }
 
 sub make_without_roots
@@ -50,7 +45,6 @@ sub _make_any
 	my $dirs_are_roots = shift;
 	croak "No args" unless @_;
 
-	#my $tools = { formatter => $self->{formatter}, mplayer_wrapper => $self->{mplayer_wrapper}, exif_dtparser => $self->{exif_dtparser}, entry_factory => $self->{entry_factory} };
 	my $tools = { map { $_ => $self->{$_} } qw(formatter mplayer_wrapper exif_dtparser entry_factory) };
 	my @dirs = map {
 		my $d = $self->{entry_factory}->create_entry_for($_);
