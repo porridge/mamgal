@@ -21,10 +21,15 @@ my $time_now  = time;
 my $time_past = POSIX::mktime(25,6,8,17,3,109,0,0,1);
 cmp_ok($time_past + 3600, '<', $time_now, 'your clock is wrong');
 my $time_old  = POSIX::mktime(0,0,0,18,11,104);# in 2004 - "very old"
+my $time_not_oldest = $time_old + 3600;# whatever time between "past" and "old" to keep other entries from interfering
 # touch up the directory and picture with different times
 utime $time_past, $time_past, 'td/more/subdir/p.png'  or die "Touching p.png failed";
 utime $time_old,  $time_old,  'td/more/subdir/p2.png' or die "Touching p2.png failed";
-utime $time_now,  $time_now,  'td/more/subdir'        or die "Touching directory failed";
+utime $time_old,  $time_now,  'td/more/subdir'        or die "Touching directory failed";
+utime $time_not_oldest, $time_not_oldest,  'td/more/subdir/interesting' or die "Touching interesting failed";
+utime $time_not_oldest, $time_not_oldest,  'td/more/subdir/uninteresting' or die "Touching uninteresting failed";
+utime $time_not_oldest, $time_not_oldest,  'td/more/subdir/interesting/b.png' or die "Touching b.png failed";
+utime $time_not_oldest, $time_not_oldest,  'td/more/subdir/uninteresting/bar.txt' or die "Touching bar.txt failed";
 
 use_ok('MaMGal::Entry::Dir');
 my $d;
