@@ -6,6 +6,7 @@ package MaMGal::EntryFactory;
 use strict;
 use warnings;
 use Carp;
+use base 'MaMGal::Base';
 use MaMGal::Entry::Dir;
 use MaMGal::Entry::Picture;
 use MaMGal::Entry::Picture::Static;

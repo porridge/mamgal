@@ -18,6 +18,7 @@ use MaMGal::Formatter;
 use MaMGal::EntryFactory;
 my $d = MaMGal::EntryFactory->create_entry_for('td/more');
 my $tools = {exif_dtparser => Image::EXIF::DateTime::Parser->new};
+# XXX from factory
 $d->set_tools($tools);
 
 my $f = MaMGal::Formatter->new;

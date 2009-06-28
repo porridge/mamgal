@@ -29,6 +29,7 @@ my $f = MaMGal::Formatter->new($le);
 my $time = 1228933448;
 utime($time, $time, 'td/more/zzz another subdir/p.png') == 1 or die "Failed to touch file";
 my $dir_nd = MaMGal::EntryFactory->create_entry_for('td/more/zzz another subdir');
+# XXX from factory
 my $tools = {exif_dtparser => Image::EXIF::DateTime::Parser->new};
 $dir_nd->set_tools($tools);
 
@@ -68,6 +69,7 @@ text_ok($ct_p_nd, 'p.png',                           "cell contains filename");
 #
 
 my $d = MaMGal::EntryFactory->create_entry_for('td/one_pic');
+# XXX from factory
 $d->set_tools($tools);
 my $t;
 lives_ok(sub { $t = $f->format($d) },             "formatter formats index page with one picture");
@@ -77,6 +79,7 @@ text_ok($t, 'Another test image.',                 "contains description");
 no_text($t, 'a1.png',                              "does not contain filename alone");
 
 my $p = MaMGal::EntryFactory->create_entry_for('td/one_pic/a1.png');
+# XXX from factory
 $p->set_tools($tools);
 
 my $st;

@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 33;
+use Test::More tests => 34;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
@@ -14,6 +14,8 @@ use MaMGal::TestHelper;
 prepare_test_data;
 
 use_ok('MaMGal::EntryFactory');
+my $ef;
+lives_ok(sub { $ef = MaMGal::EntryFactory->new },					"EF can be instantiated");
 my $e;
 lives_ok(sub { $e = MaMGal::EntryFactory->create_entry_for('td/empty_file') },		"EF creates entry from empty file");
 isa_ok($e, 'MaMGal::Entry::NonPicture',							"expected entry is a NonPicture");
