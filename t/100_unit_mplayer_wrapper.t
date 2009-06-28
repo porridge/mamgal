@@ -10,7 +10,6 @@ use Test::Exception;
 use Test::HTML::Content;
 use lib 'testlib';
 use MaMGal::TestHelper;
-use MaMGal::LocaleEnv;
 use Image::Magick;
 
 prepare_test_data;
