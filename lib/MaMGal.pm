@@ -15,24 +15,27 @@ use MaMGal::Maker;
 use MaMGal::MplayerWrapper;
 use Image::EXIF::DateTime::Parser;
 use Carp;
+use Peco::Container;
 our $VERSION = '0.01';
 use Locale::gettext;
 
 sub init
 {
 	my $self = shift;
-	my $f;
+	my $c = Peco::Container->new;
 	if (@_) {
-		my $l = MaMGal::LocaleEnv->new;
-		$l->set_locale($_[0]);
+		$c->register(formatter => 'MaMGal::Formatter', [qw(locale_env)]);
+		$c->register(locale_env=> 'MaMGal::LocaleEnv', undef, 'new', {set_locale => $_[0]});
 		textdomain('mamgal');
-		$f = MaMGal::Formatter->new($l);
 	} else {
-		$f = MaMGal::Formatter->new;
+		$c->register(formatter => 'MaMGal::Formatter');
 	}
-	my $cc = MaMGal::CommandChecker->new;
-	my $m = MaMGal::Maker->new($f, MaMGal::MplayerWrapper->new($cc), Image::EXIF::DateTime::Parser->new, MaMGal::EntryFactory->new);
-	$self->{maker} = $m;
+	$c->register(datetime_parser => 'Image::EXIF::DateTime::Parser');
+	$c->register(command_checker => 'MaMGal::CommandChecker');
+	$c->register(mplayer_wrapper => 'MaMGal::MplayerWrapper', [qw(command_checker)]);
+	$c->register(entry_factory => 'MaMGal::EntryFactory');
+	$c->register(maker => 'MaMGal::Maker', [qw(formatter mplayer_wrapper datetime_parser entry_factory)]);
+	$self->{maker} = $c->service('maker');
 }
 
 sub make_roots
