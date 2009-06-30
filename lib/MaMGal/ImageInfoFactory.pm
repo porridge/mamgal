@@ -28,12 +28,15 @@ sub init
 {
 	my $self = shift;
 	my $parser = shift or croak "A Image::EXIF::DateTime::Parser argument is required";
-	if (defined $parser) {
-		ref $parser and $parser->isa('Image::EXIF::DateTime::Parser') or croak "Arg is not an Image::EXIF::DateTime::Parser , but a [$parser]";
-	}
+	ref $parser and $parser->isa('Image::EXIF::DateTime::Parser') or croak "Arg is not an Image::EXIF::DateTime::Parser , but a [$parser]";
+	$self->{parser} = $parser;
 }
 
-# Alias read to new, as the latter seems impossible to mock
-sub read { shift; $implementation->new(@_) }
+sub read {
+	my $self = shift;
+	my $o = $implementation->new(@_);
+	$o->{parser} = $self->{parser};
+	$o
+}
 
 1;

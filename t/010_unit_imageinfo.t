@@ -36,7 +36,9 @@ sub creation_aborts : Test(startup => 4) {
 
 sub creation : Test(setup => 2) {
 	my $self = shift;
-	my $f = MaMGal::ImageInfoFactory->new(get_mock_datetime_parser);
+	my $mpp = get_mock_datetime_parser;
+	$self->{injected_parser} = $mpp;
+	my $f = MaMGal::ImageInfoFactory->new($mpp);
 	ok($f);
 	isa_ok($f, 'MaMGal::ImageInfoFactory');
 	$self->{jpg} = $f->read('td/varying_datetimes.jpg');
@@ -45,6 +47,17 @@ sub creation : Test(setup => 2) {
 	$self->{jpg_no_0x9003_0x9004_0x0132} = $f->read('td/without_0x9003_0x9004_0x0132.jpg');
 	$self->{png_nodesc} = $f->read('td/more/b.png');
 	$self->{png_desc} = $f->read('td/more/a.png');
+}
+
+sub parser_injection : Test(6) {
+	my $self = shift;
+	my $mpp = $self->{injected_parser};
+	is($self->{jpg}->{parser}, $mpp, 'parser was injected correctly by the factory');
+	is($self->{jpg_no_0x9003}->{parser}, $mpp, 'parser was injected correctly by the factory');
+	is($self->{jpg_no_0x9003_0x9004}->{parser}, $mpp, 'parser was injected correctly by the factory');
+	is($self->{jpg_no_0x9003_0x9004_0x0132}->{parser}, $mpp, 'parser was injected correctly by the factory');
+	is($self->{png_nodesc}->{parser}, $mpp, 'parser was injected correctly by the factory');
+	is($self->{png_desc}->{parser}, $mpp, 'parser was injected correctly by the factory');
 }
 
 sub description_method : Test(6) {
