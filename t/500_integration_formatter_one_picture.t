@@ -22,7 +22,7 @@ my $le = MaMGal::LocaleEnv->new;
 $le->set_locale('C');
 my $f = MaMGal::Formatter->new($le);
 my $edtp = Image::EXIF::DateTime::Parser->new;
-my $iif = MaMGal::ImageInfoFactory->new;
+my $iif = MaMGal::ImageInfoFactory->new($edtp);
 my $ef = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, $edtp, $iif);
 
 #

@@ -27,7 +27,7 @@ my $f = MaMGal::Formatter->new($le);
 
 my $time = 1228933448;
 utime($time, $time, 'td/one_film/m.mov') == 1 or die "Failed to touch file";
-my $dir = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, get_mock_datetime_parser, MaMGal::ImageInfoFactory->new)->create_entry_for('td/one_film');
+my $dir = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, get_mock_datetime_parser, MaMGal::ImageInfoFactory->new(get_mock_datetime_parser))->create_entry_for('td/one_film');
 # this is m.mov
 my $mov = ($dir->elements)[0];
 my $t;

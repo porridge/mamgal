@@ -25,16 +25,18 @@ sub _class_usage : Test(startup => 1) {
 	use_ok('MaMGal::ImageInfoFactory') or $_[0]->BAILOUT("Class use failed");
 }
 
-sub creation_aborts : Test(startup => 2) {
+sub creation_aborts : Test(startup => 4) {
 	my $self = shift;
-	my $f = MaMGal::ImageInfoFactory->new;
+	dies_ok(sub { MaMGal::ImageInfoFactory->new });
+	dies_ok(sub { MaMGal::ImageInfoFactory->new('junk') });
+	my $f = MaMGal::ImageInfoFactory->new(get_mock_datetime_parser);
 	dies_ok(sub { $f->read }, 'dies without an arg');
 	dies_ok(sub { $f->read('td') }, 'dies with a non-picture');
 }
 
 sub creation : Test(setup => 2) {
 	my $self = shift;
-	my $f = MaMGal::ImageInfoFactory->new;
+	my $f = MaMGal::ImageInfoFactory->new(get_mock_datetime_parser);
 	ok($f);
 	isa_ok($f, 'MaMGal::ImageInfoFactory');
 	$self->{jpg} = $f->read('td/varying_datetimes.jpg');

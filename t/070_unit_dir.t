@@ -26,9 +26,9 @@ sub class_setting : Test(startup) {
 
 sub unmocked_factories_for_dirs : Test(setup => 0) {
 	my $self = shift;
+	my $iif = MaMGal::ImageInfoFactory->new(get_mock_datetime_parser);
 	{
 		my $e = $self->{entry};
-		my $iif = MaMGal::ImageInfoFactory->new;
 		$e->add_tools({
 			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, get_mock_datetime_parser, $iif),
 			image_info_factory => $iif,
@@ -36,7 +36,6 @@ sub unmocked_factories_for_dirs : Test(setup => 0) {
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		my $iif = MaMGal::ImageInfoFactory->new;
 		$e->add_tools({
 			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, get_mock_datetime_parser, $iif),
 			image_info_factory => $iif,
@@ -175,8 +174,6 @@ BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
 
 use MaMGal::TestHelper;
 use File::stat;
-# TODO: this should be mocked or something
-use MaMGal::ImageInfoFactory;
 
 sub class_setting : Test(startup) {
 	my $self = shift;

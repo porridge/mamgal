@@ -24,6 +24,15 @@ BEGIN {
 	}
 }
 
+sub init
+{
+	my $self = shift;
+	my $parser = shift or croak "A Image::EXIF::DateTime::Parser argument is required";
+	if (defined $parser) {
+		ref $parser and $parser->isa('Image::EXIF::DateTime::Parser') or croak "Arg is not an Image::EXIF::DateTime::Parser , but a [$parser]";
+	}
+}
+
 # Alias read to new, as the latter seems impossible to mock
 sub read { shift; $implementation->new(@_) }
 

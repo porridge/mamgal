@@ -37,7 +37,7 @@ lives_ok(sub { $d = MaMGal::Entry::Dir->new(qw(td more), stat('td/more')) },	"cr
 isa_ok($d, 'MaMGal::Entry::Dir',                                 "a dir is a dir");
 my $mf = get_mock_formatter(qw(format stylesheet));
 my $edtp = Image::EXIF::DateTime::Parser->new;
-my $iif = MaMGal::ImageInfoFactory->new;
+my $iif = MaMGal::ImageInfoFactory->new($edtp);
 my $tools = {
 	formatter => $mf,
 	exif_dtparser => $edtp,

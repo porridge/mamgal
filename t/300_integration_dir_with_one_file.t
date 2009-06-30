@@ -29,7 +29,7 @@ lives_ok(sub { $d = MaMGal::Entry::Dir->new(qw(td one_pic), stat('td/one_pic')) 
 isa_ok($d, 'MaMGal::Entry::Dir');
 my $mf = get_mock_formatter(qw(format stylesheet format_slide));
 my $edtp = Image::EXIF::DateTime::Parser->new;
-my $iif = MaMGal::ImageInfoFactory->new;
+my $iif = MaMGal::ImageInfoFactory->new($edtp);
 my $tools = {
 	formatter => $mf,
 	exif_dtparser => $edtp,
