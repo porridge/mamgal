@@ -27,18 +27,22 @@ sub _class_usage : Test(startup => 1) {
 
 sub creation_aborts : Test(startup => 2) {
 	my $self = shift;
-	dies_ok(sub { MaMGal::ImageInfoFactory->read }, 'dies without an arg');
-	dies_ok(sub { MaMGal::ImageInfoFactory->read('td') }, 'dies with a non-picture');
+	my $f = MaMGal::ImageInfoFactory->new;
+	dies_ok(sub { $f->read }, 'dies without an arg');
+	dies_ok(sub { $f->read('td') }, 'dies with a non-picture');
 }
 
-sub creation : Test(setup) {
+sub creation : Test(setup => 2) {
 	my $self = shift;
-	$self->{jpg} = MaMGal::ImageInfoFactory->read('td/varying_datetimes.jpg');
-	$self->{jpg_no_0x9003} = MaMGal::ImageInfoFactory->read('td/without_0x9003.jpg');
-	$self->{jpg_no_0x9003_0x9004} = MaMGal::ImageInfoFactory->read('td/without_0x9003_0x9004.jpg');
-	$self->{jpg_no_0x9003_0x9004_0x0132} = MaMGal::ImageInfoFactory->read('td/without_0x9003_0x9004_0x0132.jpg');
-	$self->{png_nodesc} = MaMGal::ImageInfoFactory->read('td/more/b.png');
-	$self->{png_desc} = MaMGal::ImageInfoFactory->read('td/more/a.png');
+	my $f = MaMGal::ImageInfoFactory->new;
+	ok($f);
+	isa_ok($f, 'MaMGal::ImageInfoFactory');
+	$self->{jpg} = $f->read('td/varying_datetimes.jpg');
+	$self->{jpg_no_0x9003} = $f->read('td/without_0x9003.jpg');
+	$self->{jpg_no_0x9003_0x9004} = $f->read('td/without_0x9003_0x9004.jpg');
+	$self->{jpg_no_0x9003_0x9004_0x0132} = $f->read('td/without_0x9003_0x9004_0x0132.jpg');
+	$self->{png_nodesc} = $f->read('td/more/b.png');
+	$self->{png_desc} = $f->read('td/more/a.png');
 }
 
 sub description_method : Test(6) {

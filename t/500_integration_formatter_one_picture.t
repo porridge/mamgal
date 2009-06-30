@@ -22,7 +22,8 @@ my $le = MaMGal::LocaleEnv->new;
 $le->set_locale('C');
 my $f = MaMGal::Formatter->new($le);
 my $edtp = Image::EXIF::DateTime::Parser->new;
-my $ef = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, $edtp);
+my $iif = MaMGal::ImageInfoFactory->new;
+my $ef = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, $edtp, $iif);
 
 #
 # a dir with a single pic _without_ description

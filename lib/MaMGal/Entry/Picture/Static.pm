@@ -14,7 +14,6 @@ sub init
 {
 	my $self = shift;
 	$self->SUPER::init(@_);
-	$self->{image_info_class} = 'MaMGal::ImageInfoFactory';
 }
 
 sub refresh_scaled_pictures
@@ -27,7 +26,8 @@ sub image_info
 {
 	my $self = shift;
 	return $self->{image_info} if exists $self->{image_info};
-	$self->{image_info} = eval { $self->{image_info_class}->read($self->{path_name}); };
+	croak 'image info factory not injected' unless defined $self->tools->{image_info_factory};
+	$self->{image_info} = eval { $self->tools->{image_info_factory}->read($self->{path_name}); };
 	warn "Cannot retrieve image info from [".$self->{path_name}."]: ".$@."\n" if $@;
 	return unless $self->{image_info};
 	my $tools = $self->tools or croak "tools not injected";

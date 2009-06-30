@@ -4,7 +4,13 @@
 package MaMGal::TestHelper;
 use Test::MockObject;
 use lib 'Exporter';
-@EXPORT = qw(get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper);
+@EXPORT = qw(get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper);
+
+sub get_mock_iif {
+	my $f = Test::MockObject->new->mock('read', sub { Test::MockObject->new });
+	$f->set_isa('MaMGal::ImageInfoFactory');
+	$f
+}
 
 sub get_mock_datetime_parser {
 	my $p = Test::MockObject->new->mock('parse');

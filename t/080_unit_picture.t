@@ -13,6 +13,7 @@ use Test::HTML::Content;
 use lib 'testlib';
 use File::stat;
 use Image::EXIF::DateTime::Parser;
+use MaMGal::ImageInfoFactory;
 BEGIN { our @ISA = 'MaMGal::Unit::Entry' }
 BEGIN { do 't/050_unit_entry.t' }
 
@@ -22,6 +23,7 @@ sub pre_class_setting : Test(startup) {
 		mplayer_wrapper => MaMGal::TestHelper->get_mock_mplayer_wrapper,
 		formatter => MaMGal::TestHelper->get_mock_formatter('format_slide'),
 		exif_dtparser => Image::EXIF::DateTime::Parser->new,
+		image_info_factory => MaMGal::ImageInfoFactory->new,
 	};
 }
 
@@ -236,36 +238,35 @@ sub class_setting : Test(startup) {
 	$self->{test_file_name} = [qw(td c.jpg)];
 }
 
-sub image_info_class_injection : Test(setup => 1) {
+sub image_info_class_injection : Test(setup => 0) {
 	my $self = shift;
-	is($self->{entry}->{image_info_class}, 'MaMGal::ImageInfoFactory', 'default image info class is correct');
-	$self->{mock_image_info_class} = Test::MockObject->new;
-	$self->{entry}->{image_info_class} = $self->{mock_image_info_class};
+	$self->{mock_image_info_factory} = Test::MockObject->new;
+	$self->{entry}->add_tools({image_info_factory => $self->{mock_image_info_factory}});
 
 	$self->{mock_image_info} = Test::MockObject->new;
-	$self->{mock_image_info_class}->mock('read', sub { $self->{mock_image_info} });
+	$self->{mock_image_info_factory}->mock('read', sub { $self->{mock_image_info} });
 }
 
 sub successful_image_info_object_creation : Test(2) {
 	my $self = shift;
 	my @mocks = ({}, {});
-	$self->{mock_image_info_class}->mock('read', sub { $mocks[0] });
+	$self->{mock_image_info_factory}->mock('read', sub { $mocks[0] });
 	is($self->{entry}->image_info, $mocks[0], 'calling image_info for the first time results in an object creation');
-	$self->{mock_image_info_class}->mock('read', sub { $mocks[1] });
+	$self->{mock_image_info_factory}->mock('read', sub { $mocks[1] });
 	is($self->{entry}->image_info, $mocks[0], 'calling image_info second time results returning a cached object');
 }
 
 sub crashing_image_info_object_creation : Test(6) {
 	my $self = shift;
-	$self->{mock_image_info_class}->mock('read', sub { die "oh my\n"; });
+	$self->{mock_image_info_factory}->mock('read', sub { die "oh my\n"; });
 	my $val;
 	warning_like { $val = $self->{entry}->image_info } qr{^Cannot retrieve image info from \[td/c\.jpg\]: oh my$}, 'crash instantiating an object results in a warning';
 	is($val, undef, 'crash instantiating an object results in undef returned');
-	$self->{mock_image_info_class}->called_ok('read');
-	$self->{mock_image_info_class}->clear;
+	$self->{mock_image_info_factory}->called_ok('read');
+	$self->{mock_image_info_factory}->clear;
 	warnings_are { $val = $self->{entry}->image_info } [], 'no warnings are produced on second image_info call';
 	is($val, undef, 'after one crash, undef is returned by image_info always');
-	ok(! $self->{mock_image_info_class}->called('read'), 'read is not called after it crashed once');
+	ok(! $self->{mock_image_info_factory}->called('read'), 'read is not called after it crashed once');
 }
 
 sub description_method : Test {
@@ -282,7 +283,7 @@ sub description_method_undefined : Test {
 
 sub description_method_crash : Test(2) {
 	my $self = shift;
-	$self->{mock_image_info_class}->mock('read', sub { die "oh noes!\n" });
+	$self->{mock_image_info_factory}->mock('read', sub { die "oh noes!\n" });
 	my $d;
 	warning_like { $d = $self->{entry}->description } qr{Cannot.*oh noes}, 'crash when getting a description produces a warning';
 	is($d, undef, 'description is undefined');
@@ -317,7 +318,7 @@ sub stat_functionality_undefined : Test(2) {
 
 sub stat_functionality_crashed : Test(3) {
 	my $self = shift;
-	$self->{mock_image_info_class}->mock('read', sub { die "oh noes too!" });
+	$self->{mock_image_info_factory}->mock('read', sub { die "oh noes too!" });
 	# if image info object construction fails, we turn to the stat data supplied on creation
 	warning_like { $self->SUPER::stat_functionality } qr{Cannot retrieve image info.*oh noes too}, 'crash when getting stat data produces a warning';
 }

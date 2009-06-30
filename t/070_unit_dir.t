@@ -17,21 +17,30 @@ BEGIN { do 't/060_unit_nonpicture.t' }
 use MaMGal::TestHelper;
 use File::stat;
 use MaMGal::EntryFactory;
+use MaMGal::ImageInfoFactory;
 
 sub class_setting : Test(startup) {
 	my $self = shift;
 	$self->{class_name} = 'MaMGal::Entry::Dir';
 }
 
-sub unmocked_entry_factory_for_dirs : Test(setup => 0) {
+sub unmocked_factories_for_dirs : Test(setup => 0) {
 	my $self = shift;
 	{
 		my $e = $self->{entry};
-		$e->add_tools({entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, get_mock_datetime_parser)});
+		my $iif = MaMGal::ImageInfoFactory->new;
+		$e->add_tools({
+			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, get_mock_datetime_parser, $iif),
+			image_info_factory => $iif,
+		});
 	}
 	{
 		my $e = $self->{entry_no_stat};
-		$e->add_tools({entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, get_mock_datetime_parser)});
+		my $iif = MaMGal::ImageInfoFactory->new;
+		$e->add_tools({
+			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, get_mock_datetime_parser, $iif),
+			image_info_factory => $iif,
+		});
 	}
 }
 
@@ -384,7 +393,7 @@ sub is_intetresting_method : Test(1) { ok(1) }
 package main;
 use Test::More;
 unless (defined caller) {
-	my @classes = map { 'MaMGal::Unit::Entry::Dir::'.$_ } qw(Empty MoreSubdir ARootDir Bin Slash Dot);
+	my @classes = map { 'MaMGal::Unit::Entry::Dir::'.$_ } qw(MoreSubdir Empty ARootDir Bin Slash Dot);
 	my $tests = 0;
 	$tests += $_->expected_tests foreach @classes;
 	plan tests => $tests;
