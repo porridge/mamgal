@@ -266,7 +266,7 @@ sub is_interesting
 sub tile_path
 {
 	my $self = shift;
-	# XXX choice of the first element is arbitrary, there might be a better heuristic
+	# TODO: choice of the first element is arbitrary, there might be a better heuristic
 	$self->_first_interesting_element->tile_path
 }
 
