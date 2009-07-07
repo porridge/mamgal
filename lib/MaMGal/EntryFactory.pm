@@ -26,13 +26,10 @@ sub init
 	ref $formatter and $formatter->isa('MaMGal::Formatter') or croak "Arg is not a formatter, but a [$formatter]";
 	my $mplayer_wrapper = shift or croak "Need an mplayer wrapper arg";
 	ref $mplayer_wrapper and $mplayer_wrapper->isa('MaMGal::MplayerWrapper') or croak "Arg is not an mplayer wrapper, but a [$mplayer_wrapper]";
-	my $exif_dtparser = shift or croak "Need an EXIF DateTimeParser arg ";
-	ref $exif_dtparser and $exif_dtparser->isa('Image::EXIF::DateTime::Parser') or croak "Arg is not an Image::EXIF::DateTime::Parser, but a [$exif_dtparser]";
 	my $image_info_factory = shift or croak "Need an image info factory arg ";
 	ref $image_info_factory and $image_info_factory->isa('MaMGal::ImageInfoFactory') or croak "Arg is not an MaMGal::ImageInfoFactory, but a [$image_info_factory]";
 	$self->{formatter} = $formatter;
 	$self->{mplayer_wrapper} = $mplayer_wrapper;
-	$self->{exif_dtparser} = $exif_dtparser;
 	$self->{image_info_factory} = $image_info_factory;
 }
 
@@ -102,7 +99,7 @@ sub create_entry_for
 	} else {
 		$e = MaMGal::Entry::NonPicture->new($dirname, $basename, $stat)
 	}
-	$e->add_tools({ entry_factory => $self, map { $_ => $self->{$_} } qw(formatter mplayer_wrapper exif_dtparser image_info_factory) });
+	$e->add_tools({ entry_factory => $self, map { $_ => $self->{$_} } qw(formatter mplayer_wrapper image_info_factory) });
 	return $e;
 }
 

@@ -19,7 +19,7 @@ use MaMGal::EntryFactory;
 my $edtp = Image::EXIF::DateTime::Parser->new,
 my $f = MaMGal::Formatter->new;
 my $iif = MaMGal::ImageInfoFactory->new($edtp);
-my $ef = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, $edtp, $iif);
+my $ef = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, $iif);
 my $d = $ef->create_entry_for('td/more');
 
 my @elems = $d->elements;

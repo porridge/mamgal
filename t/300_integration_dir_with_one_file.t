@@ -33,7 +33,7 @@ my $iif = MaMGal::ImageInfoFactory->new($edtp);
 my $tools = {
 	formatter => $mf,
 	exif_dtparser => $edtp,
-	entry_factory => MaMGal::EntryFactory->new($mf, get_mock_mplayer_wrapper, $edtp, $iif),
+	entry_factory => MaMGal::EntryFactory->new($mf, get_mock_mplayer_wrapper, $iif),
 	image_info_factory => $iif,
 };
 $d->add_tools($tools);

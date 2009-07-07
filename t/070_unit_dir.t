@@ -30,14 +30,14 @@ sub unmocked_factories_for_dirs : Test(setup => 0) {
 	{
 		my $e = $self->{entry};
 		$e->add_tools({
-			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, get_mock_datetime_parser, $iif),
+			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, $iif),
 			image_info_factory => $iif,
 		});
 	}
 	{
 		my $e = $self->{entry_no_stat};
 		$e->add_tools({
-			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, get_mock_datetime_parser, $iif),
+			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, $iif),
 			image_info_factory => $iif,
 		});
 	}
