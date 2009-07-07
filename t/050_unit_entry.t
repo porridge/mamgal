@@ -83,10 +83,7 @@ sub _tools_methods : Test(setup => 4) {
 	{
 		my $e = $self->{entry};
 		my $class_name = $self->{class_name};
-		my $tools_hashref = {
-			exif_dtparser => get_mock_datetime_parser,
-			entry_factory => $mock_ef,
-		};
+		my $tools_hashref = { entry_factory => $mock_ef };
 		is_deeply($e->tools, {}, "newly created entry has an empty tools hash");
 		$e->add_tools($tools_hashref);
 		ok(exists($e->tools->{entry_factory}), "new tool is present");
@@ -94,10 +91,7 @@ sub _tools_methods : Test(setup => 4) {
 	{
 		my $e = $self->{entry_no_stat};
 		my $class_name = $self->{class_name};
-		my $tools_hashref = {
-			exif_dtparser => get_mock_datetime_parser,
-			entry_factory => $mock_ef,
-		};
+		my $tools_hashref = { entry_factory => $mock_ef };
 		is_deeply($e->tools, {}, "newly created entry has an empty tools hash");
 		$e->add_tools($tools_hashref);
 		ok(exists($e->tools->{entry_factory}), "new tool is present");

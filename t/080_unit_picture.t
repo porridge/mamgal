@@ -19,12 +19,10 @@ BEGIN { do 't/050_unit_entry.t' }
 
 sub pre_class_setting : Test(startup) {
 	my $self = shift;
-	my $exif_dtparser = Image::EXIF::DateTime::Parser->new;
 	$self->{tools} = {
 		mplayer_wrapper => MaMGal::TestHelper->get_mock_mplayer_wrapper,
 		formatter => MaMGal::TestHelper->get_mock_formatter('format_slide'),
-		exif_dtparser => $exif_dtparser,
-		image_info_factory => MaMGal::ImageInfoFactory->new($exif_dtparser),
+		image_info_factory => MaMGal::ImageInfoFactory->new(Image::EXIF::DateTime::Parser->new),
 	};
 }
 
