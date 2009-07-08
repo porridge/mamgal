@@ -14,6 +14,7 @@ use lib 'testlib';
 use File::stat;
 use Image::EXIF::DateTime::Parser;
 use MaMGal::ImageInfoFactory;
+use MaMGal::TestHelper;
 BEGIN { our @ISA = 'MaMGal::Unit::Entry' }
 BEGIN { do 't/050_unit_entry.t' }
 
@@ -22,7 +23,7 @@ sub pre_class_setting : Test(startup) {
 	$self->{tools} = {
 		mplayer_wrapper => MaMGal::TestHelper->get_mock_mplayer_wrapper,
 		formatter => MaMGal::TestHelper->get_mock_formatter('format_slide'),
-		image_info_factory => MaMGal::ImageInfoFactory->new(Image::EXIF::DateTime::Parser->new),
+		image_info_factory => MaMGal::ImageInfoFactory->new(Image::EXIF::DateTime::Parser->new, get_mock_logger),
 	};
 }
 

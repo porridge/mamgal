@@ -17,7 +17,7 @@ use MaMGal::Formatter;
 use MaMGal::EntryFactory;
 use MaMGal::LocaleEnv;
 use MaMGal::ImageInfoFactory;
-my $le = MaMGal::LocaleEnv->new;
+my $le = MaMGal::LocaleEnv->new(get_mock_logger);
 $le->set_locale('C');
 my $f = MaMGal::Formatter->new($le);
 
@@ -27,7 +27,7 @@ my $f = MaMGal::Formatter->new($le);
 
 my $time = 1228933448;
 utime($time, $time, 'td/one_film/m.mov') == 1 or die "Failed to touch file";
-my $dir = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, MaMGal::ImageInfoFactory->new(get_mock_datetime_parser))->create_entry_for('td/one_film');
+my $dir = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, MaMGal::ImageInfoFactory->new(get_mock_datetime_parser, get_mock_logger), get_mock_logger)->create_entry_for('td/one_film');
 # this is m.mov
 my $mov = ($dir->elements)[0];
 my $t;

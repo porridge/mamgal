@@ -29,7 +29,10 @@ sub init
 	my $self = shift;
 	my $parser = shift or croak "A Image::EXIF::DateTime::Parser argument is required";
 	ref $parser and $parser->isa('Image::EXIF::DateTime::Parser') or croak "Arg is not an Image::EXIF::DateTime::Parser , but a [$parser]";
+	my $logger = shift or croak "A MaMGal::Logger argument is required";
+	ref $logger and $logger->isa('MaMGal::Logger') or croak "Arg is not an MaMGal::Logger, but a [$logger]";
 	$self->{parser} = $parser;
+	$self->{logger} = $logger;
 }
 
 sub read {

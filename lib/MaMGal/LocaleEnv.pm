@@ -13,7 +13,8 @@ use POSIX;
 sub init
 {
 	my $self = shift;
-	croak "No arguments expected" if @_;
+	my $logger = shift or croak "Need a logger arg";
+	ref $logger and $logger->isa('MaMGal::Logger') or croak "Arg is not a MaMGal::Logger , but a [$logger]";
 	eval {
 		require I18N::Langinfo;
 		I18N::Langinfo->import(qw(langinfo CODESET));

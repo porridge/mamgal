@@ -26,16 +26,17 @@ sub init
 	my $c = Peco::Container->new;
 	if (@_) {
 		$c->register(formatter => 'MaMGal::Formatter', [qw(locale_env)]);
-		$c->register(locale_env=> 'MaMGal::LocaleEnv', undef, 'new', {set_locale => $_[0]});
+		$c->register(locale_env=> 'MaMGal::LocaleEnv', [qw(logger)], 'new', {set_locale => $_[0]});
 		textdomain('mamgal');
 	} else {
 		$c->register(formatter => 'MaMGal::Formatter');
 	}
+	$c->register(logger => 'MaMGal::Logger');
 	$c->register(datetime_parser => 'Image::EXIF::DateTime::Parser');
 	$c->register(command_checker => 'MaMGal::CommandChecker');
 	$c->register(mplayer_wrapper => 'MaMGal::MplayerWrapper', [qw(command_checker)]);
-	$c->register(image_info_factory => 'MaMGal::ImageInfoFactory', [qw(datetime_parser)]);
-	$c->register(entry_factory => 'MaMGal::EntryFactory', [qw(formatter mplayer_wrapper image_info_factory)]);
+	$c->register(image_info_factory => 'MaMGal::ImageInfoFactory', [qw(datetime_parser logger)]);
+	$c->register(entry_factory => 'MaMGal::EntryFactory', [qw(formatter mplayer_wrapper image_info_factory logger)]);
 	$c->register(maker => 'MaMGal::Maker', ['entry_factory']);
 	$self->{maker} = $c->service('maker');
 }
