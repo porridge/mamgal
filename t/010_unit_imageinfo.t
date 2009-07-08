@@ -25,20 +25,22 @@ sub _class_usage : Test(startup => 1) {
 	use_ok('MaMGal::ImageInfoFactory') or $_[0]->BAILOUT("Class use failed");
 }
 
-sub creation_aborts : Test(startup => 4) {
+sub creation_aborts : Test(startup => 6) {
 	my $self = shift;
-	dies_ok(sub { MaMGal::ImageInfoFactory->new });
-	dies_ok(sub { MaMGal::ImageInfoFactory->new('junk') });
-	my $f = MaMGal::ImageInfoFactory->new(get_mock_datetime_parser);
-	dies_ok(sub { $f->read }, 'dies without an arg');
-	dies_ok(sub { $f->read('td') }, 'dies with a non-picture');
+	dies_ok(sub { MaMGal::ImageInfoFactory->new },                           'new dies without args');
+	dies_ok(sub { MaMGal::ImageInfoFactory->new('junk') },                   'new dies with a junk arg');
+	dies_ok(sub { MaMGal::ImageInfoFactory->new(get_mock_datetime_parser) }, 'new dies without logger');
+	dies_ok(sub { MaMGal::ImageInfoFactory->new(get_mock_datetime_parser, 'junk') }, 'new dies without logger');
+	my $f = MaMGal::ImageInfoFactory->new(get_mock_datetime_parser, get_mock_logger);
+	dies_ok(sub { $f->read },       'read dies without an arg');
+	dies_ok(sub { $f->read('td') }, 'read dies with a non-picture');
 }
 
 sub creation : Test(setup => 2) {
 	my $self = shift;
 	my $mpp = get_mock_datetime_parser;
 	$self->{injected_parser} = $mpp;
-	my $f = MaMGal::ImageInfoFactory->new($mpp);
+	my $f = MaMGal::ImageInfoFactory->new($mpp, get_mock_logger);
 	ok($f);
 	isa_ok($f, 'MaMGal::ImageInfoFactory');
 	$self->{jpg} = $f->read('td/varying_datetimes.jpg');

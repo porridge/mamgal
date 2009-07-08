@@ -37,10 +37,10 @@ lives_ok(sub { $d = MaMGal::Entry::Dir->new(qw(td more), stat('td/more')) },	"cr
 isa_ok($d, 'MaMGal::Entry::Dir',                                 "a dir is a dir");
 my $mf = get_mock_formatter(qw(format stylesheet));
 my $edtp = Image::EXIF::DateTime::Parser->new;
-my $iif = MaMGal::ImageInfoFactory->new($edtp);
+my $iif = MaMGal::ImageInfoFactory->new($edtp, get_mock_logger);
 my $tools = {
 	formatter => $mf,
-	entry_factory => MaMGal::EntryFactory->new($mf, get_mock_mplayer_wrapper, $iif),
+	entry_factory => MaMGal::EntryFactory->new($mf, get_mock_mplayer_wrapper, $iif, get_mock_logger),
 	image_info_factory => $iif,
 };
 $d->add_tools($tools);

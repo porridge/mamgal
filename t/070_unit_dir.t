@@ -26,18 +26,18 @@ sub class_setting : Test(startup) {
 
 sub unmocked_factories_for_dirs : Test(setup => 0) {
 	my $self = shift;
-	my $iif = MaMGal::ImageInfoFactory->new(get_mock_datetime_parser);
+	my $iif = MaMGal::ImageInfoFactory->new(get_mock_datetime_parser, get_mock_logger);
 	{
 		my $e = $self->{entry};
 		$e->add_tools({
-			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, $iif),
+			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, $iif, get_mock_logger),
 			image_info_factory => $iif,
 		});
 	}
 	{
 		my $e = $self->{entry_no_stat};
 		$e->add_tools({
-			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, $iif),
+			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, $iif, get_mock_logger),
 			image_info_factory => $iif,
 		});
 	}

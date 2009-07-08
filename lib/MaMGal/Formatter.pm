@@ -12,6 +12,7 @@ use Locale::gettext;
 use MaMGal::LocaleEnv;
 use URI::file;
 use HTML::Entities qw(encode_entities_numeric);
+use MaMGal::Logger;
 
 sub init
 {
@@ -22,7 +23,8 @@ sub init
 			croak "Optional argument must be a LocaleEnv, if provided";
 		}
 	} else {
-		$le = MaMGal::LocaleEnv->new;
+		# TODO: this needs to go
+		$le = MaMGal::LocaleEnv->new(MaMGal::Logger->new);
 	}
 	$self->set_locale_env($le);
 }
