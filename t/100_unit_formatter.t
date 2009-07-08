@@ -16,17 +16,17 @@ prepare_test_data;
 
 use_ok('MaMGal::Formatter');
 my $f;
-lives_ok(sub { $f = MaMGal::Formatter->new },		"formatter can be created without any arg");
-dies_ok(sub { MaMGal::Formatter->new(1) },		"formatter can not be created some junk parameter");
+dies_ok(sub { MaMGal::Formatter->new },     "formatter cannot be created without parameters");
+dies_ok(sub { MaMGal::Formatter->new(1) },  "formatter cannot be created with some junk parameter");
 
 my $le = get_mock_localeenv;
 $le->mock('get_charset', sub { 'UTF-8' });
 $le->mock('format_time', sub { $_[1] == 1227684276 ? '12:00:00' : '13:13:13' });
 $le->mock('format_date', sub { $_[1] == 1227684276 ? '18 gru 2004' : '2 kwi 2004' });
 
-lives_ok(sub { $f->set_locale_env($le) },               "Formatter accepts a set_locale_env call");
-lives_ok(sub { $f = MaMGal::Formatter->new($le) },	"formatter can be created with a locale env parameter");
+lives_ok(sub { $f = MaMGal::Formatter->new($le) }, "formatter can be created with locale env");
 isa_ok($f, 'MaMGal::Formatter');
+lives_ok(sub { $f->set_locale_env($le) },          "Formatter accepts a set_locale_env call");
 
 my $mock_td = Test::MockObject->new
 	->mock('name', sub { 'td' })

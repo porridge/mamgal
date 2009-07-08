@@ -25,12 +25,12 @@ sub init
 	my $self = shift;
 	my $c = Peco::Container->new;
 	if (@_) {
-		$c->register(formatter => 'MaMGal::Formatter', [qw(locale_env)]);
-		$c->register(locale_env=> 'MaMGal::LocaleEnv', [qw(logger)], 'new', {set_locale => $_[0]});
+		$c->register(locale_env => 'MaMGal::LocaleEnv', [qw(logger)], 'new', {set_locale => $_[0]});
 		textdomain('mamgal');
 	} else {
-		$c->register(formatter => 'MaMGal::Formatter');
+		$c->register(locale_env => 'MaMGal::LocaleEnv', [qw(logger)]);
 	}
+	$c->register(formatter => 'MaMGal::Formatter', [qw(locale_env)]);
 	$c->register(logger => 'MaMGal::Logger');
 	$c->register(datetime_parser => 'Image::EXIF::DateTime::Parser');
 	$c->register(command_checker => 'MaMGal::CommandChecker');

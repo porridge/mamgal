@@ -12,8 +12,11 @@ use MaMGal::TestHelper;
 
 prepare_test_data;
 
+use MaMGal::LocaleEnv;
+my $le = MaMGal::LocaleEnv->new(get_mock_logger);
+$le->set_locale('C');
 use MaMGal::Formatter;
-my $f = MaMGal::Formatter->new;
+my $f = MaMGal::Formatter->new($le);
 
 use MaMGal::EntryFactory;
 use MaMGal::ImageInfoFactory;
