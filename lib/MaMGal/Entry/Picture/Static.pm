@@ -28,8 +28,7 @@ sub image_info
 	return $self->{image_info} if exists $self->{image_info};
 	croak 'image info factory not injected' unless defined $self->tools->{image_info_factory};
 	$self->{image_info} = eval { $self->tools->{image_info_factory}->read($self->{path_name}); };
-	# XXX logger->log_message
-	warn "Cannot retrieve image info from [".$self->{path_name}."]: ".$@."\n" if $@;
+	$self->logger->log_message("Cannot retrieve image info from [".$self->{path_name}."]: ".$@) if $@;
 	return $self->{image_info};
 }
 

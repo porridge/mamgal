@@ -3,8 +3,9 @@
 # See the README file for license information
 package MaMGal::TestHelper;
 use Test::MockObject;
+use Test::More;
 use lib 'Exporter';
-@EXPORT = qw(get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper get_mock_logger);
+@EXPORT = qw(get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper get_mock_logger logged_only_ok);
 
 sub get_mock_iif {
 	my $f = Test::MockObject->new->mock('read', sub { Test::MockObject->new });
@@ -81,6 +82,17 @@ sub prepare_test_data {
 	}
 	# Finally, purge and copy a clean version of the test data into "td"
 	system('rm -rf td ; cp -a td.in td') == 0 or die "Test data preparation failed: $?";
+}
+
+sub logged_only_ok($$)
+{
+	my $mock = shift;
+	my $re = shift;
+	local $Test::Builder::Level += 1;
+	my ($name, $args) = $mock->next_call;
+	is($name, 'log_message');
+	like($args->[1], $re);
+	is($mock->next_call, undef);
 }
 
 1;

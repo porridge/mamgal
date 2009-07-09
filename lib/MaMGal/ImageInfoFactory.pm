@@ -39,6 +39,7 @@ sub read {
 	my $self = shift;
 	my $o = $implementation->new(@_);
 	$o->{parser} = $self->{parser};
+	$o->{logger} = $self->{logger};
 	$o
 }
 

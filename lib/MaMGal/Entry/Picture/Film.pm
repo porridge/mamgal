@@ -37,16 +37,14 @@ sub read_image
 	eval { $s = $w->snapshot($self->{path_name}); };
 	if ($@) {
 		if (blessed($@) and $@->isa('MaMGal::MplayerWrapper::NotAvailableException')) {
-			# XXX logger->log_message
-			warn "mplayer is not available - films will not be represented by snapshots.\n" unless $warned_before;
+			$self->logger->log_message("mplayer is not available - films will not be represented by snapshots.") unless $warned_before;
 			# TODO this warning limiting mechanism is a gross hack, but will do for single-threaded implementation.
 			# Ideally the messages should be handed over to a logging subsystem which would make its own decision
 			# on whether to log or not.
 			$warned_before = 1;
 			$s = $self->_new_video_icon;
 		} elsif (blessed($@) and $@->isa('MaMGal::MplayerWrapper::ExecutionFailureException')) {
-			# XXX logger->log_message
-			warn $self->{path_name}.': failed to produce a snapshot: '.$@->message."\n";
+			$self->logger->log_message($self->{path_name}.': failed to produce a snapshot: '.$@->message);
 			$s = $self->_new_video_icon;
 		} else {
 			die $@;

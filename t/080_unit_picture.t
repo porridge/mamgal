@@ -253,15 +253,18 @@ sub successful_image_info_object_creation : Test(2) {
 	is($self->{entry}->image_info, $mocks[0], 'calling image_info second time results returning a cached object');
 }
 
-sub crashing_image_info_object_creation : Test(6) {
+sub crashing_image_info_object_creation : Test(8) {
 	my $self = shift;
 	$self->{mock_image_info_factory}->mock('read', sub { die "oh my\n"; });
-	my $val;
-	warning_like { $val = $self->{entry}->image_info } qr{^Cannot retrieve image info from \[td/c\.jpg\]: oh my$}, 'crash instantiating an object results in a warning';
+	$self->{entry}->logger->clear;
+	my $val = $self->{entry}->image_info;
+	logged_only_ok($self->{entry}->logger, qr{^Cannot retrieve image info from \[td/c\.jpg\]: oh my$}); # crash instantiating an object results in a warning
 	is($val, undef, 'crash instantiating an object results in undef returned');
 	$self->{mock_image_info_factory}->called_ok('read');
 	$self->{mock_image_info_factory}->clear;
-	warnings_are { $val = $self->{entry}->image_info } [], 'no warnings are produced on second image_info call';
+	$self->{entry}->logger->clear;
+	$val = $self->{entry}->image_info;
+	is($self->{entry}->logger->next_call, undef, 'no warnings are produced on second image_info call');
 	is($val, undef, 'after one crash, undef is returned by image_info always');
 	ok(! $self->{mock_image_info_factory}->called('read'), 'read is not called after it crashed once');
 }
@@ -278,11 +281,13 @@ sub description_method_undefined : Test {
 	is($self->{entry}->description, undef);
 }
 
-sub description_method_crash : Test(2) {
+sub description_method_crash : Test(4) {
 	my $self = shift;
 	$self->{mock_image_info_factory}->mock('read', sub { die "oh noes!\n" });
 	my $d;
-	warning_like { $d = $self->{entry}->description } qr{Cannot.*oh noes}, 'crash when getting a description produces a warning';
+	$self->{entry}->logger->clear;
+	$d = $self->{entry}->description;
+	logged_only_ok($self->{entry}->logger, qr{Cannot.*oh noes}); # crash when getting a description produces a warning
 	is($d, undef, 'description is undefined');
 }
 
@@ -313,11 +318,13 @@ sub stat_functionality_undefined : Test(2) {
 	$self->SUPER::stat_functionality;
 }
 
-sub stat_functionality_crashed : Test(3) {
+sub stat_functionality_crashed : Test(5) {
 	my $self = shift;
 	$self->{mock_image_info_factory}->mock('read', sub { die "oh noes too!" });
 	# if image info object construction fails, we turn to the stat data supplied on creation
-	warning_like { $self->SUPER::stat_functionality } qr{Cannot retrieve image info.*oh noes too}, 'crash when getting stat data produces a warning';
+	$self->{entry}->logger->clear;
+	$self->SUPER::stat_functionality;
+	logged_only_ok($self->{entry}->logger, qr{Cannot retrieve image info.*oh noes too});
 }
 
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
@@ -388,7 +395,7 @@ sub read_image_method_normal : Test(2)
 	}
 }
 
-sub read_image_method_no_mplayer : Test(12)
+sub read_image_method_no_mplayer : Test(16)
 {
 	my $self = shift;
 	my $class_name = $self->{class_name};
@@ -397,10 +404,14 @@ sub read_image_method_no_mplayer : Test(12)
 		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
 		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::NotAvailableException'); die $e } );
 		my $i;
-		warning_like { $i = $e->read_image; } qr{^mplayer.*not available.*$}, 'reading image without an mplayer produces a warning';
+		$e->logger->clear;
+		$i = $e->read_image;
+		logged_only_ok($e->logger, qr{^mplayer.*not available.*$});
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
-		warnings_are { $i = $e->read_image; } [], 'reading image without an mplayer on the second time produces no warning';
+		$e->logger->clear;
+		$i = $e->read_image;
+		is($e->logger->next_call, undef, 'reading image without an mplayer on the second time produces no warning');
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
 	}
@@ -410,16 +421,20 @@ sub read_image_method_no_mplayer : Test(12)
 		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
 		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::NotAvailableException'); die $e } );
 		my $i;
-		warning_like { $i = $e->read_image; } qr{^mplayer.*not available.*$}, 'reading image without an mplayer produces a warning';
+		$e->logger->clear;
+		$i = $e->read_image;
+		logged_only_ok($e->logger, qr{^mplayer.*not available.*$});
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
-		warnings_are { $i = $e->read_image; } [], 'reading image without an mplayer on the second time produces no warning';
+		$e->logger->clear;
+		$i = $e->read_image;
+		is($e->logger->next_call, undef, 'reading image without an mplayer on the second time produces no warning');
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
 	}
 }
 
-sub read_image_method_error : Test(6)
+sub read_image_method_error : Test(10)
 {
 	my $self = shift;
 	my $class_name = $self->{class_name};
@@ -427,8 +442,9 @@ sub read_image_method_error : Test(6)
 		my $e = $self->{entry};
 		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
 		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::ExecutionFailureException');$e->mock('message', sub { 'la di da' }); die $e } );
-		my $i;
-		warning_like { $i = $e->read_image; } qr{td/one_film/m\.mov.*snapshot.*la di da}, 'image read failure results in a warning';
+		$e->logger->clear;
+		my $i = $e->read_image;
+		logged_only_ok($e->logger, qr{td/one_film/m\.mov.*snapshot.*la di da});
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
 	}
@@ -436,8 +452,9 @@ sub read_image_method_error : Test(6)
 		my $e = $self->{entry_no_stat};
 		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
 		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::ExecutionFailureException');$e->mock('message', sub { 'la di da' }); die $e } );
-		my $i;
-		warning_like { $i = $e->read_image; } qr{td/one_film/m\.mov.*snapshot.*la di da}, 'image read failure results in a warning';
+		$e->logger->clear;
+		my $i = $e->read_image;
+		logged_only_ok($e->logger, qr{td/one_film/m\.mov.*snapshot.*la di da});
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
 	}

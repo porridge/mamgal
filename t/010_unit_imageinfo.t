@@ -38,9 +38,9 @@ sub creation_aborts : Test(startup => 6) {
 
 sub creation : Test(setup => 2) {
 	my $self = shift;
-	my $mpp = get_mock_datetime_parser;
-	$self->{injected_parser} = $mpp;
-	my $f = MaMGal::ImageInfoFactory->new($mpp, get_mock_logger);
+	my $mpp = $self->{injected_parser} = get_mock_datetime_parser;
+	my $ml = $self->{injected_logger} = get_mock_logger;
+	my $f = MaMGal::ImageInfoFactory->new($mpp, $ml);
 	ok($f);
 	isa_ok($f, 'MaMGal::ImageInfoFactory');
 	$self->{jpg} = $f->read('td/varying_datetimes.jpg');
@@ -60,6 +60,17 @@ sub parser_injection : Test(6) {
 	is($self->{jpg_no_0x9003_0x9004_0x0132}->{parser}, $mpp, 'parser was injected correctly by the factory');
 	is($self->{png_nodesc}->{parser}, $mpp, 'parser was injected correctly by the factory');
 	is($self->{png_desc}->{parser}, $mpp, 'parser was injected correctly by the factory');
+}
+
+sub logger_injection : Test(6) {
+	my $self = shift;
+	my $logger = $self->{injected_logger};
+	is($self->{jpg}->{logger}, $logger, 'logger was injected correctly by the factory');
+	is($self->{jpg_no_0x9003}->{logger}, $logger, 'logger was injected correctly by the factory');
+	is($self->{jpg_no_0x9003_0x9004}->{logger}, $logger, 'logger was injected correctly by the factory');
+	is($self->{jpg_no_0x9003_0x9004_0x0132}->{logger}, $logger, 'logger was injected correctly by the factory');
+	is($self->{png_nodesc}->{logger}, $logger, 'logger was injected correctly by the factory');
+	is($self->{png_desc}->{logger}, $logger, 'logger was injected correctly by the factory');
 }
 
 sub description_method : Test(6) {
@@ -117,22 +128,26 @@ sub _test_creation_time {
 	my $self = shift;
 	my $file = shift;
 	my $mp = $self->{$file}->{parser} = Test::MockObject->new;
+	my $ml = $self->{$file}->{logger};
 	my $parse_map = shift;
 	my $expected_result = shift;
 	my $expected_tag = shift;
 	my $expected_warning = shift;
 	$mp->mock('parse', sub { exists $parse_map->{$_[1]} ? return &{$parse_map->{$_[1]}} : die "arg ".$_[1]." not found in map" });
+	$ml->clear;
 	local $Test::Builder::Level = 2;
-	my $actual_result;
+	my $actual_result = $self->{$file}->creation_time;
 	if ($expected_warning) {
-		warning_like { $actual_result = $self->{$file}->creation_time } $expected_warning;
+		logged_only_ok($ml, $expected_warning);
 	} else {
-		warnings_are { $actual_result = $self->{$file}->creation_time } [];
+		ok(! $ml->called('log_message'), 'log message was not called');
+		ok(1, 'dummy test to keep test count constant');
+		ok(1, 'dummy test to keep test count constant');
 	}
 	is($actual_result, $expected_result, "creation time returns parse value for $expected_tag");
 }
 
-sub when_all_tags_present_and_datetime_original_crashes_then_creation_time_returns_datetime_digitized: Test(2) {
+sub when_all_tags_present_and_datetime_original_crashes_then_creation_time_returns_datetime_digitized: Test(4) {
 	my $self = shift;
 	my %parse_map = (
 		'2008:11:27 20:43:51' => sub { 1234567891 },
@@ -142,7 +157,7 @@ sub when_all_tags_present_and_datetime_original_crashes_then_creation_time_retur
 	$self->_test_creation_time('jpg', \%parse_map, 1234567891, 'datetime_digitized', qr{td/varying_datetimes\.jpg: EXIF tag 0x9003: parsing failed});
 }
 
-sub when_all_tags_present_and_parse_then_creation_time_returns_datetime_original: Test(2) {
+sub when_all_tags_present_and_parse_then_creation_time_returns_datetime_original: Test(4) {
 	my $self = shift;
 	my %parse_map = (
 		'2008:11:27 20:43:51' => sub { 1234567891 },
@@ -152,7 +167,7 @@ sub when_all_tags_present_and_parse_then_creation_time_returns_datetime_original
 	$self->_test_creation_time('jpg', \%parse_map, 1234567893, 'datetime_original');
 }
 
-sub when_all_tags_present_and_just_datetime_original_does_not_parse_then_creation_time_returns_datetime_digitized : Test(2) {
+sub when_all_tags_present_and_just_datetime_original_does_not_parse_then_creation_time_returns_datetime_digitized : Test(4) {
 	my $self = shift;
 	my %parse_map = (
 		'2008:11:27 20:43:51' => sub { 1234567891 },
@@ -162,7 +177,7 @@ sub when_all_tags_present_and_just_datetime_original_does_not_parse_then_creatio
 	$self->_test_creation_time('jpg', \%parse_map, 1234567891, 'datetime_digitized');
 }
 
-sub when_all_tags_present_and_just_datetime_parses_then_creation_time_returns_datetime : Test(2) {
+sub when_all_tags_present_and_just_datetime_parses_then_creation_time_returns_datetime : Test(4) {
 	my $self = shift;
 	my %parse_map = (
 		'2008:11:27 20:43:51' => sub { undef },
@@ -172,7 +187,7 @@ sub when_all_tags_present_and_just_datetime_parses_then_creation_time_returns_da
 	$self->_test_creation_time('jpg', \%parse_map, 1234567892, 'datetime');
 }
 
-sub when_all_tags_present_and_none_parses_then_creation_time_returns_undef : Test(2) {
+sub when_all_tags_present_and_none_parses_then_creation_time_returns_undef : Test(4) {
 	my $self = shift;
 	my %parse_map = (
 		'2008:11:27 20:43:51' => sub { undef },
@@ -182,7 +197,7 @@ sub when_all_tags_present_and_none_parses_then_creation_time_returns_undef : Tes
 	$self->_test_creation_time('jpg', \%parse_map, undef, 'undef');
 }
 
-sub when_datetime_original_tag_not_present_and_rest_parse_then_creation_time_returns_datetime_digitized : Test(2) {
+sub when_datetime_original_tag_not_present_and_rest_parse_then_creation_time_returns_datetime_digitized : Test(4) {
 	my $self = shift;
 	my %parse_map = (
 		'2008:11:27 20:43:51' => sub { 1234567891 },
@@ -191,7 +206,7 @@ sub when_datetime_original_tag_not_present_and_rest_parse_then_creation_time_ret
 	$self->_test_creation_time('jpg_no_0x9003', \%parse_map, 1234567891, 'datetime_digitized');
 }
 
-sub when_datetime_original_tag_not_present_and_just_datetime_parses_then_creation_time_returns_datetime_digitized : Test(2) {
+sub when_datetime_original_tag_not_present_and_just_datetime_parses_then_creation_time_returns_datetime_digitized : Test(4) {
 	my $self = shift;
 	my %parse_map = (
 		'2008:11:27 20:43:51' => sub { undef },
@@ -200,7 +215,7 @@ sub when_datetime_original_tag_not_present_and_just_datetime_parses_then_creatio
 	$self->_test_creation_time('jpg_no_0x9003', \%parse_map, 1234567892, 'datetime');
 }
 
-sub when_datetime_original_tag_not_present_and_none_parses_then_creation_time_returns_undef : Test(2) {
+sub when_datetime_original_tag_not_present_and_none_parses_then_creation_time_returns_undef : Test(4) {
 	my $self = shift;
 	my %parse_map = (
 		'2008:11:27 20:43:51' => sub { undef },
@@ -210,7 +225,7 @@ sub when_datetime_original_tag_not_present_and_none_parses_then_creation_time_re
 }
 
 
-sub when_just_datetime_tag_present_and_parses_then_creation_time_returns_datetime : Test(2) {
+sub when_just_datetime_tag_present_and_parses_then_creation_time_returns_datetime : Test(4) {
 	my $self = shift;
 	my %parse_map = (
 		'2008:11:27 20:43:52' => sub { 1234567892 },
@@ -218,7 +233,7 @@ sub when_just_datetime_tag_present_and_parses_then_creation_time_returns_datetim
 	$self->_test_creation_time('jpg_no_0x9003_0x9004', \%parse_map, 1234567892, 'datetime');
 }
 
-sub when_just_datetime_tag_present_and_none_parses_then_creation_time_returns_undef : Test(2) {
+sub when_just_datetime_tag_present_and_none_parses_then_creation_time_returns_undef : Test(4) {
 	my $self = shift;
 	my %parse_map = (
 		'2008:11:27 20:43:52' => sub { undef },
@@ -227,7 +242,7 @@ sub when_just_datetime_tag_present_and_none_parses_then_creation_time_returns_un
 }
 
 
-sub when_no_datetime_tag_present_then_creation_time_returns_undef : Test(2) {
+sub when_no_datetime_tag_present_then_creation_time_returns_undef : Test(4) {
 	my $self = shift;
 	$self->_test_creation_time('jpg_no_0x9003_0x9004_0x0132', {}, undef, 'undef');
 }
