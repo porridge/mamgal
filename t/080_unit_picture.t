@@ -29,11 +29,8 @@ sub pre_class_setting : Test(startup) {
 
 sub entry_tools_setup : Test(setup => 0) {
 	my $self = shift;
-	foreach my $entry (qw(entry entry_no_stat)) {
-		foreach my $key (keys %{$self->{tools}}) {
-			$self->{$entry}->tools->{$key} = $self->{tools}->{$key};
-		}
-	}
+	$self->{entry}->add_tools($self->{tools});
+	$self->{entry_no_stat}->add_tools($self->{tools});
 }
 
 sub _touch
