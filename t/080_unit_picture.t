@@ -395,66 +395,80 @@ sub read_image_method_normal : Test(2)
 	}
 }
 
-sub read_image_method_no_mplayer : Test(16)
+sub read_image_method_no_mplayer : Test(24)
 {
 	my $self = shift;
 	my $class_name = $self->{class_name};
 	{
 		my $e = $self->{entry};
+		my $ex = Test::MockObject->new;
+		$ex->set_isa('MaMGal::MplayerWrapper::NotAvailableException');
 		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
-		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::NotAvailableException'); die $e } );
+		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { die $ex; } );
 		my $i;
+
 		$e->logger->clear;
 		$i = $e->read_image;
-		logged_only_ok($e->logger, qr{^mplayer.*not available.*$});
+		logged_exception_only_ok($e->logger, $ex, $e->{path_name});
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
+
 		$e->logger->clear;
 		$i = $e->read_image;
-		is($e->logger->next_call, undef, 'reading image without an mplayer on the second time produces no warning');
+		logged_exception_only_ok($e->logger, $ex, $e->{path_name});
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
+
 	}
-	undef $MaMGal::Entry::Picture::Film::warned_before;
 	{
 		my $e = $self->{entry_no_stat};
+		my $ex = Test::MockObject->new;
+		$ex->set_isa('MaMGal::MplayerWrapper::NotAvailableException');
 		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
-		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::NotAvailableException'); die $e } );
+		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { die $ex; } );
 		my $i;
+
 		$e->logger->clear;
 		$i = $e->read_image;
-		logged_only_ok($e->logger, qr{^mplayer.*not available.*$});
+		logged_exception_only_ok($e->logger, $ex, $e->{path_name});
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
+
 		$e->logger->clear;
 		$i = $e->read_image;
-		is($e->logger->next_call, undef, 'reading image without an mplayer on the second time produces no warning');
+		logged_exception_only_ok($e->logger, $ex, $e->{path_name});
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
 	}
 }
 
-sub read_image_method_error : Test(10)
+sub read_image_method_error : Test(12)
 {
 	my $self = shift;
 	my $class_name = $self->{class_name};
 	{
 		my $e = $self->{entry};
+		my $ex = Test::MockObject->new;
+		$ex->set_isa('MaMGal::MplayerWrapper::ExecutionFailureException');
+		$ex->mock('message', sub { 'la di da' });
 		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
-		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::ExecutionFailureException');$e->mock('message', sub { 'la di da' }); die $e } );
+		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { die $ex } );
 		$e->logger->clear;
 		my $i = $e->read_image;
-		logged_only_ok($e->logger, qr{td/one_film/m\.mov.*snapshot.*la di da});
+		logged_exception_only_ok($e->logger, $ex, $e->{path_name});
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
 	}
 	{
 		my $e = $self->{entry_no_stat};
+		my $ex = Test::MockObject->new;
+		$ex->set_isa('MaMGal::MplayerWrapper::ExecutionFailureException');
+		$ex->mock('message', sub { 'la di da' });
 		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
-		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { my $e = Test::MockObject->new; $e->set_isa('MaMGal::MplayerWrapper::ExecutionFailureException');$e->mock('message', sub { 'la di da' }); die $e } );
+		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { die $ex } );
 		$e->logger->clear;
 		my $i = $e->read_image;
-		logged_only_ok($e->logger, qr{td/one_film/m\.mov.*snapshot.*la di da});
+		logged_exception_only_ok($e->logger, $ex, $e->{path_name});
 		ok($i, 'read_image got SOME image');
 		isa_ok($i, 'Image::Magick');
 	}

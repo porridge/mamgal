@@ -5,7 +5,7 @@ package MaMGal::TestHelper;
 use Test::MockObject;
 use Test::More;
 use lib 'Exporter';
-@EXPORT = qw(get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper get_mock_logger logged_only_ok);
+@EXPORT = qw(get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper get_mock_logger logged_only_ok logged_exception_only_ok get_mock_exception);
 
 sub get_mock_iif {
 	my $f = Test::MockObject->new->mock('read', sub { Test::MockObject->new });
@@ -14,7 +14,9 @@ sub get_mock_iif {
 }
 
 sub get_mock_logger {
-	my $l = Test::MockObject->new->mock('log_message');
+	my $l = Test::MockObject->new
+		->mock('log_message')
+		->mock('log_exception');
 	$l->set_isa('MaMGal::Logger');
 	$l
 }
@@ -93,6 +95,28 @@ sub logged_only_ok($$)
 	is($name, 'log_message');
 	like($args->[1], $re);
 	is($mock->next_call, undef);
+}
+
+sub logged_exception_only_ok($$;$)
+{
+	my $mock = shift;
+	my $ex = shift;
+	my $prefix = shift;
+	local $Test::Builder::Level += 1;
+	my ($name, $args) = $mock->next_call;
+	is($name, 'log_exception');
+	is($args->[1], $ex);
+	is($args->[2], $prefix);
+	is($mock->next_call, undef);
+}
+
+sub get_mock_exception($)
+{
+	my $class = shift;
+	my $e = Test::MockObject->new;
+	$e->set_isa($class);
+	$e->mock('message', sub { 'foo bar' });
+	return $e;
 }
 
 1;

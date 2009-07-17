@@ -94,6 +94,18 @@ use warnings;
 use base 'MaMGal::Base';
 use Carp;
 
+sub init
+{
+	my $self = shift;
+	croak "this exception does not accept arguments" if @_;
+}
+
+sub message
+{
+	my $self = shift;
+	'mplayer is not available - films will not be represented by snapshots.'
+}
+
 package MaMGal::MplayerWrapper::ExecutionFailureException;
 use strict;
 use warnings;
@@ -103,9 +115,10 @@ use Carp;
 sub init
 {
 	my $self = shift;
-	$self->{message} = shift;
+	$self->{message} = shift or croak "Message is required";
 	$self->{stdout} = shift;
 	$self->{stderr} = shift;
+	croak "Either one or three arguments are required" if $self->{stdout} xor $self->{stderr};
 }
 
 sub message

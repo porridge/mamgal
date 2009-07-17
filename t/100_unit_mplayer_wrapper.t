@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 37;
+use Test::More tests => 45;
 use Test::Exception;
 use Test::HTML::Content;
 use lib 'testlib';
@@ -16,8 +16,14 @@ prepare_test_data;
 
 use_ok('MaMGal::MplayerWrapper');
 
+dies_ok(sub { MaMGal::MplayerWrapper::ExecutionFailureException->new }, 'exception creation dies without arguments');
+dies_ok(sub { MaMGal::MplayerWrapper::ExecutionFailureException->new('foo bar', 'just one') }, 'exception creation dies with just two arguments');
+dies_ok(sub { MaMGal::MplayerWrapper::ExecutionFailureException->new('foo bar', undef, 'just one') }, 'exception creation dies without second but with third arg');
+
 my $e = MaMGal::MplayerWrapper::ExecutionFailureException->new('foo bar');
 ok($e);
+dies_ok(sub { $e->reason }, 'reason method does not exist');
+dies_ok(sub { $e->filename}, 'filename method does not exist');
 is($e->message, 'foo bar');
 is($e->stdout, undef);
 is($e->stderr, undef);
@@ -27,6 +33,11 @@ ok($e);
 is($e->message, 'foo bar');
 is_deeply($e->stdout, [1,2,3]);
 is_deeply($e->stderr, [2,3,4]);
+
+dies_ok(sub { MaMGal::MplayerWrapper::NotAvailableException->new('something') }, 'this exception type does not accept a message arg');
+$e = MaMGal::MplayerWrapper::NotAvailableException->new;
+ok($e);
+is($e->message, 'mplayer is not available - films will not be represented by snapshots.');
 
 dies_ok(sub { MaMGal::MplayerWrapper->new },                    "wrapper can not be created without any arg");
 dies_ok(sub { MaMGal::MplayerWrapper->new(1) },                 "wrapper can not be created with some junk parameter");
