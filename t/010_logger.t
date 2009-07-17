@@ -24,10 +24,12 @@ sub instantiation : Test(setup => 1) {
 	ok($self->{l});
 }
 
-sub log_message_method : Test(1) {
+sub log_message_method : Test(2) {
 	my $self = shift;
 	my $msg = 'bugga bugga buga!';
+	my $prefix = 'wooow';
 	warning_like { $self->{l}->log_message($msg) } qr{^\Q$msg\E$}, 'log_message causes a warning';
+	warning_like { $self->{l}->log_message($msg, $prefix) } qr{^\Q$prefix: $msg\E$}, 'log_message causes a warning with prefix prepended correctly';
 }
 
 sub log_other_exception : Tests(4)
