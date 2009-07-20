@@ -253,12 +253,12 @@ sub successful_image_info_object_creation : Test(2) {
 	is($self->{entry}->image_info, $mocks[0], 'calling image_info second time results returning a cached object');
 }
 
-sub crashing_image_info_object_creation : Test(8) {
+sub crashing_image_info_object_creation : Test(9) {
 	my $self = shift;
 	$self->{mock_image_info_factory}->mock('read', sub { die "oh my\n"; });
 	$self->{entry}->logger->clear;
 	my $val = $self->{entry}->image_info;
-	logged_only_ok($self->{entry}->logger, qr{^Cannot retrieve image info from \[td/c\.jpg\]: oh my$}); # crash instantiating an object results in a warning
+	logged_only_ok($self->{entry}->logger, qr{^Cannot retrieve image info: oh my$}, 'td/c.jpg'); # crash instantiating an object results in a warning
 	is($val, undef, 'crash instantiating an object results in undef returned');
 	$self->{mock_image_info_factory}->called_ok('read');
 	$self->{mock_image_info_factory}->clear;
@@ -281,13 +281,13 @@ sub description_method_undefined : Test {
 	is($self->{entry}->description, undef);
 }
 
-sub description_method_crash : Test(4) {
+sub description_method_crash : Test(5) {
 	my $self = shift;
 	$self->{mock_image_info_factory}->mock('read', sub { die "oh noes!\n" });
 	my $d;
 	$self->{entry}->logger->clear;
 	$d = $self->{entry}->description;
-	logged_only_ok($self->{entry}->logger, qr{Cannot.*oh noes}); # crash when getting a description produces a warning
+	logged_only_ok($self->{entry}->logger, qr{^Cannot retrieve image info: oh noes!$}, 'td/c.jpg'); # crash when getting a description produces a warning
 	is($d, undef, 'description is undefined');
 }
 
@@ -318,13 +318,13 @@ sub stat_functionality_undefined : Test(2) {
 	$self->SUPER::stat_functionality;
 }
 
-sub stat_functionality_crashed : Test(5) {
+sub stat_functionality_crashed : Test(6) {
 	my $self = shift;
-	$self->{mock_image_info_factory}->mock('read', sub { die "oh noes too!" });
+	$self->{mock_image_info_factory}->mock('read', sub { die "oh noes too!\n" });
 	# if image info object construction fails, we turn to the stat data supplied on creation
 	$self->{entry}->logger->clear;
 	$self->SUPER::stat_functionality;
-	logged_only_ok($self->{entry}->logger, qr{Cannot retrieve image info.*oh noes too});
+	logged_only_ok($self->{entry}->logger, qr{^Cannot retrieve image info: oh noes too!$}, 'td/c.jpg');
 }
 
 sub stat_functionality_when_created_without_stat : Test { ok(1) }

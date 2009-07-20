@@ -20,7 +20,8 @@ my ($mf, $mw, $mif, $ml) = (get_mock_formatter, get_mock_mplayer_wrapper, get_mo
 
 sub tools_ok {
 	my $e = shift;
-	local $Test::Builder::Level = 2;
+	my $level = $Test::Builder::Level;
+	local $Test::Builder::Level = $level + 1;
 	is($e->tools->{entry_factory}, $ef,                              "entry factory in tools is correct");
 	is($e->tools->{formatter}, $mf,                                  'formatter in tools is correct');
 	is($e->tools->{mplayer_wrapper}, $mw,                            'mplayer wrapper in tools is correct');

@@ -133,12 +133,14 @@ sub _test_creation_time {
 	my $expected_result = shift;
 	my $expected_tag = shift;
 	my $expected_warning = shift;
+	my $expected_filename = shift;
 	$mp->mock('parse', sub { exists $parse_map->{$_[1]} ? return &{$parse_map->{$_[1]}} : die "arg ".$_[1]." not found in map" });
 	$ml->clear;
-	local $Test::Builder::Level = 2;
+	my $level = $Test::Builder::Level;
+	local $Test::Builder::Level = $level + 1;
 	my $actual_result = $self->{$file}->creation_time;
 	if ($expected_warning) {
-		logged_only_ok($ml, $expected_warning);
+		logged_only_ok($ml, $expected_warning, $expected_filename);
 	} else {
 		ok(! $ml->called('log_message'), 'log message was not called');
 		ok(1, 'dummy test to keep test count constant');
@@ -147,14 +149,14 @@ sub _test_creation_time {
 	is($actual_result, $expected_result, "creation time returns parse value for $expected_tag");
 }
 
-sub when_all_tags_present_and_datetime_original_crashes_then_creation_time_returns_datetime_digitized: Test(4) {
+sub when_all_tags_present_and_datetime_original_crashes_then_creation_time_returns_datetime_digitized: Test(5) {
 	my $self = shift;
 	my %parse_map = (
 		'2008:11:27 20:43:51' => sub { 1234567891 },
 		'2008:11:27 20:43:52' => sub { 1234567892 },
 		'2008:11:27 20:43:53' => sub { die "parsing failed" },
 	);
-	$self->_test_creation_time('jpg', \%parse_map, 1234567891, 'datetime_digitized', qr{td/varying_datetimes\.jpg: EXIF tag 0x9003: parsing failed});
+	$self->_test_creation_time('jpg', \%parse_map, 1234567891, 'datetime_digitized', qr{EXIF tag 0x9003: parsing failed}, 'td/varying_datetimes.jpg');
 }
 
 sub when_all_tags_present_and_parse_then_creation_time_returns_datetime_original: Test(4) {

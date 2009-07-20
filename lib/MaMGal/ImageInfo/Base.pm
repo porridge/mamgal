@@ -36,7 +36,7 @@ sub creation_time
 		return $value if $value;
 		if ($e) {
 			chomp $e;
-			$self->{logger}->log_message(sprintf('%s: EXIF tag %s: %s', $self->{file_name}, $methods_to_tags{$method}, $e));
+			$self->{logger}->log_message(sprintf('EXIF tag %s: %s', $methods_to_tags{$method}, $e), $self->{file_name});
 		}
 	}
 	return undef;

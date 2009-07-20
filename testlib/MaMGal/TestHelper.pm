@@ -86,15 +86,18 @@ sub prepare_test_data {
 	system('rm -rf td ; cp -a td.in td') == 0 or die "Test data preparation failed: $?";
 }
 
-sub logged_only_ok($$)
+sub logged_only_ok($$;$)
 {
 	my $mock = shift;
 	my $re = shift;
-	local $Test::Builder::Level += 1;
+	my $prefix = shift;
+	my $level = $Test::Builder::Level;
+	local $Test::Builder::Level = $level + 1;
 	my ($name, $args) = $mock->next_call;
-	is($name, 'log_message');
-	like($args->[1], $re);
-	is($mock->next_call, undef);
+	is($name, 'log_message', 'expected method was called');
+	like($args->[1], $re, 'message as expected');
+	is($args->[2], $prefix, 'prefix as expected');
+	is($mock->next_call, undef, 'no other logging method was called');
 }
 
 sub logged_exception_only_ok($$;$)
@@ -102,7 +105,8 @@ sub logged_exception_only_ok($$;$)
 	my $mock = shift;
 	my $ex = shift;
 	my $prefix = shift;
-	local $Test::Builder::Level += 1;
+	my $level = $Test::Builder::Level;
+	local $Test::Builder::Level = $level + 1;
 	my ($name, $args) = $mock->next_call;
 	is($name, 'log_exception');
 	is($args->[1], $ex);
