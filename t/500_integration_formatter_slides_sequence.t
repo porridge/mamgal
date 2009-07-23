@@ -16,8 +16,11 @@ prepare_test_data;
 
 use MaMGal::Formatter;
 use MaMGal::EntryFactory;
+use MaMGal::LocaleEnv;
+my $le = MaMGal::LocaleEnv->new(get_mock_logger);
+$le->set_locale('C');
 my $edtp = Image::EXIF::DateTime::Parser->new,
-my $f = MaMGal::Formatter->new;
+my $f = MaMGal::Formatter->new($le);
 my $iif = MaMGal::ImageInfoFactory->new($edtp, get_mock_logger);
 my $ef = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, $iif, get_mock_logger);
 my $d = $ef->create_entry_for('td/more');

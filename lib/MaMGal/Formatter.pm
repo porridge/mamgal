@@ -9,7 +9,6 @@ use warnings;
 use base 'MaMGal::Base';
 use Carp;
 use Locale::gettext;
-use MaMGal::LocaleEnv;
 use URI::file;
 use HTML::Entities qw(encode_entities_numeric);
 use MaMGal::Logger;
@@ -17,15 +16,8 @@ use MaMGal::Logger;
 sub init
 {
 	my $self = shift;
-	my $le = shift;
-	if ($le) {
-		unless (ref $le and $le->isa('MaMGal::LocaleEnv')) {
-			croak "Optional argument must be a LocaleEnv, if provided";
-		}
-	} else {
-		# TODO: this needs to go
-		$le = MaMGal::LocaleEnv->new(MaMGal::Logger->new);
-	}
+	my $le = shift or croak "Need a locale env arg";
+	ref $le and $le->isa('MaMGal::LocaleEnv') or croak "Arg is not a MaMGal::LocaleEnv, but a [$le]";
 	$self->set_locale_env($le);
 }
 
