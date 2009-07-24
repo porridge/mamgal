@@ -8,6 +8,7 @@ use warnings;
 use base 'MaMGal::Base';
 our $VERSION = '0.01';
 use Carp;
+use FileHandle;
 use Image::EXIF::DateTime::Parser;
 use Locale::gettext;
 use Peco::Container;
@@ -31,7 +32,10 @@ sub init
 		$c->register(locale_env => 'MaMGal::LocaleEnv', [qw(logger)]);
 	}
 	$c->register(formatter => 'MaMGal::Formatter', [qw(locale_env)]);
-	$c->register(logger => 'MaMGal::Logger');
+	$c->register(logger => 'MaMGal::Logger', [qw(filehandle)]);
+	$c->register(filehandle => 'FileHandle', [qw(descriptor mode)], 'new_from_fd');
+	$c->register(descriptor => 'STDERR');
+	$c->register(mode => 'w');
 	$c->register(datetime_parser => 'Image::EXIF::DateTime::Parser');
 	$c->register(command_checker => 'MaMGal::CommandChecker');
 	$c->register(mplayer_wrapper => 'MaMGal::MplayerWrapper', [qw(command_checker)]);

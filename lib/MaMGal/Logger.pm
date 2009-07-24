@@ -11,6 +11,8 @@ use Carp;
 sub init
 {
 	my $self = shift;
+	my $fh = shift or croak "filehandle arg required";
+	$self->{fh} = $fh;
 }
 
 sub log_message
@@ -19,7 +21,7 @@ sub log_message
 	my $msg = shift;
 	my $prefix = shift || '';
 	$prefix .= ': ' if $prefix;
-	warn $prefix.$msg."\n";
+	$self->{fh}->printf("%s\n", $prefix.$msg);
 }
 
 our $warned_before = 0;

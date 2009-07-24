@@ -5,7 +5,12 @@ package MaMGal::TestHelper;
 use Test::MockObject;
 use Test::More;
 use lib 'Exporter';
-@EXPORT = qw(get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper get_mock_logger logged_only_ok logged_exception_only_ok get_mock_exception);
+@EXPORT = qw(get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper get_mock_logger logged_only_ok logged_exception_only_ok get_mock_exception get_mock_fh printed_only_ok);
+
+sub get_mock_fh {
+	my $fh = Test::MockObject->new->mock('printf');
+	return $fh;
+}
 
 sub get_mock_iif {
 	my $f = Test::MockObject->new->mock('read', sub { Test::MockObject->new });
@@ -98,6 +103,20 @@ sub logged_only_ok($$;$)
 	like($args->[1], $re, 'message as expected');
 	is($args->[2], $prefix, 'prefix as expected');
 	is($mock->next_call, undef, 'no other logging method was called');
+}
+
+sub printed_only_ok($$;$)
+{
+	my $mock = shift;
+	my $re = shift;
+	my $level = $Test::Builder::Level;
+	local $Test::Builder::Level = $level + 1;
+	my ($name, $args) = $mock->next_call;
+	is($name, 'printf', 'expected method was called');
+	is($args->[1], "%s\n", 'format string as expected');
+	like($args->[2], $re, 'message as expected');
+	is($mock->next_call, undef, 'no other logging method was called');
+	$mock->clear;
 }
 
 sub logged_exception_only_ok($$;$)
