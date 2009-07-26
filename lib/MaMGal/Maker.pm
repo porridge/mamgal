@@ -34,10 +34,11 @@ sub _make_any
 {
 	my $self = shift;
 	my $dirs_are_roots = shift;
-	croak "No args" unless @_;
+	die "Argument required.\n" unless @_;
 
 	my @dirs = map {
 		my $d = $self->{entry_factory}->create_entry_for($_);
+		die sprintf("%s: not a directory.\n", $_) unless $d->isa('MaMGal::Entry::Dir');
 		$d->set_root(1) if $dirs_are_roots;
 		$d
 	} @_;
