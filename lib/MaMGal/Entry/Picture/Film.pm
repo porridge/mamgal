@@ -18,8 +18,6 @@ sub refresh_scaled_pictures
 	return $self->refresh_miniatures([$self->thumbnails_dir, 200, 150, $thumbnail_extension]);
 }
 
-our $warned_before;
-
 sub _new_video_icon
 {
 	my $self = shift;
@@ -36,15 +34,12 @@ sub read_image
 	my $s;
 	eval { $s = $w->snapshot($self->{path_name}); };
 	if ($@) {
-		if (blessed($@) and $@->isa('MaMGal::MplayerWrapper::NotAvailableException')) {
-			warn "mplayer is not available - films will not be represented by snapshots.\n" unless $warned_before;
-			# TODO this warning limiting mechanism is a gross hack, but will do for single-threaded implementation.
-			# Ideally the messages should be handed over to a logging subsystem which would make its own decision
-			# on whether to log or not.
-			$warned_before = 1;
-			$s = $self->_new_video_icon;
-		} elsif (blessed($@) and $@->isa('MaMGal::MplayerWrapper::ExecutionFailureException')) {
-			warn $self->{path_name}.': failed to produce a snapshot: '.$@->message."\n";
+		if (blessed($@) and (
+			$@->isa('MaMGal::MplayerWrapper::NotAvailableException')
+			or
+			$@->isa('MaMGal::MplayerWrapper::ExecutionFailureException')
+		)) {
+			$self->logger->log_exception($@, $self->{path_name});
 			$s = $self->_new_video_icon;
 		} else {
 			die $@;

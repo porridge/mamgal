@@ -34,6 +34,7 @@ lib/MaMGal/ImageInfo/Base.pm
 lib/MaMGal/ImageInfo/ExifTool.pm
 lib/MaMGal/ImageInfo/ImageInfo.pm
 lib/MaMGal/LocaleEnv.pm
+lib/MaMGal/Logger.pm
 lib/MaMGal/Maker.pm
 lib/MaMGal/MplayerWrapper.pm
 lib/MaMGal/Entry/BrokenSymlink.pm

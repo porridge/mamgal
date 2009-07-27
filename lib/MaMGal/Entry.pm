@@ -42,6 +42,12 @@ sub tools
 	return $self->{tools};
 }
 
+sub logger
+{
+	my $self = shift;
+	return $self->tools->{logger};
+}
+
 # TODO: element should not have a need to know its index, container should be able to tell it simply given the object
 sub element_index { $_[0]->{element_index}  }
 sub set_element_index { $_[0]->{element_index} = $_[1]  }

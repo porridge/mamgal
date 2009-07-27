@@ -3,9 +3,10 @@
 # See the README file for license information
 package MaMGal::TestHelper;
 use Test::MockObject;
+use Test::More;
 use lib 'Exporter';
-@EXPORT = qw(get_mock_entry get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper);
 use Carp;
+@EXPORT = qw(get_mock_entry get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper get_mock_logger logged_only_ok logged_exception_only_ok get_mock_exception get_mock_fh printed_only_ok);
 
 sub get_mock_entry
 {
@@ -18,10 +19,23 @@ sub get_mock_entry
 	return $mock_entry;
 }
 
+sub get_mock_fh {
+	my $fh = Test::MockObject->new->mock('printf');
+	return $fh;
+}
+
 sub get_mock_iif {
 	my $f = Test::MockObject->new->mock('read', sub { Test::MockObject->new });
 	$f->set_isa('MaMGal::ImageInfoFactory');
 	$f
+}
+
+sub get_mock_logger {
+	my $l = Test::MockObject->new
+		->mock('log_message')
+		->mock('log_exception');
+	$l->set_isa('MaMGal::Logger');
+	$l
 }
 
 sub get_mock_datetime_parser {
@@ -87,6 +101,57 @@ sub prepare_test_data {
 	}
 	# Finally, purge and copy a clean version of the test data into "td"
 	system('rm -rf td ; cp -a td.in td') == 0 or die "Test data preparation failed: $?";
+}
+
+sub logged_only_ok($$;$)
+{
+	my $mock = shift;
+	my $re = shift;
+	my $prefix = shift;
+	my $level = $Test::Builder::Level;
+	local $Test::Builder::Level = $level + 1;
+	my ($name, $args) = $mock->next_call;
+	is($name, 'log_message', 'expected method was called');
+	like($args->[1], $re, 'message as expected');
+	is($args->[2], $prefix, 'prefix as expected');
+	is($mock->next_call, undef, 'no other logging method was called');
+}
+
+sub printed_only_ok($$;$)
+{
+	my $mock = shift;
+	my $re = shift;
+	my $level = $Test::Builder::Level;
+	local $Test::Builder::Level = $level + 1;
+	my ($name, $args) = $mock->next_call;
+	is($name, 'printf', 'expected method was called');
+	is($args->[1], "%s\n", 'format string as expected');
+	like($args->[2], $re, 'message as expected');
+	is($mock->next_call, undef, 'no other logging method was called');
+	$mock->clear;
+}
+
+sub logged_exception_only_ok($$;$)
+{
+	my $mock = shift;
+	my $ex = shift;
+	my $prefix = shift;
+	my $level = $Test::Builder::Level;
+	local $Test::Builder::Level = $level + 1;
+	my ($name, $args) = $mock->next_call;
+	is($name, 'log_exception');
+	is($args->[1], $ex);
+	is($args->[2], $prefix);
+	is($mock->next_call, undef);
+}
+
+sub get_mock_exception($)
+{
+	my $class = shift;
+	my $e = Test::MockObject->new;
+	$e->set_isa($class);
+	$e->mock('message', sub { 'foo bar' });
+	return $e;
 }
 
 1;

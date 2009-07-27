@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 14;
+use Test::More tests => 15;
 use Test::Exception;
 use lib 'testlib';
 use MaMGal::TestHelper;
@@ -15,9 +15,10 @@ prepare_test_data;
 use_ok('MaMGal::LocaleEnv');
 
 # test parameter checks
-dies_ok(sub { MaMGal::LocaleEnv->new(1) },            "Locale env dies on creation with arg(s)");
+dies_ok(sub { MaMGal::LocaleEnv->new },               "Locale env dies on creation with no args");
+dies_ok(sub { MaMGal::LocaleEnv->new(1) },            "Locale env dies on creation with junk arg");
 my $le;
-lives_ok(sub { $le = MaMGal::LocaleEnv->new },        "Locale env survives creation with no args");
+lives_ok(sub { $le = MaMGal::LocaleEnv->new(get_mock_logger) }, "new succeeds with logger");
 my $ch;
 lives_ok(sub { $ch = $le->get_charset },             "Locale env returns a charset");
 ok($ch,                                              "The charset returned by get_charset is never empty");

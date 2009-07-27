@@ -13,13 +13,14 @@ use POSIX;
 sub init
 {
 	my $self = shift;
-	croak "No arguments expected" if @_;
+	my $logger = shift or croak "Need a logger arg";
+	ref $logger and $logger->isa('MaMGal::Logger') or croak "Arg is not a MaMGal::Logger , but a [$logger]";
 	eval {
 		require I18N::Langinfo;
 		I18N::Langinfo->import(qw(langinfo CODESET));
 	};
 	if ($@) {
-		warn "nl_langinfo(CODESET) is not available. ANSI_X3.4-1968 (a.k.a. US-ASCII) will be used as HTML encoding. $@";
+		$logger->log_message("nl_langinfo(CODESET) is not available. ANSI_X3.4-1968 (a.k.a. US-ASCII) will be used as HTML encoding. $@");
 		$self->{get_codeset} = sub { "ANSI_X3.4-1968" };
 	} else {
 		$self->{get_codeset} = sub { langinfo(CODESET()) };

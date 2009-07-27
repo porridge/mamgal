@@ -8,7 +8,6 @@ use warnings;
 use base 'MaMGal::Base';
 use Carp;
 use MaMGal::Entry::Dir;
-use MaMGal::Formatter;
 
 sub init
 {

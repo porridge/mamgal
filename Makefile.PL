@@ -15,6 +15,7 @@ WriteMakefile(
 		'File::Basename' => 0,
 		'File::stat' => 0,
 		'File::Temp' => 0,
+		'FileHandle' => 0,
 		'HTML::Entities' => 0,
 		'Image::EXIF::DateTime::Parser' => 0,
 		'Image::Magick' => 0,
