@@ -4,7 +4,19 @@
 package MaMGal::TestHelper;
 use Test::MockObject;
 use lib 'Exporter';
-@EXPORT = qw(get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper);
+@EXPORT = qw(get_mock_entry get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper);
+use Carp;
+
+sub get_mock_entry
+{
+	my $class = shift or croak "class required";
+	my $mock_entry = Test::MockObject->new
+		->mock('set_root')
+		->mock('make')
+		->mock('add_tools');
+	$mock_entry->set_isa($class);
+	return $mock_entry;
+}
 
 sub get_mock_iif {
 	my $f = Test::MockObject->new->mock('read', sub { Test::MockObject->new });
