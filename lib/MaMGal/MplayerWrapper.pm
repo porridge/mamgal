@@ -9,6 +9,18 @@ use warnings;
 use base 'MaMGal::Base';
 use Carp;
 use File::Temp 'tempdir';
+use Exception::Class (
+	'MaMGal::MplayerWrapper::BaseException' => {
+		fields => [qw(message)],
+	},
+	'MaMGal::MplayerWrapper::NotAvailableException' => {
+		isa => 'MaMGal::MplayerWrapper::BaseException',
+	},
+	'MaMGal::MplayerWrapper::ExecutionFailureException' => {
+		isa => 'MaMGal::MplayerWrapper::BaseException',
+		fields => [qw(stdout stderr)],
+	}
+);
 
 sub init
 {
@@ -57,21 +69,21 @@ sub _read_log
 sub _read_messages
 {
 	my $self = shift;
-	return ($self->_read_log('stdout'), $self->_read_log('stderr'));
+	return map { $_ => $self->_read_log($_) } qw(stdout stderr);
 }
 
 sub snapshot
 {
 	my $self = shift;
 	$self->{available} = $self->{cc}->is_available('mplayer') unless exists $self->{available};
-	die MaMGal::MplayerWrapper::NotAvailableException->new unless $self->{available};
+	MaMGal::MplayerWrapper::NotAvailableException->throw unless $self->{available};
 	my $film_path = shift or croak "snapshot needs an arg: path to the film";
 	-r $film_path or croak "\"$film_path\" is not readable";
 	my $dir = $self->{tempdir};
 	$self->run_mplayer($film_path);
 	my $img = Image::Magick->new;
 	if (my $r = $img->Read("${dir}/00000001.jpg")) {
-		die MaMGal::MplayerWrapper::ExecutionFailureException->new("Could not read the snapshot produced by mplayer: $r\n", $self->_read_messages);
+		MaMGal::MplayerWrapper::ExecutionFailureException->throw(message => "Could not read the snapshot produced by mplayer: $r\n", $self->_read_messages);
 	}
 	$self->cleanup;
 	return $img;
@@ -91,13 +103,13 @@ sub cleanup
 package MaMGal::MplayerWrapper::NotAvailableException;
 use strict;
 use warnings;
-use base 'MaMGal::Base';
 use Carp;
 
-sub init
+sub _initialize
 {
 	my $self = shift;
 	croak "this exception does not accept arguments" if @_;
+	$self->SUPER::_initialize(@_);
 }
 
 sub message
@@ -109,35 +121,14 @@ sub message
 package MaMGal::MplayerWrapper::ExecutionFailureException;
 use strict;
 use warnings;
-use base 'MaMGal::Base';
 use Carp;
 
-sub init
+sub _initialize
 {
 	my $self = shift;
-	$self->{message} = shift or croak "Message is required";
-	$self->{stdout} = shift;
-	$self->{stderr} = shift;
-	croak "Either one or three arguments are required" if $self->{stdout} xor $self->{stderr};
+	$self->SUPER::_initialize(@_);
+	croak "This exception requires a message argument" unless $self->message;
+	croak "Either one or three arguments are required" if $self->stdout xor $self->stderr;
 }
-
-sub message
-{
-	my $self = shift;
-	$self->{message}
-}
-
-sub stdout
-{
-	my $self = shift;
-	$self->{stdout}
-}
-
-sub stderr
-{
-	my $self = shift;
-	$self->{stderr}
-}
-
 
 1;

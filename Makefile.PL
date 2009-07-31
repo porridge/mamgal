@@ -11,6 +11,7 @@ WriteMakefile(
 # Required for runtime
 		'Carp' => 0,
 		'Cwd' => 0,
+		'Exception::Class' => 0,
 		'Fcntl' => 0,
 		'File::Basename' => 0,
 		'File::stat' => 0,

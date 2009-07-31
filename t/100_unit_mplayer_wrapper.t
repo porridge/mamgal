@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 45;
+use Test::More tests => 65;
 use Test::Exception;
 use Test::HTML::Content;
 use lib 'testlib';
@@ -17,24 +17,42 @@ prepare_test_data;
 use_ok('MaMGal::MplayerWrapper');
 
 dies_ok(sub { MaMGal::MplayerWrapper::ExecutionFailureException->new }, 'exception creation dies without arguments');
-dies_ok(sub { MaMGal::MplayerWrapper::ExecutionFailureException->new('foo bar', 'just one') }, 'exception creation dies with just two arguments');
-dies_ok(sub { MaMGal::MplayerWrapper::ExecutionFailureException->new('foo bar', undef, 'just one') }, 'exception creation dies without second but with third arg');
+dies_ok(sub { MaMGal::MplayerWrapper::ExecutionFailureException->new(message => 'foo bar', stderr => 'just one') }, 'exception creation dies with just one argument');
+dies_ok(sub { MaMGal::MplayerWrapper::ExecutionFailureException->new(message => 'foo bar', stdout => 'just one') }, 'exception creation dies with just another arg');
 
-my $e = MaMGal::MplayerWrapper::ExecutionFailureException->new('foo bar');
-ok($e);
-dies_ok(sub { $e->reason }, 'reason method does not exist');
-dies_ok(sub { $e->filename}, 'filename method does not exist');
-is($e->message, 'foo bar');
+sub exception_instantiation_ok
+{
+	my $level = $Test::Builder::Level;
+	local $Test::Builder::Level = $level + 1;
+
+	my $message = shift;
+	my @args = @_;
+	my $e;
+	lives_ok(sub { $e = MaMGal::MplayerWrapper::ExecutionFailureException->new(@args) }, $message);
+	ok($e);
+	is($e->message, 'boom', 'message is OK');
+	dies_ok(sub { $e->reason }, 'reason method does not exist');
+	dies_ok(sub { $e->filename}, 'filename method does not exist');
+	$e
+}
+
+my $e;
+$e = exception_instantiation_ok('exception creation succeeds with unnamed argument', 'boom');
 is($e->stdout, undef);
 is($e->stderr, undef);
-
-$e = MaMGal::MplayerWrapper::ExecutionFailureException->new('foo bar', [1,2,3], [2,3,4]);
-ok($e);
-is($e->message, 'foo bar');
-is_deeply($e->stdout, [1,2,3]);
-is_deeply($e->stderr, [2,3,4]);
+$e = exception_instantiation_ok('exception creation succeeds with message argument', message => 'boom');
+is($e->stdout, undef);
+is($e->stderr, undef);
+$e = exception_instantiation_ok('exception creation succeeds without message', error => 'boom');
+is($e->stdout, undef);
+is($e->stderr, undef);
+$e = exception_instantiation_ok('exception creation succeeds with all 3 args', message => 'boom', stdout => "1,2,3", stderr => "2,3,4");
+is($e->stdout, "1,2,3");
+is($e->stderr, "2,3,4");
 
 dies_ok(sub { MaMGal::MplayerWrapper::NotAvailableException->new('something') }, 'this exception type does not accept a message arg');
+dies_ok(sub { MaMGal::MplayerWrapper::NotAvailableException->new(message => 'something') }, 'this exception type does not accept a message arg');
+dies_ok(sub { MaMGal::MplayerWrapper::NotAvailableException->new(error => 'something') }, 'this exception type does not accept a message arg');
 $e = MaMGal::MplayerWrapper::NotAvailableException->new;
 ok($e);
 is($e->message, 'mplayer is not available - films will not be represented by snapshots.');
