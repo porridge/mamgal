@@ -9,18 +9,7 @@ use warnings;
 use base 'MaMGal::Base';
 use Carp;
 use File::Temp 'tempdir';
-use Exception::Class (
-	'MaMGal::MplayerWrapper::BaseException' => {
-		fields => [qw(message)],
-	},
-	'MaMGal::MplayerWrapper::NotAvailableException' => {
-		isa => 'MaMGal::MplayerWrapper::BaseException',
-	},
-	'MaMGal::MplayerWrapper::ExecutionFailureException' => {
-		isa => 'MaMGal::MplayerWrapper::BaseException',
-		fields => [qw(stdout stderr)],
-	}
-);
+use MaMGal::Exceptions;
 
 sub init
 {
@@ -98,37 +87,6 @@ sub cleanup
 	closedir $d;
 	# This assumes that mplayer did not create any directories.
 	unlink(map($path.'/'.$_, @files));
-}
-
-package MaMGal::MplayerWrapper::NotAvailableException;
-use strict;
-use warnings;
-use Carp;
-
-sub _initialize
-{
-	my $self = shift;
-	croak "this exception does not accept arguments" if @_;
-	$self->SUPER::_initialize(@_);
-}
-
-sub message
-{
-	my $self = shift;
-	'mplayer is not available - films will not be represented by snapshots.'
-}
-
-package MaMGal::MplayerWrapper::ExecutionFailureException;
-use strict;
-use warnings;
-use Carp;
-
-sub _initialize
-{
-	my $self = shift;
-	$self->SUPER::_initialize(@_);
-	croak "This exception requires a message argument" unless $self->message;
-	croak "Either one or three arguments are required" if $self->stdout xor $self->stderr;
 }
 
 1;
