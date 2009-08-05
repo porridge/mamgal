@@ -33,6 +33,7 @@ sub _make_any
 {
 	my $self = shift;
 	my $dirs_are_roots = shift;
+	# TODO: replace with croak after cmdline parsing is added
 	die "Argument required.\n" unless @_;
 
 	my @dirs = map {
