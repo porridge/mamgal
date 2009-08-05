@@ -7,6 +7,7 @@ use strict;
 use warnings;
 use base 'MaMGal::Base';
 our $VERSION = '0.01';
+our $AUTOLOAD;
 use Carp;
 use FileHandle;
 use Image::EXIF::DateTime::Parser;
@@ -43,18 +44,27 @@ sub init
 	$c->register(entry_factory => 'MaMGal::EntryFactory', [qw(formatter mplayer_wrapper image_info_factory logger)]);
 	$c->register(maker => 'MaMGal::Maker', ['entry_factory']);
 	$self->{maker} = $c->service('maker');
+	$self->{logger} = $c->service('logger');
 }
 
-sub make_roots
-{
-	my $self = shift;
-	$self->{maker}->make_roots(@_);
-}
+sub DESTROY {} # avoid using AUTOLOAD
 
-sub make_without_roots
+sub AUTOLOAD
 {
 	my $self = shift;
-	$self->{maker}->make_without_roots(@_);
+	my $method = $AUTOLOAD;
+	$method =~ s/.*://;
+	croak "Unknown method $method" unless $method =~ /^make_(without_)?roots$/;
+	eval {
+		$self->{maker}->$method(@_);
+	};
+	my $e;
+	if ($e = Exception::Class->caught('MaMGal::SystemException')) {
+		$self->{logger}->log_exception($e);
+	} elsif ($e = Exception::Class->caught) {
+		ref $e ? $e->rethrow : die $e;
+	}
+	1;
 }
 
 1;

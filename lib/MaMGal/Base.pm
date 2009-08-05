@@ -5,6 +5,7 @@
 package MaMGal::Base;
 use strict;
 use warnings;
+use MaMGal::Exceptions;
 
 sub new
 {
@@ -29,10 +30,10 @@ sub _write_contents_to
 	my $tmp_name = shift;
 	my $full_name = shift;
 
-	open(OUT, '>', $tmp_name) or die "${tmp_name}: $!\n";
+	open(OUT, '>', $tmp_name)     or MaMGal::SystemException->throw(message => '%s: open failed: %s', objects => [$tmp_name, $!]);
 	print OUT &$code;
-	close(OUT)                or die "${tmp_name}: $!\n";
-	rename($tmp_name, $full_name) or die "${tmp_name} -> ${full_name}: $!\n";
+	close(OUT)                    or MaMGal::SystemException->throw(message => '%s: close failed: %s', objects => [$tmp_name, $!]);
+	rename($tmp_name, $full_name) or MaMGal::SystemException->throw(message => '%s: rename failed from "%s": %s', objects => [$full_name, $tmp_name, $!]);
 }
 
 1;

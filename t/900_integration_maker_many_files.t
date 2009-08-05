@@ -5,9 +5,10 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 4;
+use Test::More tests => 11;
 use Test::Files;
 use Test::HTML::Content;
+use Test::Exception;
 use lib 'testlib';
 use MaMGal::TestHelper;
 
@@ -21,6 +22,7 @@ dir_only_contains_ok('td/more', [qw(a.png b.png x.png subdir subdir/p.png subdir
 use_ok('MaMGal');
 # Get locale from environment so that you can see some representatative output in your language
 my $M = MaMGal->new('');
+ok($M->{logger});
 ok($M->make_roots('td/more'), "maker returns success on an dir with some files");
 dir_only_contains_ok('td/more', [qw(.mamgal-root
 					index.html .mamgal-index.png .mamgal-style.css
@@ -49,3 +51,22 @@ dir_only_contains_ok('td/more', [qw(.mamgal-root
 					'zzz another subdir/.mamgal-medium/p.png'
 					],
 						"maker created index.html, .mamgal-medium, .mamgal-thumbnails and .mamgal-slides, also for both subdirs");
+
+# Test failures
+my $ex = get_mock_exception 'MaMGal::SystemException';
+$M->{maker} = Test::MockObject->new;
+$M->{maker}->mock('make_roots', sub { die $ex });
+$M->{maker}->mock('make_without_roots', sub { die $ex });
+$M->{logger} = get_mock_logger;
+lives_ok(sub { $M->make_roots('whatever') }, 'make_roots survives');
+my ($method, $args) = $M->{logger}->next_call;
+is($method, 'log_exception');
+is($args->[1], $ex);
+$M->{logger}->clear;
+
+lives_ok(sub { $M->make_without_roots('whatever') }, 'make_without_roots survives');
+($method, $args) = $M->{logger}->next_call;
+is($method, 'log_exception');
+is($args->[1], $ex);
+$M->{logger}->clear;
+

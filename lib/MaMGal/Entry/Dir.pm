@@ -10,6 +10,7 @@ use Carp;
 use MaMGal::Entry::Picture;
 use MaMGal::DirIcon;
 use Image::Magick;
+use MaMGal::Exceptions;
 
 sub child            { $_[0]->{path_name}.'/'.$_[1]     }
 sub page_path        { $_[0]->{base_name}.'/index.html' }
@@ -39,7 +40,7 @@ sub set_root
 	if ($is_root) {
 		$self->_write_contents_to(sub {''}, '.mamgal-root');
 	} else {
-		unlink($self->child('.mamgal-root')) or die "unlink ".$self->child(".mamgal-root").": $!";
+		unlink($self->child('.mamgal-root')) or MaMGal::SystemException->throw(message => '%s: unlink failed: %s', objects => [$self->child(".mamgal-root"), $!]);
 	}
 }
 
@@ -69,7 +70,7 @@ sub ensure_subdir_exists
 	my $self = shift;
 	my $basename = shift;
 	my $dir = $self->child($basename);
-	mkdir $dir or die "[$dir]: $!\n" unless -w $dir;
+	mkdir $dir or MaMGal::SystemException->throw(message => '%s: mkdir failed: %s', objects => [$dir, $!]) unless -w $dir;
 }
 
 # get _picture_ neighbours of given picture
@@ -140,7 +141,7 @@ sub _write_montage
 	push @$stack, map {
 		my $img = Image::Magick->new;
 		my $rr;
-		$rr = $img->Read($_->tile_path) and die $_->tile_path.': '.$rr;
+		$rr = $img->Read($_->tile_path) and MaMGal::SystemException->throw(message => '%s: %s', objects => [$_->tile_path, $rr]);
 		$img } @images[0..($montage_count-1)];
 
 	my $side = $self->_side_length($montage_count);
@@ -150,9 +151,9 @@ sub _write_montage
 	my ($montage, $r);
 	# Do the magick, scale and write.
 	$r = $montage = $stack->Montage(tile => $side.'x'.$side, geometry => $m_x.'x'.$m_y, border => 2);
-	ref($r)									or  die "montage: $r";
+	ref($r)                                                 or  MaMGal::SystemException->throw(message => '%s: montage failed: %s', objects => [$self->child('.mamgal-index.png'), $r]);
 	MaMGal::Entry::Picture->scale_into($montage, $m_x, $m_y);
-	$r = $montage->Write($self->child('.mamgal-index.png'))			and die $self->child('.mamgal-index.png').': '.$r;
+	$r = $montage->Write($self->child('.mamgal-index.png')) and MaMGal::SystemException->throw(message => '%s: writing montage failed: %s', objects => [$self->child('.mamgal-index.png'), $r]);
 }
 
 sub _ignorable_name($)
@@ -186,19 +187,19 @@ sub _prune_inactive_files
 		# If the directory is not there, we have nothing to do about it
 		next unless -d $base.'/'.$dir;
 		# Read the names from the dir
-		opendir DIR, $base.'/'.$dir or die "[$base/$dir]: $!\n";
+		opendir DIR, $base.'/'.$dir or MaMGal::SystemException->throw(message => '%s: opendir failed: %s',  objects => ["$base/$dir", $!]);
 		my @entries = grep { $_ ne '.' and $_ ne '..' } readdir DIR;
-		closedir DIR or die "[$base/$dir]: $!\n";
+		closedir DIR                or MaMGal::SystemException->throw(message => '%s: closedir failed: %s', objects => ["$base/$dir", $!]);
 		# Delete the files which are not "active"
 		my $at_start = scalar @entries;
 		my $deleted = 0;
 		foreach my $entry (@entries) {
 			if (not $active{$dir.'/'.$entry}) {
-				unlink($base.'/'.$dir.'/'.$entry) or die "unlink $base/$dir/$entry: $!\n";
+				unlink($base.'/'.$dir.'/'.$entry) or MaMGal::SystemException->throw(message => '%s: unlink failed: %s', objects => ["$base/$dir/$entry", $!]);
 				$deleted++;
 			}
 		}
-		rmdir($base.'/'.$dir) or die "rmdir $base/$dir: $!\n" if $at_start == $deleted;
+		rmdir($base.'/'.$dir) or MaMGal::SystemException->throw(message => '%s: rmdir failed: %s', objects => ["$base/$dir", $!]) if $at_start == $deleted;
 	}
 }
 
@@ -215,9 +216,9 @@ sub elements
 
 	# Read the names from the dir
 	my $path = $self->{path_name};
-	opendir DIR, $path or die "[$path]: $!\n";
+	opendir DIR, $path or MaMGal::SystemException->throw(message => '%s: opendir failed: %s',  objects => [$path, $!]);
 	my @entries = sort { $a cmp $b } grep { ! $self->_ignorable_name($_) } readdir DIR;
-	closedir DIR or die "[$path]: $!\n";
+	closedir DIR       or MaMGal::SystemException->throw(message => '%s: closedir failed: %s', objects => [$path, $!]);
 
 	my $i = 0;
 	# Instantiate objects and cache them

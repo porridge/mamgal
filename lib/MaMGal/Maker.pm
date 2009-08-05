@@ -37,7 +37,7 @@ sub _make_any
 
 	my @dirs = map {
 		my $d = $self->{entry_factory}->create_entry_for($_);
-		die sprintf("%s: not a directory.\n", $_) unless $d->isa('MaMGal::Entry::Dir');
+		MaMGal::SystemException->throw(message => '%s: not a directory.', objects => [$_]) unless $d->isa('MaMGal::Entry::Dir');
 		$d->set_root(1) if $dirs_are_roots;
 		$d
 	} @_;

@@ -151,6 +151,7 @@ sub get_mock_exception($)
 	my $e = Test::MockObject->new;
 	$e->set_isa($class);
 	$e->mock('message', sub { 'foo bar' });
+	$e->mock('interpolated_message', sub { 'foo bar baz' });
 	return $e;
 }
 

@@ -44,7 +44,7 @@ sub read_image
 	my $self = shift;
 	my $i = Image::Magick->new;
 	my $r;
-	$r = $i->Read($self->{path_name})	and die $self->{path_name}.': '.$r;
+	$r = $i->Read($self->{path_name}) and MaMGal::SystemException->throw(message => '%s: reading failed: %s', objects => [$self->{path_name}, $r]);
 	return $i;
 }
 

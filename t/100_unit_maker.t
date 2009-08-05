@@ -107,13 +107,13 @@ sub set_mock_entry
 sub make_roots_dies : Test(1)
 {
 	my $self = shift;
-	throws_ok { $self->{maker}->make_roots('something/whatever') } qr{^something/whatever: not a directory\.$}, "maker dies if thing returned by factory is not a dir object";
+	throws_ok { $self->{maker}->make_roots('something/whatever') } qr{^%s: not a directory\.$}, "maker dies if thing returned by factory is not a dir object";
 }
 
 sub make_without_roots_dies : Test(1)
 {
 	my $self = shift;
-	throws_ok { $self->{maker}->make_without_roots('something/whatever') } qr{^something/whatever: not a directory\.$}, "maker dies if thing returned by factory is not a dir object";
+	throws_ok { $self->{maker}->make_without_roots('something/whatever') } qr{^%s: not a directory\.$}, "maker dies if thing returned by factory is not a dir object";
 }
 
 

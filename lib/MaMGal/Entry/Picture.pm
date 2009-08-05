@@ -8,6 +8,7 @@ use warnings;
 use base 'MaMGal::Entry';
 use Carp;
 use File::stat;
+use MaMGal::Exceptions;
 
 sub make
 {
@@ -33,7 +34,7 @@ sub fresher_than_me
 	my $self = shift;
 	my $name = shift;
 	if (-e $name) {
-		my $stat = stat($name) or die "File \"$name\" exists, but cannot read its metadata (stat).\n";
+		my $stat = stat($name) or MaMGal::SystemException->throw(message => '%s: metadata read (stat) failed: %s', objects => [$name, $!]);
 		return 1 if $stat->mtime > $self->{stat}->mtime;
 	}
 	return 0;
@@ -56,7 +57,7 @@ sub refresh_miniatures
 		$i = $self->read_image unless defined $i;
 		$self->scale_into($i, $x, $y);
 		$self->container->ensure_subdir_exists($subdir);
-		$r = $i->Write($name)		and die "Writing \"${name}\": $r";
+		$r = $i->Write($name)		and MaMGal::SystemException->throw(message => '%s: writing failed: %s', objects => [$name, $r]);
 	}
 	return @ret;
 }
@@ -81,9 +82,10 @@ sub scale_into
 	if ($x_ratio <= 1 and $y_ratio <= 1) {
 		return; # no need to scale
 	} elsif ($x_ratio > $y_ratio) {
-		$r = $img->Scale(width => $x, height => $y_pic / $x_ratio) and die $r;
+# TODO: just return $r, and throw in caller, where we know picture's filename
+		$r = $img->Scale(width => $x, height => $y_pic / $x_ratio) and MaMGal::SystemException->throw(message => 'scaling failed: %s', objects => [$r]);
 	} else {
-		$r = $img->Scale(height => $y, width => $x_pic / $y_ratio) and die $r;
+		$r = $img->Scale(height => $y, width => $x_pic / $y_ratio) and MaMGal::SystemException->throw(message => 'scaling failed: %s', objects => [$r]);
 	}
 }
 
