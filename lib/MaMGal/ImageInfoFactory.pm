@@ -8,6 +8,7 @@ use strict;
 use warnings;
 use base 'MaMGal::Base';
 use Carp;
+use MaMGal::Exceptions;
 
 my $implementation;
 
@@ -20,7 +21,7 @@ BEGIN {
 	} elsif (eval "require MaMGal::ImageInfo::ImageInfo") {
 		$implementation = 'MaMGal::ImageInfo::ImageInfo';
 	} else {
-		die "No usable image info library found (tried Image::ExifTool and Image::Info.\n";
+		MaMGal::SystemException->throw(message => 'No usable image info library found (looked for "Image::ExifTool" and "Image::Info" in %s).', objects => [join(':', @INC)]);;
 	}
 }
 
