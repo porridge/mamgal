@@ -50,7 +50,7 @@ sub sounds_like_film($)
 
 sub canonicalize_path($)
 {
-	croak "list context required" unless wantarray;
+	croak "List context required" unless wantarray;
 
 	my $path = shift;
 
@@ -67,7 +67,7 @@ sub canonicalize_path($)
 	}
 
 	# Split the path into containing directory and basename, stripping any trailing slashes
-	$path =~ m{^(.*?)/?([^/]+)/*$}o or die sprintf(gettext("Internal Error: [%s] does not end with a base name.\n"), $path);
+	$path =~ m{^(.*?)/?([^/]+)/*$}o or confess sprintf(gettext("Internal Error: [%s] does not end with a base name.\n"), $path);
 	my ($dirname, $basename) = ($1 || '.', $2);
 	return ($path, $dirname, $basename);
 }

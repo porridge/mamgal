@@ -107,8 +107,8 @@ sub format
 	my $i = 1;
 	if (@elements) {
 		foreach my $e (@elements) {
-			die "[$e] is not an object" unless ref $e;
-			die "[$e] is a ".ref($e) unless $e->isa('MaMGal::Entry');
+			confess "[$e] is not an object" unless ref $e;
+			confess "[$e] is a ".ref($e) unless $e->isa('MaMGal::Entry');
 			$ret .= '  '.$self->entry_cell($e)."\n";
 			$ret .= "</tr>\n<tr>\n" if $i % 4 == 0;
 			$i++;

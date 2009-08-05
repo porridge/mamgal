@@ -15,12 +15,12 @@ sub init
 	my $self     = shift;
 	my $dirname  = shift or croak "Need dir"; # the directory which contains this entry, relative to WD or absolute
 	my $basename = shift or croak "Need basename"; # under $dirname
-	die "A basename of \".\" used when other would be possible (last component of $dirname)" if $basename eq '.' and not ($dirname eq '.' or $dirname eq '/');
-	die "Basename [$basename] contains a slash" if $basename =~ m{/};
+	confess "A basename of \".\" used when other would be possible (last component of $dirname)" if $basename eq '.' and not ($dirname eq '.' or $dirname eq '/');
+	confess "Basename [$basename] contains a slash" if $basename =~ m{/};
 	# We might not be able to get stat information (e.g. no execute permission on containing directory), so do not croak
 	my $stat     = shift;
-	die "Third argument must be a File::stat, if provided" unless (not defined $stat) or (ref $stat and $stat->isa('File::stat'));
-	die "At most 3 args expected, got fourth: [$_[0]]" if @_;
+	confess "Third argument must be a File::stat, if provided" unless (not defined $stat) or (ref $stat and $stat->isa('File::stat'));
+	confess "At most 3 args expected, got fourth: [$_[0]]" if @_;
 
 	$self->{dir_name}  = $dirname;
 	$self->{base_name} = $basename;
