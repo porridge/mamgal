@@ -29,18 +29,20 @@ sub run_mplayer
 	my $dir = $self->{tempdir};
 	my $pid = fork;
 	if (not defined $pid) {
-		die MaMGal::MplayerWrapper::ExecutionFailureException->new("Fork failed: $!");
+		MaMGal::MplayerWrapper::ExecutionFailureException->throw("Fork failed: $!");
 	} elsif ($pid == 0) {
 		# Child
-		open(STDOUT, ">${dir}/stdout") or die MaMGal::MplayerWrapper::ExecutionFailureException->new("Cannot open \"${dir}/stdout\" for writing: $!");
-		open(STDERR, ">${dir}/stderr") or die MaMGal::MplayerWrapper::ExecutionFailureException->new("Cannot open \"${dir}/stderr\" for writing: $!");
+		open(STDOUT, ">${dir}/stdout") or MaMGal::MplayerWrapper::ExecutionFailureException->throw("Cannot open \"${dir}/stdout\" for writing: $!");
+		open(STDERR, ">${dir}/stderr") or MaMGal::MplayerWrapper::ExecutionFailureException->throw("Cannot open \"${dir}/stderr\" for writing: $!");
 		my @cmd = ('mplayer', $film_path, '-noautosub', '-nosound', '-vo', "jpeg:quality=100:outdir=${dir}", '-frames', '2');
+		{ # own scope to prevent a compile-time warning
 		exec(@cmd);
-		die MaMGal::MplayerWrapper::ExecutionFailureException->new("Cannot run mplayer: $!\n");
+		}
+		MaMGal::MplayerWrapper::ExecutionFailureException->throw("Cannot run mplayer: $!\n");
 	} else {
 		# Parent
 		waitpid($pid, 0);
-		die MaMGal::MplayerWrapper::ExecutionFailureException->new("Mplayer failed ($?).\n", $self->_read_messages) if $? != 0;
+		MaMGal::MplayerWrapper::ExecutionFailureException->throw("Mplayer failed ($?).\n", $self->_read_messages) if $? != 0;
 	}
 }
 
@@ -49,9 +51,9 @@ sub _read_log
 	my $self = shift;
 	my $name = shift;
 	my $dir = $self->{tempdir};
-	open(F, "<${dir}/$name") or die MaMGal::MplayerWrapper::ExecutionFailureException->new("Cannot open \"${dir}/$name\" for reading: $!");
+	open(F, "<${dir}/$name") or MaMGal::MplayerWrapper::ExecutionFailureException->throw("Cannot open \"${dir}/$name\" for reading: $!");
 	my @ret = <F>;
-	close(F) or die MaMGal::MplayerWrapper::ExecutionFailureException->new("Cannot close \"${dir}/$name\": $!");
+	close(F) or MaMGal::MplayerWrapper::ExecutionFailureException->throw("Cannot close \"${dir}/$name\": $!");
 	return \@ret;
 }
 
@@ -82,7 +84,7 @@ sub cleanup
 {
 	my $self = shift;
 	my $path = $self->{tempdir};
-	opendir my $d, $path or die MaMGal::MplayerWrapper::ExecutionFailureException->new("Cannot open \"$path\" to clean up after mplayer");
+	opendir my $d, $path or MaMGal::MplayerWrapper::ExecutionFailureException->throw("Cannot open \"$path\" to clean up after mplayer");
 	my @files = readdir $d;
 	closedir $d;
 	# This assumes that mplayer did not create any directories.
