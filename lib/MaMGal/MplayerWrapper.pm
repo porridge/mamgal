@@ -17,8 +17,11 @@ sub init
 	my $cc = shift or croak 'Arg required: command checker';
 	$cc->isa('MaMGal::CommandChecker') or croak 'Arg must be a CommandChecker';
 	croak "Just one argument allowed" if @_;
-	$self->{tempdir} = tempdir(CLEANUP => 1);
-	# The above dies on failure
+	eval {
+		$self->{tempdir} = tempdir(CLEANUP => 1);
+	}; if ($@) {
+		MaMGal::SystemException->throw(message => 'Temporary directory creation failed: %s.', objects => [$@]);
+	}
 	$self->{cc} = $cc;
 }
 
