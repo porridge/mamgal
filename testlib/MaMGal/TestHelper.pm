@@ -123,10 +123,20 @@ sub printed_only_ok($$;$)
 	my $re = shift;
 	my $level = $Test::Builder::Level;
 	local $Test::Builder::Level = $level + 1;
-	my ($name, $args) = $mock->next_call;
-	is($name, 'printf', 'expected method was called');
-	is($args->[1], "%s\n", 'format string as expected');
-	like($args->[2], $re, 'message as expected');
+	my ($name, $args);
+	if (ref $re and ref $re eq 'ARRAY') {
+		foreach my $line_re (@$re) {
+			($name, $args) = $mock->next_call;
+			is($name, 'printf', "expected method was called (checking $line_re)");
+			is($args->[1], "%s\n", "format string as expected (for $line_re)");
+			like($args->[2], $line_re, 'message as expected');
+		}
+	} else {
+		($name, $args) = $mock->next_call;
+		is($name, 'printf', 'expected method was called');
+		is($args->[1], "%s\n", 'format string as expected');
+		like($args->[2], $re, 'message as expected');
+	}
 	is($mock->next_call, undef, 'no other logging method was called');
 	$mock->clear;
 }
