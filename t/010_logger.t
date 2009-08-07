@@ -64,5 +64,27 @@ sub log_not_available_exception : Tests(7)
 	is($self->{mock_fh}->next_call, undef, 'reading image without an mplayer on the second time prints no message');
 }
 
+sub log_execution_failure_exception : Test(42)
+{
+	my $self = shift;
+	my $e_msgonly = get_mock_exception 'MaMGal::MplayerWrapper::ExecutionFailureException';
+	$e_msgonly->mock('stdout');
+	$e_msgonly->mock('stderr');
+	warnings_are { $self->{l}->log_exception($e_msgonly, 'prefix') } [], 'log_exception with prefix causes no warnings';
+	printed_only_ok($self->{mock_fh}, qr{^prefix: foo bar$});# log_exception with prefix prints the message without stderr/out if there are none
+	$self->{mock_fh}->clear;
+
+	my $e = get_mock_exception 'MaMGal::MplayerWrapper::ExecutionFailureException';
+	$e->mock('stdout', sub { [qw{bim bam bom}] });
+	$e->mock('stderr', sub { [qw{pim pam pom}] });
+	# printing one without stderr/out does not affect the suppression
+	warnings_are { $self->{l}->log_exception($e, 'prefix') } [], 'log_exception with prefix causes no warnings';
+	printed_only_ok($self->{mock_fh}, [qr{^prefix: foo bar$}, qr{^prefix: ---.*standard output messages}, qr{^prefix: bim$}, qr{^prefix: bam$}, qr{^prefix: bom$}, qr{^prefix: ---.*standard error messages}, qr{^prefix: pim$}, qr{^prefix: pam$}, qr{^prefix: pom$}, qr{^prefix: ------}]);# log_exception with prefix prints the message and stderr/out first time
+	$self->{mock_fh}->clear;
+
+	warnings_are { $self->{l}->log_exception($e, 'prefix') } [], 'log_exception with prefix causes no warnings second time either';
+	printed_only_ok($self->{mock_fh}, qr{^prefix: foo bar$});# log_exception with prefix prints just a message second time
+}
+
 MaMGal::Unit::Logger->runtests unless defined caller;
 1;

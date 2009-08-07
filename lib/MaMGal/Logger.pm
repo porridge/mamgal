@@ -24,7 +24,8 @@ sub log_message
 	$self->{fh}->printf("%s\n", $prefix.$msg);
 }
 
-our $warned_before = 0;
+our $not_available_warned_before = 0;
+our $exe_failure_warned_before = 0;
 
 sub log_exception
 {
@@ -33,9 +34,22 @@ sub log_exception
 	my $prefix = shift;
 	if ($e->isa('MaMGal::MplayerWrapper::NotAvailableException')) {
 		# TODO this needs to be made thread-safe
-		return if $warned_before;
-		$warned_before = 1;
+		return if $not_available_warned_before;
+		$not_available_warned_before = 1;
+	} elsif ($e->isa('MaMGal::MplayerWrapper::ExecutionFailureException')) {
+		# TODO this needs to be made thread-safe
+		goto JUST_LOG if $exe_failure_warned_before or (! $e->stdout and ! $e->stderr);
+		$exe_failure_warned_before = 1;
+		$self->log_message($e->message, $prefix);
+		$self->log_message('--------------------- standard output messages -------------------', $prefix);
+		$self->log_message($_, $prefix) for $e->stdout ? @{$e->stdout} : ();
+		$self->log_message('--------------------- standard error messages --------------------', $prefix);
+		$self->log_message($_, $prefix) for $e->stderr ? @{$e->stderr} : ();
+		$self->log_message('------------------------------------------------------------------', $prefix);
+		return;
 	}
+	# TODO: test logging of SystemException (interpolated)
+JUST_LOG:
 	$self->log_message($e->message, $prefix);
 }
 
