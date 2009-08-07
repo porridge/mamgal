@@ -57,6 +57,7 @@ sub _read_log
 	open(F, "<${dir}/$name") or MaMGal::MplayerWrapper::ExecutionFailureException->throw("Cannot open \"${dir}/$name\" for reading: $!");
 	my @ret = <F>;
 	close(F) or MaMGal::MplayerWrapper::ExecutionFailureException->throw("Cannot close \"${dir}/$name\": $!");
+	chomp @ret;
 	return \@ret;
 }
 

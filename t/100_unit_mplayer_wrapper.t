@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 65;
+use Test::More tests => 69;
 use Test::Exception;
 use Test::HTML::Content;
 use lib 'testlib';
@@ -85,7 +85,11 @@ is($mccy->next_call, undef, 'checker not interrogated more than once');
 $mccy->clear;
 ok($err->message, "invalid file produces some exception message");
 ok($err->stdout, "invalid file produces some messages");
+cmp_ok(scalar @{$err->stdout}, '>', 0, "there are lines in the stdout file");
+is(scalar(grep(/\n$/, @{$err->stdout})), 0, "no newlines in the stdout file");
 ok($err->stderr, "invalid file produces some error messages");
+cmp_ok(scalar @{$err->stderr}, '>', 0, "there are lines in the stderr file");
+is(scalar(grep(/\n$/, @{$err->stderr})), 0, "no newlines in the stderr file");
 
 lives_ok(sub { $snap = $w->snapshot('td/one_film/m.mov') },	"wrapper can get a snapshot of a film file");
 is($mccy->next_call, undef, 'checker not interrogated more than once');
