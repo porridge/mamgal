@@ -60,7 +60,7 @@ sub _initialize
 	# zero-width negative look-ahead assertion: a percent not followed by percent
 	my $placeholder_count = () = $self->message =~ /%(?!%)/g;
 	my $object_count = $self->objects ? scalar @{$self->objects} : 0;
-	croak "Message with placeholders must be followed by arguments" unless $placeholder_count == $object_count;
+	croak "Message with $placeholder_count placeholders must be followed by this many arguments, not $object_count" unless $placeholder_count == $object_count;
 }
 
 sub interpolated_message
