@@ -114,7 +114,12 @@ sub logged_only_ok($$;$)
 	is($name, 'log_message', 'expected method was called');
 	like($args->[1], $re, 'message as expected');
 	is($args->[2], $prefix, 'prefix as expected');
-	is($mock->next_call, undef, 'no other logging method was called');
+	($name, $args) = $mock->next_call;
+	is($name, undef, 'no other logging method was called');
+	return unless defined $name;
+	is($args->[1], undef, 'no args were passed either');
+	is($args->[2], undef, 'no args were passed either');
+	is($args->[3], undef, 'no args were passed either');
 }
 
 sub printed_only_ok($$;$)
@@ -137,8 +142,12 @@ sub printed_only_ok($$;$)
 		is($args->[1], "%s\n", 'format string as expected');
 		like($args->[2], $re, 'message as expected');
 	}
-	is($mock->next_call, undef, 'no other logging method was called');
-	$mock->clear;
+	($name, $args) = $mock->next_call;
+	is($name, undef, 'no other logging method was called');
+	return unless defined $name;
+	is($args->[1], undef, 'no args were passed either');
+	is($args->[2], undef, 'no args were passed either');
+	is($args->[3], undef, 'no args were passed either');
 }
 
 sub logged_exception_only_ok($$;$)
@@ -152,7 +161,12 @@ sub logged_exception_only_ok($$;$)
 	is($name, 'log_exception');
 	is($args->[1], $ex);
 	is($args->[2], $prefix);
-	is($mock->next_call, undef);
+	($name, $args) = $mock->next_call;
+	is($name, undef, 'no other logging method was called');
+	return unless defined $name;
+	is($args->[1], undef, 'no args were passed either');
+	is($args->[2], undef, 'no args were passed either');
+	is($args->[3], undef, 'no args were passed either');
 }
 
 sub get_mock_exception($)

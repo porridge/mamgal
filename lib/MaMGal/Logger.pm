@@ -47,8 +47,10 @@ sub log_exception
 		$self->log_message($_, $prefix) for $e->stderr ? @{$e->stderr} : ();
 		$self->log_message('------------------------------------------------------------------', $prefix);
 		return;
+	} elsif ($e->isa('MaMGal::SystemException')) {
+		$self->log_message($e->interpolated_message);
+		return;
 	}
-	# TODO: test logging of SystemException (interpolated)
 JUST_LOG:
 	$self->log_message($e->message, $prefix);
 }

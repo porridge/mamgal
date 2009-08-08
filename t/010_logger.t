@@ -35,6 +35,7 @@ sub log_message_method : Test(10) {
 	my $prefix = 'wooow';
 	warnings_are { $self->{l}->log_message($msg) } [], "log_message causes no warnings";
 	printed_only_ok($self->{mock_fh}, qr{^\Q$msg\E$});# 'log_message causes a warning';
+	$self->{mock_fh}->clear;
 	warnings_are { $self->{l}->log_message($msg, $prefix) } [], "log_message causes no warnings";
 	printed_only_ok($self->{mock_fh}, qr{^\Q$prefix: $msg\E$});# 'log_message causes a warning with prefix prepended correctly
 }
@@ -45,11 +46,14 @@ sub log_other_exception : Tests(20)
 	my $e = get_mock_exception 'MaMGal::MplayerWrapper::OtherException';
 	warnings_are { $self->{l}->log_exception($e) } [], 'log_exception causes no warnings';
 	printed_only_ok($self->{mock_fh}, qr{^foo bar$});# log_exception prints a message first time
+	$self->{mock_fh}->clear;
 	warnings_are { $self->{l}->log_exception($e) } [], 'log_exception causes no warnings second time either';
 	printed_only_ok($self->{mock_fh}, qr{^foo bar$});# log_exception prints a message even second time
+	$self->{mock_fh}->clear;
 
 	warnings_are { $self->{l}->log_exception($e, 'prefix') } [], 'log_message with prefix causes no warnings';
 	printed_only_ok($self->{mock_fh}, qr{^prefix: foo bar$});# log_message with prefix prints a message first time
+	$self->{mock_fh}->clear;
 	warnings_are { $self->{l}->log_exception($e, 'prefix') } [], 'log_message with prefix causes no warnings second time either';
 	printed_only_ok($self->{mock_fh}, qr{^prefix: foo bar$});# log_message with prefix prints a message even second time
 }
@@ -60,8 +64,20 @@ sub log_not_available_exception : Tests(7)
 	my $e = get_mock_exception 'MaMGal::MplayerWrapper::NotAvailableException';
 	warnings_are { $self->{l}->log_exception($e, 'prefix') } [], 'log_exception with prefix causes no warnings';
 	printed_only_ok($self->{mock_fh}, qr{^prefix: foo bar$});# log_exception with prefix prints a message first time
+	$self->{mock_fh}->clear;
 	warnings_are { $self->{l}->log_exception($e, 'prefix') } [], 'log_exception with prefix causes no warnings second time either';
 	is($self->{mock_fh}->next_call, undef, 'reading image without an mplayer on the second time prints no message');
+}
+
+sub log_system_exception : Test(10)
+{
+	my $self = shift;
+	my $e = get_mock_exception 'MaMGal::SystemException';
+	warnings_are { $self->{l}->log_exception($e) } [], 'log_exception causes no warnings';
+	printed_only_ok($self->{mock_fh}, qr{^foo bar baz$});# log_exception prints an interpolated message first time
+	$self->{mock_fh}->clear;
+	warnings_are { $self->{l}->log_exception($e) } [], 'log_exception causes no warnings second time either';
+	printed_only_ok($self->{mock_fh}, qr{^foo bar baz$});# log_exception prints an interpolated message second time too
 }
 
 sub log_execution_failure_exception : Test(42)
