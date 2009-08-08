@@ -13,3 +13,7 @@ List of known bugs
    Fix: in order not to force re-writing all slides at all times, will probably
    need to store some metadata about what images were present during last run.
 
+2. No i18n for error messages.
+
+   Fix: mark messages for xgettext and call gettext in Logger.
+
