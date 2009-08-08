@@ -23,6 +23,14 @@ refresh-pot:
 	mv mamgal.pot mamgal.pot.old
 	msgmerge mamgal.pot.old mamgal.pot.new > mamgal.pot
 
+.PHONY: refresh-pos
+refresh-pos:
+	set -e ; \
+	for locale in $(LINGUAS) ; do \
+	 mv $$locale.po $$locale.po.old ; \
+	 msgmerge $$locale.po.old mamgal.pot > $$locale.po ; \
+	done
+
 %.mo: %.po
 	msgfmt -o $@ $<
 
