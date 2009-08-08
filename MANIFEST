@@ -1,6 +1,8 @@
+t/010_logger.t
 t/010_unit_command_checker.t
 t/010_unit_imageinfo.t
 t/010_unit_imageinfo_exiftool.t
+t/010_unit_system_exception.t
 t/050_unit_entry.t
 t/060_unit_nonpicture.t
 t/065_unit_brokensymlink.t
@@ -28,6 +30,7 @@ lib/MaMGal/DirIcon.pm
 lib/MaMGal/VideoIcon.pm
 lib/MaMGal/EntryFactory.pm
 lib/MaMGal/Entry.pm
+lib/MaMGal/Exceptions.pm
 lib/MaMGal/Formatter.pm
 lib/MaMGal/ImageInfoFactory.pm
 lib/MaMGal/ImageInfo/Base.pm
@@ -68,7 +71,9 @@ dir.png
 video.png
 testlib/MaMGal/TestHelper.pm
 README
+BUGS
 TODO
+classes.dia
 mamgal
 po/Makefile
 po/pl.po
