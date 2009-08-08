@@ -151,9 +151,10 @@ sub _write_montage
 	my ($montage, $r);
 	# Do the magick, scale and write.
 	$r = $montage = $stack->Montage(tile => $side.'x'.$side, geometry => $m_x.'x'.$m_y, border => 2);
-	ref($r)                                                 or  MaMGal::SystemException->throw(message => '%s: montage failed: %s', objects => [$self->child('.mamgal-index.png'), $r]);
-	MaMGal::Entry::Picture->scale_into($montage, $m_x, $m_y);
-	$r = $montage->Write($self->child('.mamgal-index.png')) and MaMGal::SystemException->throw(message => '%s: writing montage failed: %s', objects => [$self->child('.mamgal-index.png'), $r]);
+	my $name = $self->child('.mamgal-index.png');
+	ref($r)                                                       or  MaMGal::SystemException->throw(message => '%s: montage failed: %s',         objects => [$name, $r]);
+	$r = MaMGal::Entry::Picture->scale_into($montage, $m_x, $m_y) and MaMGal::SystemException->throw(message => '%s: scaling failed: %s',         objects => [$name, $r]);
+	$r = $montage->Write($name)                                   and MaMGal::SystemException->throw(message => '%s: writing montage failed: %s', objects => [$name, $r]);
 }
 
 sub _ignorable_name($)

@@ -55,9 +55,9 @@ sub refresh_miniatures
 		next if $self->fresher_than_me($name);
 		# loading image data deferred until it's necessary
 		$i = $self->read_image unless defined $i;
-		$self->scale_into($i, $x, $y);
+		$r = $self->scale_into($i, $x, $y) and MaMGal::SystemException->throw(message => '%s: scaling failed: %s', objects => [$name, $r]);
 		$self->container->ensure_subdir_exists($subdir);
-		$r = $i->Write($name)		and MaMGal::SystemException->throw(message => '%s: writing failed: %s', objects => [$name, $r]);
+		$r = $i->Write($name)              and MaMGal::SystemException->throw(message => '%s: writing failed: %s', objects => [$name, $r]);
 	}
 	return @ret;
 }
@@ -82,10 +82,9 @@ sub scale_into
 	if ($x_ratio <= 1 and $y_ratio <= 1) {
 		return; # no need to scale
 	} elsif ($x_ratio > $y_ratio) {
-# TODO: just return $r, and throw in caller, where we know picture's filename
-		$r = $img->Scale(width => $x, height => $y_pic / $x_ratio) and MaMGal::SystemException->throw(message => 'scaling failed: %s', objects => [$r]);
+		return $img->Scale(width => $x, height => $y_pic / $x_ratio);
 	} else {
-		$r = $img->Scale(height => $y, width => $x_pic / $y_ratio) and MaMGal::SystemException->throw(message => 'scaling failed: %s', objects => [$r]);
+		return $img->Scale(height => $y, width => $x_pic / $y_ratio);
 	}
 }
 
