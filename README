@@ -5,7 +5,7 @@ Features:
 =========
 
 MaMGal was inspired by imageindex(1) and as such aims for a similar featureset
-but higher efficiency and better code architecture.
+but higher efficiency as well as better code architecture and test coverage.
 
 *   Index and slide views, simple layouts.
 
