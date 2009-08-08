@@ -73,7 +73,7 @@ sub snapshot
 	$self->{available} = $self->{cc}->is_available('mplayer') unless exists $self->{available};
 	MaMGal::MplayerWrapper::NotAvailableException->throw unless $self->{available};
 	my $film_path = shift or croak "snapshot needs an arg: path to the film";
-	-r $film_path or croak "\"$film_path\" is not readable";
+	-r $film_path or MaMGal::SystemException->throw(message => '%s: not readable', objects => [$film_path]);
 	my $dir = $self->{tempdir};
 	$self->run_mplayer($film_path);
 	my $img = Image::Magick->new;

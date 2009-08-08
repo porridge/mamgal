@@ -14,6 +14,7 @@ use MaMGal::Entry::Picture::Film;
 use MaMGal::Entry::NonPicture;
 use MaMGal::Entry::BrokenSymlink;
 use MaMGal::Entry::Unreadable;
+use MaMGal::Exceptions;
 use File::stat;
 use Fcntl ':mode';
 use Cwd;
@@ -80,7 +81,7 @@ sub create_entry_for
 	croak "Need 1 arg, got more: [$_[0]]" if @_;
 
 	my ($path, $dirname, $basename) = canonicalize_path($path_arg);
-	my $lstat = lstat($path) or croak "[$path]: $!";
+	my $lstat = lstat($path) or MaMGal::SystemException->throw(message => '%s: getting status failed: %s', objects => [$path, $!]);
 	my $stat = $lstat;
 	if ($lstat->mode & S_IFLNK) {
 		$stat = stat($path);
