@@ -41,11 +41,11 @@ sub run_mplayer
 		{ # own scope to prevent a compile-time warning
 		exec(@cmd);
 		}
-		MaMGal::MplayerWrapper::ExecutionFailureException->throw("Cannot run mplayer: $!\n");
+		MaMGal::MplayerWrapper::ExecutionFailureException->throw("Cannot run mplayer: $!");
 	} else {
 		# Parent
 		waitpid($pid, 0);
-		MaMGal::MplayerWrapper::ExecutionFailureException->throw("Mplayer failed ($?).\n", $self->_read_messages) if $? != 0;
+		MaMGal::MplayerWrapper::ExecutionFailureException->throw("Mplayer failed ($?).", $self->_read_messages) if $? != 0;
 	}
 }
 
@@ -78,7 +78,7 @@ sub snapshot
 	$self->run_mplayer($film_path);
 	my $img = Image::Magick->new;
 	if (my $r = $img->Read("${dir}/00000001.jpg")) {
-		MaMGal::MplayerWrapper::ExecutionFailureException->throw(message => "Could not read the snapshot produced by mplayer: $r\n", $self->_read_messages);
+		MaMGal::MplayerWrapper::ExecutionFailureException->throw(message => "Could not read the snapshot produced by mplayer: $r", $self->_read_messages);
 	}
 	$self->cleanup;
 	return $img;

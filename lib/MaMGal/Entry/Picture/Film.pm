@@ -30,7 +30,7 @@ sub read_image
 {
 	my $self = shift;
 	my $tools = $self->tools or croak "Tools were not injected.";
-	my $w = $tools->{mplayer_wrapper} or croak "MplayerWrapper required.\n";
+	my $w = $tools->{mplayer_wrapper} or croak "MplayerWrapper required.";
 	my $s;
 	eval { $s = $w->snapshot($self->{path_name}); };
 	if ($@) {

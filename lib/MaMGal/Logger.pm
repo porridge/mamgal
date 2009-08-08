@@ -21,7 +21,7 @@ sub log_message
 	my $msg = shift;
 	my $prefix = shift || '';
 	$prefix .= ': ' if $prefix;
-	$self->{fh}->printf("%s\n", $prefix.$msg);
+	$self->{fh}->printf("%s%s\n", $prefix, $msg);
 }
 
 our $not_available_warned_before = 0;

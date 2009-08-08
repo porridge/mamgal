@@ -133,14 +133,14 @@ sub printed_only_ok($$;$)
 		foreach my $line_re (@$re) {
 			($name, $args) = $mock->next_call;
 			is($name, 'printf', "expected method was called (checking $line_re)");
-			is($args->[1], "%s\n", "format string as expected (for $line_re)");
-			like($args->[2], $line_re, 'message as expected');
+			is($args->[1], "%s%s\n", "format string as expected (for $line_re)");
+			like((($args->[2] ? $args->[2] : '') . ($args->[3] ? $args->[3] : '')), $line_re, 'message as expected');
 		}
 	} else {
 		($name, $args) = $mock->next_call;
 		is($name, 'printf', 'expected method was called');
-		is($args->[1], "%s\n", 'format string as expected');
-		like($args->[2], $re, 'message as expected');
+		is($args->[1], "%s%s\n", 'format string as expected');
+		like((($args->[2] ? $args->[2] : '') . ($args->[3] ? $args->[3] : '')), $re, 'message as expected');
 	}
 	($name, $args) = $mock->next_call;
 	is($name, undef, 'no other logging method was called');

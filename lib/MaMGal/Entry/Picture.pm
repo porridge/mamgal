@@ -20,8 +20,8 @@ sub refresh_slide
 {
 	my $self = shift;
 	my $tools = $self->tools or croak "Tools were not injected";
-	my $formatter = $tools->{formatter} or croak "Formatter required\n";
-	ref $formatter and $formatter->isa('MaMGal::Formatter') or croak "Arg is not a formatter\n";
+	my $formatter = $tools->{formatter} or croak "Formatter required";
+	ref $formatter and $formatter->isa('MaMGal::Formatter') or croak "Arg is not a formatter";
 
 	$self->container->ensure_subdir_exists($self->slides_dir);
 	my $name = $self->{dir_name}.'/'.$self->page_path;

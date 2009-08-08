@@ -54,7 +54,7 @@ sub make
 {
 	my $self = shift;
 	my $tools = $self->tools or croak "Tools were not injected";
-	my $formatter = $tools->{formatter} or croak "Formatter required\n";
+	my $formatter = $tools->{formatter} or croak "Formatter required";
 	ref $formatter and $formatter->isa('MaMGal::Formatter') or croak "[$formatter] is not a formatter";
 
 	my @active_files = map { $_->make } $self->elements;
@@ -211,7 +211,7 @@ sub elements
 
 	# Get entry factory
 	my $tools = $self->tools or croak "Tools were not injected";
-	my $entry_factory = $tools->{entry_factory} or croak "Entry factory required\n";
+	my $entry_factory = $tools->{entry_factory} or croak "Entry factory required";
 	ref $entry_factory and $entry_factory->isa('MaMGal::EntryFactory') or croak "[$entry_factory] is not an entry factory";
 
 	# Read the names from the dir
