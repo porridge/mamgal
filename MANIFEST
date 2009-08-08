@@ -76,4 +76,5 @@ TODO
 classes.dia
 mamgal
 po/Makefile
+po/mamgal.pot
 po/pl.po

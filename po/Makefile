@@ -15,6 +15,9 @@ refresh-pot:
 	rm -f mamgal.pot.new mamgal.pot.old
 	cd .. && (echo mamgal; grep 'pm$$' MANIFEST) | xgettext \
 	  --add-comments=TRANSLATORS: \
+	  --from-code=UTF-8 \
+	  --msgid-bugs-address="Marcin Owsiany <marcin@owsiany.pl>" \
+	  --package-name=mamgal --package-version=0.1 \
 	  --copyright-holder="Marcin Owsiany <marcin@owsiany.pl>" \
 	  -L Perl -d mamgal -o po/mamgal.pot.new -f -
 	mv mamgal.pot mamgal.pot.old
