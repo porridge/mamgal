@@ -7,7 +7,7 @@ use strict;
 use warnings;
 use base 'MaMGal::Base';
 # Remeber to change po/mamgal.pot as well
-our $VERSION = '0.01';
+our $VERSION = '1.1';
 our $AUTOLOAD;
 use Carp;
 use FileHandle;
