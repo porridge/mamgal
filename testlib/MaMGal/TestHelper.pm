@@ -83,7 +83,7 @@ sub get_mock_cc($) {
 
 sub prepare_test_data {
 	# We have to create empty directories, because git does not track them
-	for my $dir (qw(empty one_dir one_dir/subdir)) {
+	for my $dir (qw(empty one_dir one_dir/subdir more/subdir/lost+found)) {
 		mkdir("td.in/$dir") or die "td.in/$dir: $!" unless -d "td.in/$dir";
 	}
 	# We have to create and populate directories with spaces in their
