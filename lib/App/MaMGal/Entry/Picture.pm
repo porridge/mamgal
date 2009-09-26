@@ -2,13 +2,13 @@
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # The picture encapsulating class
-package MaMGal::Entry::Picture;
+package App::MaMGal::Entry::Picture;
 use strict;
 use warnings;
-use base 'MaMGal::Entry';
+use base 'App::MaMGal::Entry';
 use Carp;
 use File::stat;
-use MaMGal::Exceptions;
+use App::MaMGal::Exceptions;
 
 sub make
 {
@@ -21,7 +21,7 @@ sub refresh_slide
 	my $self = shift;
 	my $tools = $self->tools or croak "Tools were not injected";
 	my $formatter = $tools->{formatter} or croak "Formatter required";
-	ref $formatter and $formatter->isa('MaMGal::Formatter') or croak "Arg is not a formatter";
+	ref $formatter and $formatter->isa('App::MaMGal::Formatter') or croak "Arg is not a formatter";
 
 	$self->container->ensure_subdir_exists($self->slides_dir);
 	my $name = $self->{dir_name}.'/'.$self->page_path;
@@ -34,7 +34,7 @@ sub fresher_than_me
 	my $self = shift;
 	my $name = shift;
 	if (-e $name) {
-		my $stat = stat($name) or MaMGal::SystemException->throw(message => '%s: metadata read (stat) failed: %s', objects => [$name, $!]);
+		my $stat = stat($name) or App::MaMGal::SystemException->throw(message => '%s: metadata read (stat) failed: %s', objects => [$name, $!]);
 		return 1 if $stat->mtime > $self->{stat}->mtime;
 	}
 	return 0;
@@ -55,9 +55,9 @@ sub refresh_miniatures
 		next if $self->fresher_than_me($name);
 		# loading image data deferred until it's necessary
 		$i = $self->read_image unless defined $i;
-		$r = $self->scale_into($i, $x, $y) and MaMGal::SystemException->throw(message => '%s: scaling failed: %s', objects => [$name, $r]);
+		$r = $self->scale_into($i, $x, $y) and App::MaMGal::SystemException->throw(message => '%s: scaling failed: %s', objects => [$name, $r]);
 		$self->container->ensure_subdir_exists($subdir);
-		$r = $i->Write($name)              and MaMGal::SystemException->throw(message => '%s: writing failed: %s', objects => [$name, $r]);
+		$r = $i->Write($name)              and App::MaMGal::SystemException->throw(message => '%s: writing failed: %s', objects => [$name, $r]);
 	}
 	return @ret;
 }
@@ -67,7 +67,7 @@ sub page_path { $_[0]->slides_dir.'/'.$_[0]->{base_name}.'.html' }
 sub thumbnail_path { $_[0]->thumbnails_dir.'/'.$_[0]->{base_name} }
 sub tile_path { $_[0]->{dir_name}.'/'.$_[0]->thumbnail_path }
 
-# This method does not operate on MaMGal::Entry::Picture, but this was the most
+# This method does not operate on App::MaMGal::Entry::Picture, but this was the most
 # appropriate place to put it into.  At least until we grow a "utils" class.
 sub scale_into
 {

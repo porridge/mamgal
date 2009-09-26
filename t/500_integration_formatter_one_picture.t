@@ -9,21 +9,21 @@ use Test::More tests => 40;
 use Test::HTML::Content;
 use Test::Exception;
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use Image::EXIF::DateTime::Parser;
-use MaMGal::ImageInfoFactory;
+use App::MaMGal::ImageInfoFactory;
 
 prepare_test_data;
 
-use MaMGal::Formatter;
-use MaMGal::EntryFactory;
-use MaMGal::LocaleEnv;
-my $le = MaMGal::LocaleEnv->new(get_mock_logger);
+use App::MaMGal::Formatter;
+use App::MaMGal::EntryFactory;
+use App::MaMGal::LocaleEnv;
+my $le = App::MaMGal::LocaleEnv->new(get_mock_logger);
 $le->set_locale('C');
-my $f = MaMGal::Formatter->new($le);
+my $f = App::MaMGal::Formatter->new($le);
 my $edtp = Image::EXIF::DateTime::Parser->new;
-my $iif = MaMGal::ImageInfoFactory->new($edtp, get_mock_logger);
-my $ef = MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, $iif, get_mock_logger);
+my $iif = App::MaMGal::ImageInfoFactory->new($edtp, get_mock_logger);
+my $ef = App::MaMGal::EntryFactory->new($f, get_mock_mplayer_wrapper, $iif, get_mock_logger);
 
 #
 # a dir with a single pic _without_ description

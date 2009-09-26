@@ -2,10 +2,10 @@
 # Copyright 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # A class encapsulating locale environment settings.
-package MaMGal::LocaleEnv;
+package App::MaMGal::LocaleEnv;
 use strict;
 use warnings;
-use base 'MaMGal::Base';
+use base 'App::MaMGal::Base';
 use Carp;
 use Locale::gettext;
 use POSIX;
@@ -14,7 +14,7 @@ sub init
 {
 	my $self = shift;
 	my $logger = shift or croak "Need a logger arg";
-	ref $logger and $logger->isa('MaMGal::Logger') or croak "Arg is not a MaMGal::Logger , but a [$logger]";
+	ref $logger and $logger->isa('App::MaMGal::Logger') or croak "Arg is not a App::MaMGal::Logger , but a [$logger]";
 	eval {
 		require I18N::Langinfo;
 		I18N::Langinfo->import(qw(langinfo CODESET));

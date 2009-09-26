@@ -2,10 +2,10 @@
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # A logging subsystem class
-package MaMGal::Logger;
+package App::MaMGal::Logger;
 use strict;
 use warnings;
-use base 'MaMGal::Base';
+use base 'App::MaMGal::Base';
 use Carp;
 
 sub init
@@ -32,11 +32,11 @@ sub log_exception
 	my $self = shift;
 	my $e = shift;
 	my $prefix = shift;
-	if ($e->isa('MaMGal::MplayerWrapper::NotAvailableException')) {
+	if ($e->isa('App::MaMGal::MplayerWrapper::NotAvailableException')) {
 		# TODO this needs to be made thread-safe
 		return if $not_available_warned_before;
 		$not_available_warned_before = 1;
-	} elsif ($e->isa('MaMGal::MplayerWrapper::ExecutionFailureException')) {
+	} elsif ($e->isa('App::MaMGal::MplayerWrapper::ExecutionFailureException')) {
 		# TODO this needs to be made thread-safe
 		goto JUST_LOG if $exe_failure_warned_before or (! $e->stdout and ! $e->stderr);
 		$exe_failure_warned_before = 1;
@@ -47,7 +47,7 @@ sub log_exception
 		$self->log_message($_, $prefix) for $e->stderr ? @{$e->stderr} : ();
 		$self->log_message('------------------------------------------------------------------', $prefix);
 		return;
-	} elsif ($e->isa('MaMGal::SystemException')) {
+	} elsif ($e->isa('App::MaMGal::SystemException')) {
 		$self->log_message($e->interpolated_message);
 		return;
 	}

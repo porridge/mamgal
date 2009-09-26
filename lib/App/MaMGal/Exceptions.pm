@@ -2,21 +2,21 @@
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # Exception class definitions.
-package MaMGal::Exceptions;
+package App::MaMGal::Exceptions;
 use strict;
 use warnings;
 use Carp;
 use Exception::Class (
-	'MaMGal::MplayerWrapper::NotAvailableException',
-	'MaMGal::MplayerWrapper::ExecutionFailureException' => {
+	'App::MaMGal::MplayerWrapper::NotAvailableException',
+	'App::MaMGal::MplayerWrapper::ExecutionFailureException' => {
 		fields => [qw(stdout stderr)],
 	},
-	'MaMGal::SystemException' => {
+	'App::MaMGal::SystemException' => {
 		fields => [qw(objects)],
 	}
 );
 
-package MaMGal::MplayerWrapper::NotAvailableException;
+package App::MaMGal::MplayerWrapper::NotAvailableException;
 use strict;
 use warnings;
 use Carp;
@@ -34,7 +34,7 @@ sub message
 	'mplayer is not available - films will not be represented by snapshots.'
 }
 
-package MaMGal::MplayerWrapper::ExecutionFailureException;
+package App::MaMGal::MplayerWrapper::ExecutionFailureException;
 use strict;
 use warnings;
 use Carp;
@@ -47,7 +47,7 @@ sub _initialize
 	croak "Either one or three arguments are required" if $self->stdout xor $self->stderr;
 }
 
-package MaMGal::SystemException;
+package App::MaMGal::SystemException;
 use strict;
 use warnings;
 use Carp;

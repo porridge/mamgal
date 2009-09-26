@@ -4,7 +4,7 @@
 # See the README file for license information
 #
 # An embedded directory icon
-package MaMGal::DirIcon;
+package App::MaMGal::DirIcon;
 
 my $uu_dir = <<'EOT';
 MB5!.1PT*&@H````-24A$4@```%H```!#"`8````<<1)1````!&=!34$``-;8

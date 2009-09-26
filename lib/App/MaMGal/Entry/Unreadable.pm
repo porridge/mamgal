@@ -2,10 +2,10 @@
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # A class for unreadable entries
-package MaMGal::Entry::Unreadable;
+package App::MaMGal::Entry::Unreadable;
 use strict;
 use warnings;
-use base 'MaMGal::Entry::NonPicture';
+use base 'App::MaMGal::Entry::NonPicture';
 use Carp;
 
 1;

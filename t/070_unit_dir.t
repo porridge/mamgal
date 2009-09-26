@@ -2,7 +2,7 @@
 # mamgal - a program for creating static image galleries
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MaMGal::Unit::Entry::Dir;
+package App::MaMGal::Unit::Entry::Dir;
 use strict;
 use warnings;
 use Carp 'verbose';
@@ -11,33 +11,33 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MaMGal::Unit::Entry::NonPicture' }
+BEGIN { our @ISA = 'App::MaMGal::Unit::Entry::NonPicture' }
 BEGIN { do 't/060_unit_nonpicture.t' }
 
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use File::stat;
-use MaMGal::EntryFactory;
-use MaMGal::ImageInfoFactory;
+use App::MaMGal::EntryFactory;
+use App::MaMGal::ImageInfoFactory;
 
 sub class_setting : Test(startup) {
 	my $self = shift;
-	$self->{class_name} = 'MaMGal::Entry::Dir';
+	$self->{class_name} = 'App::MaMGal::Entry::Dir';
 }
 
 sub unmocked_factories_for_dirs : Test(setup => 0) {
 	my $self = shift;
-	my $iif = MaMGal::ImageInfoFactory->new(get_mock_datetime_parser, get_mock_logger);
+	my $iif = App::MaMGal::ImageInfoFactory->new(get_mock_datetime_parser, get_mock_logger);
 	{
 		my $e = $self->{entry};
 		$e->add_tools({
-			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, $iif, get_mock_logger),
+			entry_factory => App::MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, $iif, get_mock_logger),
 			image_info_factory => $iif,
 		});
 	}
 	{
 		my $e = $self->{entry_no_stat};
 		$e->add_tools({
-			entry_factory => MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, $iif, get_mock_logger),
+			entry_factory => App::MaMGal::EntryFactory->new(get_mock_formatter, get_mock_mplayer_wrapper, $iif, get_mock_logger),
 			image_info_factory => $iif,
 		});
 	}
@@ -111,7 +111,7 @@ sub empty_creation_time_range_test {
 sub is_intetresting_method : Test(1) { ok(1); }
 sub tile_path_method : Test(1) { ok(1); }
 
-package MaMGal::Unit::Entry::Dir::Empty;
+package App::MaMGal::Unit::Entry::Dir::Empty;
 use strict;
 use warnings;
 use Test::More;
@@ -119,9 +119,9 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'App::MaMGal::Unit::Entry::Dir' }
 
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
@@ -162,7 +162,7 @@ sub creation_time_range : Test(3) {
 	$self->empty_creation_time_range_test;
 }
 
-package MaMGal::Unit::Entry::Dir::MoreSubdir;
+package App::MaMGal::Unit::Entry::Dir::MoreSubdir;
 use strict;
 use warnings;
 use Test::More;
@@ -170,9 +170,9 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'App::MaMGal::Unit::Entry::Dir' }
 
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
@@ -210,7 +210,7 @@ sub is_intetresting_method : Test(1) {
 sub stat_functionality : Test { ok(1) }
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
 
-package MaMGal::Unit::Entry::Dir::ARootDir;
+package App::MaMGal::Unit::Entry::Dir::ARootDir;
 use strict;
 use warnings;
 use Test::More;
@@ -218,9 +218,9 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'App::MaMGal::Unit::Entry::Dir' }
 
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
@@ -248,7 +248,7 @@ sub creation_time_range : Test(3) {
 sub stat_functionality : Test { ok(1) }
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
 
-package MaMGal::Unit::Entry::Dir::Bin;
+package App::MaMGal::Unit::Entry::Dir::Bin;
 use strict;
 use warnings;
 use Test::More;
@@ -256,9 +256,9 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'App::MaMGal::Unit::Entry::Dir' }
 
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
@@ -281,7 +281,7 @@ sub stat_functionality : Test { ok(1) }
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
 sub is_intetresting_method : Test(1) { ok(1) }
 
-package MaMGal::Unit::Entry::Dir::Slash;
+package App::MaMGal::Unit::Entry::Dir::Slash;
 use strict;
 use warnings;
 use Test::More;
@@ -289,9 +289,9 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'App::MaMGal::Unit::Entry::Dir' }
 
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
@@ -355,7 +355,7 @@ sub stat_functionality : Test { ok(1) }
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
 sub is_intetresting_method : Test(1) { ok(1) }
 
-package MaMGal::Unit::Entry::Dir::Dot;
+package App::MaMGal::Unit::Entry::Dir::Dot;
 use strict;
 use warnings;
 use Test::More;
@@ -363,9 +363,9 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MaMGal::Unit::Entry::Dir' }
+BEGIN { our @ISA = 'App::MaMGal::Unit::Entry::Dir' }
 
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
@@ -390,7 +390,7 @@ sub is_intetresting_method : Test(1) { ok(1) }
 package main;
 use Test::More;
 unless (defined caller) {
-	my @classes = map { 'MaMGal::Unit::Entry::Dir::'.$_ } qw(MoreSubdir Empty ARootDir Bin Slash Dot);
+	my @classes = map { 'App::MaMGal::Unit::Entry::Dir::'.$_ } qw(MoreSubdir Empty ARootDir Bin Slash Dot);
 	my $tests = 0;
 	$tests += $_->expected_tests foreach @classes;
 	plan tests => $tests;

@@ -81,10 +81,10 @@ It was taken from a file called
 icon-themes/Sandy/72x72/filesystems/gnome-fs-directory-accept.png in the
 gnome-themes package.
 
-The lib/MaMGal/DirIcon.pm file contains an uuencoded version of that file, as
+The lib/App/MaMGal/DirIcon.pm file contains an uuencoded version of that file, as
 well as code Copyright 2007 Marcin Owsiany.
 
-The license for dir.png and lib/MaMGal/DirIcon.pm is:
+The license for dir.png and lib/App/MaMGal/DirIcon.pm is:
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -106,10 +106,10 @@ The video icon file (video.png) is Copyright 2006 by Lapo Calamandrei <calamandr
 It was created by conversion from a file called
 calable/mimetypes/video-x-generic.svg in the gnome-icon-theme package.
 
-The lib/MaMGal/VideoIcon.pm file contains an uuencoded version of that file, as
+The lib/App/MaMGal/VideoIcon.pm file contains an uuencoded version of that file, as
 well as code Copyright 2009 Marcin Owsiany.
 
-The license for video.png and lib/MaMGal/VideoIcon.pm is:
+The license for video.png and lib/App/MaMGal/VideoIcon.pm is:
 
    This package is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -131,5 +131,5 @@ Some commands useful to the maintainer:
 =======================================
 
 diff -u <(find * -type f|LANG=C sort) <(LANG=C sort MANIFEST )
-git grep -h '^use' lib t mamgal testlib |awk '$2 == "base" {print $3}; $2 != "base" {print $2}'|sed "s/'//g;s/;//"|sort -u|grep -v ^MaMGal|egrep '^[A-Z]'
+git grep -h '^use' lib t mamgal testlib |awk '$2 == "base" {print $3}; $2 != "base" {print $2}'|sed "s/'//g;s/;//"|sort -u|grep -v ^App::MaMGal|egrep '^[A-Z]'
 

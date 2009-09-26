@@ -2,11 +2,11 @@
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # The picture encapsulating class
-package MaMGal::Entry::Picture::Film;
+package App::MaMGal::Entry::Picture::Film;
 use strict;
 use warnings;
-use base 'MaMGal::Entry::Picture';
-use MaMGal::VideoIcon;
+use base 'App::MaMGal::Entry::Picture';
+use App::MaMGal::VideoIcon;
 use Carp;
 use Scalar::Util 'blessed';
 
@@ -22,7 +22,7 @@ sub _new_video_icon
 {
 	my $self = shift;
 	my $s = Image::Magick->new(magick => 'png');
-	$s->BlobToImage(MaMGal::VideoIcon->img);
+	$s->BlobToImage(App::MaMGal::VideoIcon->img);
 	$s;
 }
 
@@ -35,9 +35,9 @@ sub read_image
 	eval { $s = $w->snapshot($self->{path_name}); };
 	if ($@) {
 		if (blessed($@) and (
-			$@->isa('MaMGal::MplayerWrapper::NotAvailableException')
+			$@->isa('App::MaMGal::MplayerWrapper::NotAvailableException')
 			or
-			$@->isa('MaMGal::MplayerWrapper::ExecutionFailureException')
+			$@->isa('App::MaMGal::MplayerWrapper::ExecutionFailureException')
 		)) {
 			$self->logger->log_exception($@, $self->{path_name});
 			$s = $self->_new_video_icon;

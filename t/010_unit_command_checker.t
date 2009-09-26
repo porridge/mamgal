@@ -2,7 +2,7 @@
 # mamgal - a program for creating static image galleries
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MaMGal::Unit::CommandChecker;
+package App::MaMGal::Unit::CommandChecker;
 use strict;
 use warnings;
 use Carp 'verbose';
@@ -11,15 +11,15 @@ use Test::Exception;
 use base 'Test::Class';
 
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 
 sub class_load : Test(startup => 1) {
-	use_ok('MaMGal::CommandChecker');
+	use_ok('App::MaMGal::CommandChecker');
 }
 
 sub checker_creation : Test(setup => 1) {
 	my $self = shift;
-	ok($self->{c} = MaMGal::CommandChecker->new);
+	ok($self->{c} = App::MaMGal::CommandChecker->new);
 }
 
 sub check_failures : Test(2) {
@@ -43,5 +43,5 @@ sub check_inexistent : Test(1) {
 	ok(! $self->{c}->is_available('something_that_cannot_be_available'), 'an uninstalled command is not available');
 }
 
-MaMGal::Unit::CommandChecker->runtests unless defined caller;
+App::MaMGal::Unit::CommandChecker->runtests unless defined caller;
 1;

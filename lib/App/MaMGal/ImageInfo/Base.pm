@@ -2,10 +2,10 @@
 # Copyright 2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # A base class for the image info library wrappers.
-package MaMGal::ImageInfo::Base;
+package App::MaMGal::ImageInfo::Base;
 use strict;
 use warnings;
-use base 'MaMGal::Base';
+use base 'App::MaMGal::Base';
 use Carp;
 
 sub init

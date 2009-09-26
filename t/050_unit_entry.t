@@ -2,7 +2,7 @@
 # mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MaMGal::Unit::Entry;
+package App::MaMGal::Unit::Entry;
 use strict;
 use warnings;
 use Carp 'verbose';
@@ -12,7 +12,7 @@ use Test::Exception;
 use base 'Test::Class';
 
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 
 sub dir_preparation : Test(startup) {
 	prepare_test_data;
@@ -20,7 +20,7 @@ sub dir_preparation : Test(startup) {
 
 sub class_setting : Test(startup) {
 	my $self = shift;
-	$self->{class_name} = 'MaMGal::Entry';
+	$self->{class_name} = 'App::MaMGal::Entry';
 	$self->{test_file_name} = [qw(td empty_file)];
 }
 
@@ -62,13 +62,13 @@ sub _entry_creation : Test(setup => 4) {
 	{
 		$e = $class_name->new($self->file_name, $fake_stat);
 		isa_ok($e, $class_name);
-		isa_ok($e, 'MaMGal::Entry');
+		isa_ok($e, 'App::MaMGal::Entry');
 		$self->{entry} = $e;
 	}
 	{
 		$e = $class_name->new($self->file_name);
 		isa_ok($e, $class_name);
-		isa_ok($e, 'MaMGal::Entry');
+		isa_ok($e, 'App::MaMGal::Entry');
 		$self->{entry_no_stat} = $e;
 	}
 }
@@ -251,5 +251,5 @@ sub is_intetresting_method : Test(1) {
 	ok(! $e->is_interesting, "things are generally not interesting");
 }
 
-MaMGal::Unit::Entry->runtests unless defined caller;
+App::MaMGal::Unit::Entry->runtests unless defined caller;
 1;

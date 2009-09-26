@@ -3,21 +3,21 @@
 # See the README file for license information
 # An output formatting class, for creating the actual index files from some
 # contents
-package MaMGal::Formatter;
+package App::MaMGal::Formatter;
 use strict;
 use warnings;
-use base 'MaMGal::Base';
+use base 'App::MaMGal::Base';
 use Carp;
 use Locale::gettext;
 use URI::file;
 use HTML::Entities qw(encode_entities_numeric);
-use MaMGal::Logger;
+use App::MaMGal::Logger;
 
 sub init
 {
 	my $self = shift;
 	my $le = shift or croak "Need a locale env arg";
-	ref $le and $le->isa('MaMGal::LocaleEnv') or croak "Arg is not a MaMGal::LocaleEnv, but a [$le]";
+	ref $le and $le->isa('App::MaMGal::LocaleEnv') or croak "Arg is not a App::MaMGal::LocaleEnv, but a [$le]";
 	$self->set_locale_env($le);
 }
 
@@ -108,7 +108,7 @@ sub format
 	if (@elements) {
 		foreach my $e (@elements) {
 			confess "[$e] is not an object" unless ref $e;
-			confess "[$e] is a ".ref($e) unless $e->isa('MaMGal::Entry');
+			confess "[$e] is a ".ref($e) unless $e->isa('App::MaMGal::Entry');
 			$ret .= '  '.$self->entry_cell($e)."\n";
 			$ret .= "</tr>\n<tr>\n" if $i % 4 == 0;
 			$i++;
@@ -148,7 +148,7 @@ sub format_slide
 	my $self = shift;
 	my $pic  = shift or croak "No pic";
 	croak "Only one arg required." if @_;
-	ref $pic and $pic->isa('MaMGal::Entry::Picture') or croak "Arg is not a pic";
+	ref $pic and $pic->isa('App::MaMGal::Entry::Picture') or croak "Arg is not a pic";
 
 	my ($prev, $next) = map { defined $_ ? $_->name : '' } $pic->neighbours;
 
@@ -174,7 +174,7 @@ sub format_slide
 	}
 	$r .= "</p>\n";
 
-	if ($pic->isa('MaMGal::Entry::Picture::Film')) {
+	if ($pic->isa('App::MaMGal::Entry::Picture::Film')) {
 		$r .= $self->MAYBE_EMBED('../'.$pic->name);
 		$r .= '<br>';
 		$r .= $self->LINK('../'.$pic->name, gettext('Download'));

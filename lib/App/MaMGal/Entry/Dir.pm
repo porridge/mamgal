@@ -2,15 +2,15 @@
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # The directory encapsulating class
-package MaMGal::Entry::Dir;
+package App::MaMGal::Entry::Dir;
 use strict;
 use warnings;
-use base 'MaMGal::Entry';
+use base 'App::MaMGal::Entry';
 use Carp;
-use MaMGal::Entry::Picture;
-use MaMGal::DirIcon;
+use App::MaMGal::Entry::Picture;
+use App::MaMGal::DirIcon;
 use Image::Magick;
-use MaMGal::Exceptions;
+use App::MaMGal::Exceptions;
 
 sub child            { $_[0]->{path_name}.'/'.$_[1]     }
 sub page_path        { $_[0]->{base_name}.'/index.html' }
@@ -40,7 +40,7 @@ sub set_root
 	if ($is_root) {
 		$self->_write_contents_to(sub {''}, '.mamgal-root');
 	} else {
-		unlink($self->child('.mamgal-root')) or MaMGal::SystemException->throw(message => '%s: unlink failed: %s', objects => [$self->child(".mamgal-root"), $!]);
+		unlink($self->child('.mamgal-root')) or App::MaMGal::SystemException->throw(message => '%s: unlink failed: %s', objects => [$self->child(".mamgal-root"), $!]);
 	}
 }
 
@@ -55,7 +55,7 @@ sub make
 	my $self = shift;
 	my $tools = $self->tools or croak "Tools were not injected";
 	my $formatter = $tools->{formatter} or croak "Formatter required";
-	ref $formatter and $formatter->isa('MaMGal::Formatter') or croak "[$formatter] is not a formatter";
+	ref $formatter and $formatter->isa('App::MaMGal::Formatter') or croak "[$formatter] is not a formatter";
 
 	my @active_files = map { $_->make } $self->elements;
 	$self->_prune_inactive_files(\@active_files);
@@ -70,7 +70,7 @@ sub ensure_subdir_exists
 	my $self = shift;
 	my $basename = shift;
 	my $dir = $self->child($basename);
-	mkdir $dir or MaMGal::SystemException->throw(message => '%s: mkdir failed: %s', objects => [$dir, $!]) unless -w $dir;
+	mkdir $dir or App::MaMGal::SystemException->throw(message => '%s: mkdir failed: %s', objects => [$dir, $!]) unless -w $dir;
 }
 
 # get _picture_ neighbours of given picture
@@ -86,12 +86,12 @@ sub neighbours_of_index
 	my ($prev, $next);
 	my $i = $idx - 1;
 	while ($i >= 0) {
-		$prev = $elements[$i], last if $elements[$i]->isa('MaMGal::Entry::Picture');
+		$prev = $elements[$i], last if $elements[$i]->isa('App::MaMGal::Entry::Picture');
 		$i--;
 	}
 	$i = $idx + 1;
 	while ($i < scalar @elements) {
-		$next = $elements[$i], last if $elements[$i]->isa('MaMGal::Entry::Picture');
+		$next = $elements[$i], last if $elements[$i]->isa('App::MaMGal::Entry::Picture');
 		$i++;
 	}
 	return $prev, $next;
@@ -130,7 +130,7 @@ sub _write_montage
 	my @images = $self->_all_interesting_elements;
 
 	unless (@images) {
-		$self->_write_contents_to(sub { MaMGal::DirIcon->img }, '.mamgal-index.png');
+		$self->_write_contents_to(sub { App::MaMGal::DirIcon->img }, '.mamgal-index.png');
 		return;
 	}
 
@@ -141,7 +141,7 @@ sub _write_montage
 	push @$stack, map {
 		my $img = Image::Magick->new;
 		my $rr;
-		$rr = $img->Read($_->tile_path) and MaMGal::SystemException->throw(message => '%s: %s', objects => [$_->tile_path, $rr]);
+		$rr = $img->Read($_->tile_path) and App::MaMGal::SystemException->throw(message => '%s: %s', objects => [$_->tile_path, $rr]);
 		$img } @images[0..($montage_count-1)];
 
 	my $side = $self->_side_length($montage_count);
@@ -152,9 +152,9 @@ sub _write_montage
 	# Do the magick, scale and write.
 	$r = $montage = $stack->Montage(tile => $side.'x'.$side, geometry => $m_x.'x'.$m_y, border => 2);
 	my $name = $self->child('.mamgal-index.png');
-	ref($r)                                                       or  MaMGal::SystemException->throw(message => '%s: montage failed: %s',         objects => [$name, $r]);
-	$r = MaMGal::Entry::Picture->scale_into($montage, $m_x, $m_y) and MaMGal::SystemException->throw(message => '%s: scaling failed: %s',         objects => [$name, $r]);
-	$r = $montage->Write($name)                                   and MaMGal::SystemException->throw(message => '%s: writing montage failed: %s', objects => [$name, $r]);
+	ref($r)                                                       or  App::MaMGal::SystemException->throw(message => '%s: montage failed: %s',         objects => [$name, $r]);
+	$r = App::MaMGal::Entry::Picture->scale_into($montage, $m_x, $m_y) and App::MaMGal::SystemException->throw(message => '%s: scaling failed: %s',         objects => [$name, $r]);
+	$r = $montage->Write($name)                                   and App::MaMGal::SystemException->throw(message => '%s: writing montage failed: %s', objects => [$name, $r]);
 }
 
 sub _ignorable_name($)
@@ -188,19 +188,19 @@ sub _prune_inactive_files
 		# If the directory is not there, we have nothing to do about it
 		next unless -d $base.'/'.$dir;
 		# Read the names from the dir
-		opendir DIR, $base.'/'.$dir or MaMGal::SystemException->throw(message => '%s: opendir failed: %s',  objects => ["$base/$dir", $!]);
+		opendir DIR, $base.'/'.$dir or App::MaMGal::SystemException->throw(message => '%s: opendir failed: %s',  objects => ["$base/$dir", $!]);
 		my @entries = grep { $_ ne '.' and $_ ne '..' } readdir DIR;
-		closedir DIR                or MaMGal::SystemException->throw(message => '%s: closedir failed: %s', objects => ["$base/$dir", $!]);
+		closedir DIR                or App::MaMGal::SystemException->throw(message => '%s: closedir failed: %s', objects => ["$base/$dir", $!]);
 		# Delete the files which are not "active"
 		my $at_start = scalar @entries;
 		my $deleted = 0;
 		foreach my $entry (@entries) {
 			if (not $active{$dir.'/'.$entry}) {
-				unlink($base.'/'.$dir.'/'.$entry) or MaMGal::SystemException->throw(message => '%s: unlink failed: %s', objects => ["$base/$dir/$entry", $!]);
+				unlink($base.'/'.$dir.'/'.$entry) or App::MaMGal::SystemException->throw(message => '%s: unlink failed: %s', objects => ["$base/$dir/$entry", $!]);
 				$deleted++;
 			}
 		}
-		rmdir($base.'/'.$dir) or MaMGal::SystemException->throw(message => '%s: rmdir failed: %s', objects => ["$base/$dir", $!]) if $at_start == $deleted;
+		rmdir($base.'/'.$dir) or App::MaMGal::SystemException->throw(message => '%s: rmdir failed: %s', objects => ["$base/$dir", $!]) if $at_start == $deleted;
 	}
 }
 
@@ -213,13 +213,13 @@ sub elements
 	# Get entry factory
 	my $tools = $self->tools or croak "Tools were not injected";
 	my $entry_factory = $tools->{entry_factory} or croak "Entry factory required";
-	ref $entry_factory and $entry_factory->isa('MaMGal::EntryFactory') or croak "[$entry_factory] is not an entry factory";
+	ref $entry_factory and $entry_factory->isa('App::MaMGal::EntryFactory') or croak "[$entry_factory] is not an entry factory";
 
 	# Read the names from the dir
 	my $path = $self->{path_name};
-	opendir DIR, $path or MaMGal::SystemException->throw(message => '%s: opendir failed: %s',  objects => [$path, $!]);
+	opendir DIR, $path or App::MaMGal::SystemException->throw(message => '%s: opendir failed: %s',  objects => [$path, $!]);
 	my @entries = sort { $a cmp $b } grep { ! $self->_ignorable_name($_) } readdir DIR;
-	closedir DIR       or MaMGal::SystemException->throw(message => '%s: closedir failed: %s', objects => [$path, $!]);
+	closedir DIR       or App::MaMGal::SystemException->throw(message => '%s: closedir failed: %s', objects => [$path, $!]);
 
 	my $i = 0;
 	# Instantiate objects and cache them

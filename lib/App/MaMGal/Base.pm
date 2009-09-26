@@ -2,10 +2,10 @@
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # Base class with some common stuff
-package MaMGal::Base;
+package App::MaMGal::Base;
 use strict;
 use warnings;
-use MaMGal::Exceptions;
+use App::MaMGal::Exceptions;
 
 sub new
 {
@@ -30,10 +30,10 @@ sub _write_contents_to
 	my $tmp_name = shift;
 	my $full_name = shift;
 
-	open(OUT, '>', $tmp_name)     or MaMGal::SystemException->throw(message => '%s: open failed: %s', objects => [$tmp_name, $!]);
+	open(OUT, '>', $tmp_name)     or App::MaMGal::SystemException->throw(message => '%s: open failed: %s', objects => [$tmp_name, $!]);
 	print OUT &$code;
-	close(OUT)                    or MaMGal::SystemException->throw(message => '%s: close failed: %s', objects => [$tmp_name, $!]);
-	rename($tmp_name, $full_name) or MaMGal::SystemException->throw(message => '%s: rename failed from "%s": %s', objects => [$full_name, $tmp_name, $!]);
+	close(OUT)                    or App::MaMGal::SystemException->throw(message => '%s: close failed: %s', objects => [$tmp_name, $!]);
+	rename($tmp_name, $full_name) or App::MaMGal::SystemException->throw(message => '%s: rename failed from "%s": %s', objects => [$full_name, $tmp_name, $!]);
 }
 
 1;

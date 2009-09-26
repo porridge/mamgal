@@ -2,10 +2,10 @@
 # Copyright 2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # A wrapper class for the Image::Info library.
-package MaMGal::ImageInfo::ImageInfo;
+package App::MaMGal::ImageInfo::ImageInfo;
 use strict;
 use warnings;
-use base 'MaMGal::ImageInfo::Base';
+use base 'App::MaMGal::ImageInfo::Base';
 use Carp;
 
 use Image::Info;

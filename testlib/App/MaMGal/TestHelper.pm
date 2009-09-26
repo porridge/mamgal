@@ -1,7 +1,7 @@
 # mamgal - a program for creating static image galleries
 # Copyright 2008-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MaMGal::TestHelper;
+package App::MaMGal::TestHelper;
 use Test::MockObject;
 use Test::More;
 use lib 'Exporter';
@@ -26,7 +26,7 @@ sub get_mock_fh {
 
 sub get_mock_iif {
 	my $f = Test::MockObject->new->mock('read', sub { Test::MockObject->new });
-	$f->set_isa('MaMGal::ImageInfoFactory');
+	$f->set_isa('App::MaMGal::ImageInfoFactory');
 	$f
 }
 
@@ -34,7 +34,7 @@ sub get_mock_logger {
 	my $l = Test::MockObject->new
 		->mock('log_message')
 		->mock('log_exception');
-	$l->set_isa('MaMGal::Logger');
+	$l->set_isa('App::MaMGal::Logger');
 	$l
 }
 
@@ -47,14 +47,14 @@ sub get_mock_datetime_parser {
 sub get_mock_formatter {
 	my @methods = @_;
 	my $mf = Test::MockObject->new();
-	$mf->set_isa('MaMGal::Formatter');
+	$mf->set_isa('App::MaMGal::Formatter');
 	$mf->mock($_, sub { "whatever" }) for @methods;
 	return $mf;
 }
 
 sub get_mock_localeenv {
 	my $ml = Test::MockObject->new();
-	$ml->set_isa('MaMGal::LocaleEnv');
+	$ml->set_isa('App::MaMGal::LocaleEnv');
 	$ml->mock('get_charset', sub { "ISO-8859-123" });
 	$ml->mock('set_locale');
 	$ml->mock('format_time', sub { "12:12:12" });
@@ -64,7 +64,7 @@ sub get_mock_localeenv {
 
 sub get_mock_mplayer_wrapper {
 	my $mmw = Test::MockObject->new;
-	$mmw->set_isa('MaMGal::MplayerWrapper');
+	$mmw->set_isa('App::MaMGal::MplayerWrapper');
 	my $mock_image = Test::MockObject->new;
 	$mock_image->set_isa('Image::Magick');
 	$mock_image->mock('Get', sub { '100', '100' });
@@ -77,7 +77,7 @@ sub get_mock_mplayer_wrapper {
 sub get_mock_cc($) {
 	my $ret = shift;
 	my $mcc = Test::MockObject->new;
-	$mcc->set_isa('MaMGal::CommandChecker');
+	$mcc->set_isa('App::MaMGal::CommandChecker');
 	$mcc->mock('is_available', sub { $ret });
 }
 

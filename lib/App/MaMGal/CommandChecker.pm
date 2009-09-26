@@ -3,10 +3,10 @@
 # See the README file for license information
 # A class for checking existance of commands, basically a wrapper for
 # "which(1)"
-package MaMGal::CommandChecker;
+package App::MaMGal::CommandChecker;
 use strict;
 use warnings;
-use base 'MaMGal::Base';
+use base 'App::MaMGal::Base';
 use Carp;
 
 sub init

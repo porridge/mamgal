@@ -2,7 +2,7 @@
 # mamgal - a program for creating static image galleries
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MaMGal::Unit::Entry::Picture;
+package App::MaMGal::Unit::Entry::Picture;
 use strict;
 use warnings;
 use Carp qw(verbose confess);
@@ -13,17 +13,17 @@ use Test::HTML::Content;
 use lib 'testlib';
 use File::stat;
 use Image::EXIF::DateTime::Parser;
-use MaMGal::ImageInfoFactory;
-use MaMGal::TestHelper;
-BEGIN { our @ISA = 'MaMGal::Unit::Entry' }
+use App::MaMGal::ImageInfoFactory;
+use App::MaMGal::TestHelper;
+BEGIN { our @ISA = 'App::MaMGal::Unit::Entry' }
 BEGIN { do 't/050_unit_entry.t' }
 
 sub pre_class_setting : Test(startup) {
 	my $self = shift;
 	$self->{tools} = {
-		mplayer_wrapper => MaMGal::TestHelper->get_mock_mplayer_wrapper,
-		formatter => MaMGal::TestHelper->get_mock_formatter('format_slide'),
-		image_info_factory => MaMGal::ImageInfoFactory->new(Image::EXIF::DateTime::Parser->new, get_mock_logger),
+		mplayer_wrapper => App::MaMGal::TestHelper->get_mock_mplayer_wrapper,
+		formatter => App::MaMGal::TestHelper->get_mock_formatter('format_slide'),
+		image_info_factory => App::MaMGal::ImageInfoFactory->new(Image::EXIF::DateTime::Parser->new, get_mock_logger),
 	};
 }
 
@@ -103,8 +103,8 @@ sub miniature_writing : Test(3) {
 sub slide_writing : Test(6) {
 	my $self = shift;
 	my $infix = 'test_slide-'.$self->{class_name};
-	use MaMGal::Entry;
-	local $MaMGal::Entry::slides_dir = $infix;
+	use App::MaMGal::Entry;
+	local $App::MaMGal::Entry::slides_dir = $infix;
 	my $path = $self->slide_path($infix);
 	ok(! -f $path, "$path does not exist yet");
 	my @ret = $self->call_refresh_slide();
@@ -142,7 +142,7 @@ sub slide_not_rewriting : Test(3) {
 	my $path = $self->slide_path($infix);
 	my $stat_before = stat($path) or die "Cannot stat [$path]: $!";
 	is($stat_before->mtime, $slide_mtime);
-	local $MaMGal::Entry::slides_dir = $infix;
+	local $App::MaMGal::Entry::slides_dir = $infix;
 	my @ret = $self->call_refresh_slide();
 	is($ret[0], $self->relative_slide_path($infix), "refesh_slide call returns the not-refreshed path");
 	my $stat_after = stat($path) or die "Cannot stat: $!";
@@ -176,7 +176,7 @@ sub slide_refreshing : Test(6) {
 	my $path = $self->slide_path($infix);
 	my $stat_before = stat($path) or die "Cannot stat: $!";
 	is($stat_before->mtime, $slide_mtime);
-	local $MaMGal::Entry::slides_dir = $infix;
+	local $App::MaMGal::Entry::slides_dir = $infix;
 	my @ret = $self->call_refresh_slide();
 	is($ret[0], $self->relative_slide_path($infix), "refesh_slide call returns the refreshed path");
 	my ($m, $args) = $self->{mock_container}->next_call;
@@ -215,7 +215,7 @@ sub tile_path_method : Test(1) {
 	ok($e->tile_path, "$class_name tile_path is something");
 }
 
-package MaMGal::Unit::Entry::Picture::Static;
+package App::MaMGal::Unit::Entry::Picture::Static;
 use strict;
 use warnings;
 use Test::More;
@@ -223,15 +223,15 @@ use Test::Exception;
 use Test::Files;
 use Test::HTML::Content;
 use lib 'testlib';
-BEGIN { our @ISA = 'MaMGal::Unit::Entry::Picture' }
+BEGIN { our @ISA = 'App::MaMGal::Unit::Entry::Picture' }
 
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use File::stat;
 use Test::Warn;
 
 sub class_setting : Test(startup) {
 	my $self = shift;
-	$self->{class_name} = 'MaMGal::Entry::Picture::Static';
+	$self->{class_name} = 'App::MaMGal::Entry::Picture::Static';
 	$self->{test_file_name} = [qw(td c.jpg)];
 }
 
@@ -329,7 +329,7 @@ sub stat_functionality_crashed : Test(6) {
 
 sub stat_functionality_when_created_without_stat : Test { ok(1) }
 
-package MaMGal::Unit::Entry::Picture::Film;
+package App::MaMGal::Unit::Entry::Picture::Film;
 use strict;
 use warnings;
 use Test::More;
@@ -337,16 +337,16 @@ use Test::Exception;
 use Test::Files;
 use Test::Warn;
 use Test::HTML::Content;
-use MaMGal::Entry::Picture::Film;
+use App::MaMGal::Entry::Picture::Film;
 use lib 'testlib';
-BEGIN { our @ISA = 'MaMGal::Unit::Entry::Picture' }
+BEGIN { our @ISA = 'App::MaMGal::Unit::Entry::Picture' }
 
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use File::stat;
 
 sub class_setting : Test(startup) {
 	my $self = shift;
-	$self->{class_name} = 'MaMGal::Entry::Picture::Film';
+	$self->{class_name} = 'App::MaMGal::Entry::Picture::Film';
 	$self->{test_file_name} = [qw(td/one_film m.mov)];
 }
 
@@ -402,8 +402,8 @@ sub read_image_method_no_mplayer : Test(24)
 	{
 		my $e = $self->{entry};
 		my $ex = Test::MockObject->new;
-		$ex->set_isa('MaMGal::MplayerWrapper::NotAvailableException');
-		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
+		$ex->set_isa('App::MaMGal::MplayerWrapper::NotAvailableException');
+		$e->{tools}->{mplayer_wrapper} = App::MaMGal::TestHelper->get_mock_mplayer_wrapper;
 		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { die $ex; } );
 		my $i;
 
@@ -423,8 +423,8 @@ sub read_image_method_no_mplayer : Test(24)
 	{
 		my $e = $self->{entry_no_stat};
 		my $ex = Test::MockObject->new;
-		$ex->set_isa('MaMGal::MplayerWrapper::NotAvailableException');
-		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
+		$ex->set_isa('App::MaMGal::MplayerWrapper::NotAvailableException');
+		$e->{tools}->{mplayer_wrapper} = App::MaMGal::TestHelper->get_mock_mplayer_wrapper;
 		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { die $ex; } );
 		my $i;
 
@@ -449,9 +449,9 @@ sub read_image_method_error : Test(12)
 	{
 		my $e = $self->{entry};
 		my $ex = Test::MockObject->new;
-		$ex->set_isa('MaMGal::MplayerWrapper::ExecutionFailureException');
+		$ex->set_isa('App::MaMGal::MplayerWrapper::ExecutionFailureException');
 		$ex->mock('message', sub { 'la di da' });
-		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
+		$e->{tools}->{mplayer_wrapper} = App::MaMGal::TestHelper->get_mock_mplayer_wrapper;
 		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { die $ex } );
 		$e->logger->clear;
 		my $i = $e->read_image;
@@ -462,9 +462,9 @@ sub read_image_method_error : Test(12)
 	{
 		my $e = $self->{entry_no_stat};
 		my $ex = Test::MockObject->new;
-		$ex->set_isa('MaMGal::MplayerWrapper::ExecutionFailureException');
+		$ex->set_isa('App::MaMGal::MplayerWrapper::ExecutionFailureException');
 		$ex->mock('message', sub { 'la di da' });
-		$e->{tools}->{mplayer_wrapper} = MaMGal::TestHelper->get_mock_mplayer_wrapper;
+		$e->{tools}->{mplayer_wrapper} = App::MaMGal::TestHelper->get_mock_mplayer_wrapper;
 		$e->{tools}->{mplayer_wrapper}->mock('snapshot', sub { die $ex } );
 		$e->logger->clear;
 		my $i = $e->read_image;
@@ -477,8 +477,8 @@ sub read_image_method_error : Test(12)
 package main;
 use Test::More;
 unless (defined caller) {
-	plan tests => MaMGal::Unit::Entry::Picture::Static->expected_tests + MaMGal::Unit::Entry::Picture::Film->expected_tests;
-	MaMGal::Unit::Entry::Picture::Static->runtests;
-	MaMGal::Unit::Entry::Picture::Film->runtests;
+	plan tests => App::MaMGal::Unit::Entry::Picture::Static->expected_tests + App::MaMGal::Unit::Entry::Picture::Film->expected_tests;
+	App::MaMGal::Unit::Entry::Picture::Static->runtests;
+	App::MaMGal::Unit::Entry::Picture::Film->runtests;
 }
 

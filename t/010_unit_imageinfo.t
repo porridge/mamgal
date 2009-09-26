@@ -2,7 +2,7 @@
 # mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MaMGal::Unit::ImageInfo;
+package App::MaMGal::Unit::ImageInfo;
 use strict;
 use warnings;
 use Carp 'verbose';
@@ -13,7 +13,7 @@ use Test::Warn;
 use base 'Test::Class';
 
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 
 sub _dir_preparation : Test(startup) {
 	prepare_test_data;
@@ -22,16 +22,16 @@ sub _dir_preparation : Test(startup) {
 # This should be done in a BEGIN, but then planning the test count is difficult.
 # However we are not using function prototypes, so it does not matter much.
 sub _class_usage : Test(startup => 1) {
-	use_ok('MaMGal::ImageInfoFactory') or $_[0]->BAILOUT("Class use failed");
+	use_ok('App::MaMGal::ImageInfoFactory') or $_[0]->BAILOUT("Class use failed");
 }
 
 sub creation_aborts : Test(startup => 6) {
 	my $self = shift;
-	dies_ok(sub { MaMGal::ImageInfoFactory->new },                           'new dies without args');
-	dies_ok(sub { MaMGal::ImageInfoFactory->new('junk') },                   'new dies with a junk arg');
-	dies_ok(sub { MaMGal::ImageInfoFactory->new(get_mock_datetime_parser) }, 'new dies without logger');
-	dies_ok(sub { MaMGal::ImageInfoFactory->new(get_mock_datetime_parser, 'junk') }, 'new dies without logger');
-	my $f = MaMGal::ImageInfoFactory->new(get_mock_datetime_parser, get_mock_logger);
+	dies_ok(sub { App::MaMGal::ImageInfoFactory->new },                           'new dies without args');
+	dies_ok(sub { App::MaMGal::ImageInfoFactory->new('junk') },                   'new dies with a junk arg');
+	dies_ok(sub { App::MaMGal::ImageInfoFactory->new(get_mock_datetime_parser) }, 'new dies without logger');
+	dies_ok(sub { App::MaMGal::ImageInfoFactory->new(get_mock_datetime_parser, 'junk') }, 'new dies without logger');
+	my $f = App::MaMGal::ImageInfoFactory->new(get_mock_datetime_parser, get_mock_logger);
 	dies_ok(sub { $f->read },       'read dies without an arg');
 	dies_ok(sub { $f->read('td') }, 'read dies with a non-picture');
 }
@@ -40,9 +40,9 @@ sub creation : Test(setup => 2) {
 	my $self = shift;
 	my $mpp = $self->{injected_parser} = get_mock_datetime_parser;
 	my $ml = $self->{injected_logger} = get_mock_logger;
-	my $f = MaMGal::ImageInfoFactory->new($mpp, $ml);
+	my $f = App::MaMGal::ImageInfoFactory->new($mpp, $ml);
 	ok($f);
-	isa_ok($f, 'MaMGal::ImageInfoFactory');
+	isa_ok($f, 'App::MaMGal::ImageInfoFactory');
 	$self->{jpg} = $f->read('td/varying_datetimes.jpg');
 	$self->{jpg_no_0x9003} = $f->read('td/without_0x9003.jpg');
 	$self->{jpg_no_0x9003_0x9004} = $f->read('td/without_0x9003_0x9004.jpg');
@@ -249,7 +249,7 @@ sub when_no_datetime_tag_present_then_creation_time_returns_undef : Test(4) {
 	$self->_test_creation_time('jpg_no_0x9003_0x9004_0x0132', {}, undef, 'undef');
 }
 
-package MaMGal::Unit::ImageInfo::ImageInfo;
+package App::MaMGal::Unit::ImageInfo::ImageInfo;
 use strict;
 use warnings;
 use Carp 'verbose';
@@ -257,12 +257,12 @@ use File::stat;
 use Test::More;
 use Test::Exception;
 use Test::Warn;
-use base 'MaMGal::Unit::ImageInfo';
+use base 'App::MaMGal::Unit::ImageInfo';
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 
 use vars '%ENV';
-$ENV{MAMGAL_FORCE_IMAGEINFO} = 'MaMGal::ImageInfo::ImageInfo';
-MaMGal::Unit::ImageInfo::ImageInfo->runtests unless defined caller;
+$ENV{MAMGAL_FORCE_IMAGEINFO} = 'App::MaMGal::ImageInfo::ImageInfo';
+App::MaMGal::Unit::ImageInfo::ImageInfo->runtests unless defined caller;
 
 1;

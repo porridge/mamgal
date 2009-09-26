@@ -2,7 +2,7 @@
 # mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-package MaMGal::Unit::Maker::Base;
+package App::MaMGal::Unit::Maker::Base;
 use strict;
 use warnings;
 use Carp;
@@ -13,21 +13,21 @@ use Test::More;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 
 sub _class_usage : Test(startup => 1) {
-	use_ok('MaMGal::Maker') or $_[0]->BAILOUT("Class use failed");
+	use_ok('App::MaMGal::Maker') or $_[0]->BAILOUT("Class use failed");
 }
 
 sub creation_failures : Test(startup => 2) {
-	dies_ok(sub { MaMGal::Maker->new },        "maker creation fails with no arg");
-	dies_ok(sub { MaMGal::Maker->new('foo') }, "maker creation fails with something else than entry factory");
+	dies_ok(sub { App::MaMGal::Maker->new },        "maker creation fails with no arg");
+	dies_ok(sub { App::MaMGal::Maker->new('foo') }, "maker creation fails with something else than entry factory");
 }
 
 sub set_mock_entry
 {
 	my $self = shift;
-	my $mock_entry = $self->{mock_entry} = get_mock_entry('MaMGal::Entry::Dir');
+	my $mock_entry = $self->{mock_entry} = get_mock_entry('App::MaMGal::Entry::Dir');
 	return sub { $mock_entry };
 }
 
@@ -35,10 +35,10 @@ sub instantiation : Test(setup => 2) {
 	my $self = shift;
 	my $mock_entry_sub = $self->set_mock_entry;
 	my $ef_dir = $self->{ef_dir} = Test::MockObject->new->mock('create_entry_for', $mock_entry_sub);
-	$ef_dir->set_isa('MaMGal::EntryFactory');
+	$ef_dir->set_isa('App::MaMGal::EntryFactory');
 	my $maker;
-	lives_ok(sub { $maker = MaMGal::Maker->new($ef_dir) }, "maker creation succeeds an entry factory arg");
-	isa_ok($maker, 'MaMGal::Maker');
+	lives_ok(sub { $maker = App::MaMGal::Maker->new($ef_dir) }, "maker creation succeeds an entry factory arg");
+	isa_ok($maker, 'App::MaMGal::Maker');
 	$self->{maker} = $maker;
 }
 
@@ -49,18 +49,18 @@ sub make_roots_dies_without_args : Test(2)
 	throws_ok { $self->{maker}->make_without_roots } qr{^Argument required\.$}, "maker dies on no args";
 }
 
-package MaMGal::Unit::Maker::Normal;
+package App::MaMGal::Unit::Maker::Normal;
 use strict;
 use warnings;
 use Carp;
 use Carp 'verbose';
-use base 'MaMGal::Unit::Maker::Base';
+use base 'App::MaMGal::Unit::Maker::Base';
 
 use Test::More;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 
 sub make_without_roots_works : Test(5)
 {
@@ -84,23 +84,23 @@ sub make_roots_works : Test(5)
 	ok(! $self->{mock_entry}->called('add_tools'), 'tools not set - factory does this');
 }
 
-package MaMGal::Unit::Maker::NotADir;
+package App::MaMGal::Unit::Maker::NotADir;
 use strict;
 use warnings;
 use Carp;
 use Carp 'verbose';
-use base 'MaMGal::Unit::Maker::Base';
+use base 'App::MaMGal::Unit::Maker::Base';
 
 use Test::More;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 
 sub set_mock_entry
 {
 	my $self = shift;
-	my $mock_entry = $self->{mock_entry} = get_mock_entry('MaMGal::Entry::SomethinElse');
+	my $mock_entry = $self->{mock_entry} = get_mock_entry('App::MaMGal::Entry::SomethinElse');
 	return sub { $mock_entry };
 }
 
@@ -118,18 +118,18 @@ sub make_without_roots_dies : Test(1)
 
 
 
-package MaMGal::Unit::Maker::Crash;
+package App::MaMGal::Unit::Maker::Crash;
 use strict;
 use warnings;
 use Carp;
 use Carp 'verbose';
-use base 'MaMGal::Unit::Maker::Base';
+use base 'App::MaMGal::Unit::Maker::Base';
 
 use Test::More;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 
 sub set_mock_entry
 {
@@ -156,12 +156,12 @@ use warnings;
 use Test::More;
 unless (defined caller) {
 	plan tests =>
-		MaMGal::Unit::Maker::Normal->expected_tests +
-		MaMGal::Unit::Maker::NotADir->expected_tests +
-		MaMGal::Unit::Maker::Crash->expected_tests;
-	MaMGal::Unit::Maker::Normal->runtests;
-	MaMGal::Unit::Maker::NotADir->runtests;
-	MaMGal::Unit::Maker::Crash->runtests;
+		App::MaMGal::Unit::Maker::Normal->expected_tests +
+		App::MaMGal::Unit::Maker::NotADir->expected_tests +
+		App::MaMGal::Unit::Maker::Crash->expected_tests;
+	App::MaMGal::Unit::Maker::Normal->runtests;
+	App::MaMGal::Unit::Maker::NotADir->runtests;
+	App::MaMGal::Unit::Maker::Crash->runtests;
 }
 1;
 

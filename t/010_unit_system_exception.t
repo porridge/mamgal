@@ -8,11 +8,11 @@ use Carp 'verbose';
 use Test::More tests => 14;
 use Test::Exception;
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 
-use_ok('MaMGal::Exceptions');
+use_ok('App::MaMGal::Exceptions');
 
-dies_ok(sub { MaMGal::SystemException->new }, 'exception creation dies without arguments');
+dies_ok(sub { App::MaMGal::SystemException->new }, 'exception creation dies without arguments');
 
 sub exception_instantiation_ok
 {
@@ -23,7 +23,7 @@ sub exception_instantiation_ok
 	my $message = shift;
 	my @args = @_;
 	my $e;
-	lives_ok(sub { $e = MaMGal::SystemException->new(@args) }, $instantiation_message);
+	lives_ok(sub { $e = App::MaMGal::SystemException->new(@args) }, $instantiation_message);
 	ok($e);
 	is($e->message, $message, 'message is OK');
 	$e
@@ -33,10 +33,10 @@ my $e;
 $e = exception_instantiation_ok('exception creation succeeds with unnamed argument and no placeholders', 'boom', 'boom');
 is($e->interpolated_message, 'boom');
 
-dies_ok(sub { MaMGal::SystemException->new('boom %s boom') }, 'exception creation dies with unnamed argument containing a placeholder');
-dies_ok(sub { MaMGal::SystemException->new(message => 'boom %s %s boom', objects => [qw(asdf)]) }, 'exception creation dies with message containing more placeholders than there are objects');
-dies_ok(sub { MaMGal::SystemException->new(message => 'boom %s boom', objects => [qw(asdf ghjk)]) }, 'exception creation dies with message containing less placeholders than there are objects');
-dies_ok(sub { MaMGal::SystemException->new(message => 'boom %% boom', objects => [qw(asdf ghjk)]) }, 'exception creation dies with message containing a single quoted percent character and two objects passed');
+dies_ok(sub { App::MaMGal::SystemException->new('boom %s boom') }, 'exception creation dies with unnamed argument containing a placeholder');
+dies_ok(sub { App::MaMGal::SystemException->new(message => 'boom %s %s boom', objects => [qw(asdf)]) }, 'exception creation dies with message containing more placeholders than there are objects');
+dies_ok(sub { App::MaMGal::SystemException->new(message => 'boom %s boom', objects => [qw(asdf ghjk)]) }, 'exception creation dies with message containing less placeholders than there are objects');
+dies_ok(sub { App::MaMGal::SystemException->new(message => 'boom %% boom', objects => [qw(asdf ghjk)]) }, 'exception creation dies with message containing a single quoted percent character and two objects passed');
 
 $e = exception_instantiation_ok('exception creation succeeds with unnamed argument and no placeholders', 'bim %s bom', message => 'bim %s bom', objects => ['bam']);
 is($e->interpolated_message, 'bim bam bom');

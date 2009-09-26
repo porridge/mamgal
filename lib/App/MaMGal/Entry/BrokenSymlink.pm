@@ -1,15 +1,11 @@
 # mamgal - a program for creating static image galleries
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
-# A class for any non-directory which is not a picture, either
-package MaMGal::Entry::NonPicture;
+# A class for broken symlinks
+package App::MaMGal::Entry::BrokenSymlink;
 use strict;
 use warnings;
-use base 'MaMGal::Entry';
+use base 'App::MaMGal::Entry::NonPicture';
 use Carp;
-
-sub make {}
-sub page_path { shift->{base_name} }
-sub thumbnail_path { }
 
 1;

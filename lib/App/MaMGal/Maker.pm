@@ -2,18 +2,18 @@
 # Copyright 2007, 2008 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # The runner module
-package MaMGal::Maker;
+package App::MaMGal::Maker;
 use strict;
 use warnings;
-use base 'MaMGal::Base';
+use base 'App::MaMGal::Base';
 use Carp;
-use MaMGal::Entry::Dir;
+use App::MaMGal::Entry::Dir;
 
 sub init
 {
 	my $self = shift;
 	my $entry_factory = shift or croak "Need an entry factory arg";
-	ref $entry_factory and $entry_factory->isa('MaMGal::EntryFactory') or croak "Arg is not an EntryFactory, but a [$entry_factory]";
+	ref $entry_factory and $entry_factory->isa('App::MaMGal::EntryFactory') or croak "Arg is not an EntryFactory, but a [$entry_factory]";
 	$self->{entry_factory} = $entry_factory;
 }
 
@@ -38,7 +38,7 @@ sub _make_any
 
 	my @dirs = map {
 		my $d = $self->{entry_factory}->create_entry_for($_);
-		MaMGal::SystemException->throw(message => '%s: not a directory.', objects => [$_]) unless $d->isa('MaMGal::Entry::Dir');
+		App::MaMGal::SystemException->throw(message => '%s: not a directory.', objects => [$_]) unless $d->isa('App::MaMGal::Entry::Dir');
 		$d->set_root(1) if $dirs_are_roots;
 		$d
 	} @_;

@@ -10,8 +10,8 @@ mamgal - a program for creating static image galleries
 
 =cut
 
-use MaMGal;
-MaMGal->new('')->make_roots($ARGV[0]);
+use App::MaMGal;
+App::MaMGal->new('')->make_roots($ARGV[0]);
 
 =head1 SYNOPSIS
 

@@ -9,11 +9,11 @@ use Test::More tests => 40;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use File::stat;
 use Image::EXIF::DateTime::Parser;
-use MaMGal::EntryFactory;
-use MaMGal::ImageInfoFactory;
+use App::MaMGal::EntryFactory;
+use App::MaMGal::ImageInfoFactory;
 use POSIX;
 
 prepare_test_data;
@@ -31,16 +31,16 @@ utime $time_not_oldest, $time_not_oldest,  'td/more/subdir/uninteresting' or die
 utime $time_not_oldest, $time_not_oldest,  'td/more/subdir/interesting/b.png' or die "Touching b.png failed";
 utime $time_not_oldest, $time_not_oldest,  'td/more/subdir/uninteresting/bar.txt' or die "Touching bar.txt failed";
 
-use_ok('MaMGal::Entry::Dir');
+use_ok('App::MaMGal::Entry::Dir');
 my $d;
-lives_ok(sub { $d = MaMGal::Entry::Dir->new(qw(td more), stat('td/more')) },	"creation ok");
-isa_ok($d, 'MaMGal::Entry::Dir',                                 "a dir is a dir");
+lives_ok(sub { $d = App::MaMGal::Entry::Dir->new(qw(td more), stat('td/more')) },	"creation ok");
+isa_ok($d, 'App::MaMGal::Entry::Dir',                                 "a dir is a dir");
 my $mf = get_mock_formatter(qw(format stylesheet));
 my $edtp = Image::EXIF::DateTime::Parser->new;
-my $iif = MaMGal::ImageInfoFactory->new($edtp, get_mock_logger);
+my $iif = App::MaMGal::ImageInfoFactory->new($edtp, get_mock_logger);
 my $tools = {
 	formatter => $mf,
-	entry_factory => MaMGal::EntryFactory->new($mf, get_mock_mplayer_wrapper, $iif, get_mock_logger),
+	entry_factory => App::MaMGal::EntryFactory->new($mf, get_mock_mplayer_wrapper, $iif, get_mock_logger),
 	image_info_factory => $iif,
 };
 $d->add_tools($tools);
@@ -48,15 +48,15 @@ $d->add_tools($tools);
 my @ret = $d->elements;
 is(scalar(@ret), 5,						"dir contains 5 elements");
 # read ordering
-isa_ok($ret[0], 'MaMGal::Entry::Picture::Static');
+isa_ok($ret[0], 'App::MaMGal::Entry::Picture::Static');
 is($ret[0]->element_index, 0, 					"pic 0 knows its element index");
-isa_ok($ret[1], 'MaMGal::Entry::Picture::Static');
+isa_ok($ret[1], 'App::MaMGal::Entry::Picture::Static');
 is($ret[1]->element_index, 1, 					"pic 1 knows its element index");
-isa_ok($ret[2], 'MaMGal::Entry::Dir');
+isa_ok($ret[2], 'App::MaMGal::Entry::Dir');
 is($ret[2]->element_index, 2, 					"element 2 knows its element index");
 ok(! $ret[2]->is_root,						"element 2 is not root");
 is_deeply([map { $_->name } $ret[2]->containers], [qw(td more)], "element 2 has some container names, in correct order");
-isa_ok($ret[3], 'MaMGal::Entry::Picture::Static');
+isa_ok($ret[3], 'App::MaMGal::Entry::Picture::Static');
 is($ret[3]->element_index, 3, 					"pic 3 knows its element index");
 
 my ($prev, $next);
@@ -82,7 +82,7 @@ is($sub_creation_time_range[0], $time_old, "First time in the range is equal to 
 
 my $topdir;
 lives_ok(sub { $topdir = $d->container },			"a dir can return its container");
-isa_ok($topdir, 'MaMGal::Entry::Dir',				"dir's container is a dir");
+isa_ok($topdir, 'App::MaMGal::Entry::Dir',				"dir's container is a dir");
 is($topdir->name, 'td',						"dir's parent name is correct");
 
 # the td/more should only (apart from td/more/subdir) have files/dirs whose
@@ -97,10 +97,10 @@ is($creation_time_range[1], $single_creation_time, "Second time in the range is 
 is($creation_time_range[0], $time_old, "First time in the range is equal to the one of the oldest picture");
 is($creation_time_range[1], $time_past, "Second time in the range is equal to the one of the newer picture");
 
-my $subdir_interesting = MaMGal::Entry::Dir->new(qw(td/more/subdir interesting), stat('td/more/subdir/interesting'));
+my $subdir_interesting = App::MaMGal::Entry::Dir->new(qw(td/more/subdir interesting), stat('td/more/subdir/interesting'));
 $subdir_interesting->add_tools($tools);
 ok($subdir_interesting->is_interesting, 'interesting dir is interesting');
-my $subdir_uninteresting = MaMGal::Entry::Dir->new(qw(td/more/subdir uninteresting), stat('td/more/subdir/uninteresting'));
+my $subdir_uninteresting = App::MaMGal::Entry::Dir->new(qw(td/more/subdir uninteresting), stat('td/more/subdir/uninteresting'));
 $subdir_uninteresting->add_tools($tools);
 ok(! $subdir_uninteresting->is_interesting, 'uninteresting dir is uninteresting');
 

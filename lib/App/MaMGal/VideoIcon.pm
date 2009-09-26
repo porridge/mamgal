@@ -4,7 +4,7 @@
 # See the README file for license information
 #
 # An embedded video file icon
-package MaMGal::VideoIcon;
+package App::MaMGal::VideoIcon;
 
 my $uu_video = <<'EOT';
 MB5!.1PT*&@H````-24A$4@```%H```!:"`8````XJ$$"````!&=!34$``+&/

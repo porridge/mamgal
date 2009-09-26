@@ -10,7 +10,7 @@ use Test::Files;
 use Test::HTML::Content;
 use Test::Exception;
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 
 prepare_test_data;
 
@@ -19,9 +19,9 @@ dir_only_contains_ok('td/more', [qw(a.png b.png x.png subdir subdir/p.png subdir
                                  qw(subdir/interesting subdir/interesting/b.png),
                                  'zzz another subdir', 'zzz another subdir/p.png'], "not much exists initially");
 
-use_ok('MaMGal');
+use_ok('App::MaMGal');
 # Get locale from environment so that you can see some representatative output in your language
-my $M = MaMGal->new('');
+my $M = App::MaMGal->new('');
 ok($M->{logger});
 ok($M->make_roots('td/more'), "maker returns success on an dir with some files");
 dir_only_contains_ok('td/more', [qw(.mamgal-root
@@ -53,7 +53,7 @@ dir_only_contains_ok('td/more', [qw(.mamgal-root
 						"maker created index.html, .mamgal-medium, .mamgal-thumbnails and .mamgal-slides, also for both subdirs");
 
 # Test failures
-my $ex = get_mock_exception 'MaMGal::SystemException';
+my $ex = get_mock_exception 'App::MaMGal::SystemException';
 $M->{maker} = Test::MockObject->new;
 $M->{maker}->mock('make_roots', sub { die $ex });
 $M->{maker}->mock('make_without_roots', sub { die $ex });

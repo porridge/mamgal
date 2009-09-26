@@ -2,10 +2,10 @@
 # Copyright 2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # A wrapper class for the Image::ExifTool library.
-package MaMGal::ImageInfo::ExifTool;
+package App::MaMGal::ImageInfo::ExifTool;
 use strict;
 use warnings;
-use base 'MaMGal::ImageInfo::Base';
+use base 'App::MaMGal::ImageInfo::Base';
 use Carp;
 
 use Image::ExifTool 'ImageInfo';

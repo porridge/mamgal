@@ -9,11 +9,11 @@ use Test::More tests => 21;
 use Test::Exception;
 use Test::Files;
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 use File::stat;
 use Image::EXIF::DateTime::Parser;
-use MaMGal::ImageInfoFactory;
-use MaMGal::EntryFactory;
+use App::MaMGal::ImageInfoFactory;
+use App::MaMGal::EntryFactory;
 
 prepare_test_data;
 
@@ -23,23 +23,23 @@ my $pic_time = $time - 120;
 utime $time, $time, 'td/one_pic' or die "Touching directory failed";
 utime $pic_time, $pic_time, 'td/one_pic/a1.png' or die "Touching picture failed";
 
-use_ok('MaMGal::Entry::Dir');
+use_ok('App::MaMGal::Entry::Dir');
 my $d;
-lives_ok(sub { $d = MaMGal::Entry::Dir->new(qw(td one_pic), stat('td/one_pic')) },   "dir can be created with an array: existant dir with one pic");
-isa_ok($d, 'MaMGal::Entry::Dir');
+lives_ok(sub { $d = App::MaMGal::Entry::Dir->new(qw(td one_pic), stat('td/one_pic')) },   "dir can be created with an array: existant dir with one pic");
+isa_ok($d, 'App::MaMGal::Entry::Dir');
 my $mf = get_mock_formatter(qw(format stylesheet format_slide));
 my $edtp = Image::EXIF::DateTime::Parser->new;
-my $iif = MaMGal::ImageInfoFactory->new($edtp, get_mock_logger);
+my $iif = App::MaMGal::ImageInfoFactory->new($edtp, get_mock_logger);
 my $tools = {
 	formatter => $mf,
-	entry_factory => MaMGal::EntryFactory->new($mf, get_mock_mplayer_wrapper, $iif, get_mock_logger),
+	entry_factory => App::MaMGal::EntryFactory->new($mf, get_mock_mplayer_wrapper, $iif, get_mock_logger),
 	image_info_factory => $iif,
 };
 $d->add_tools($tools);
 
 my @ret = $d->elements;
 is(scalar(@ret), 1,						"dir contains one element");
-isa_ok($ret[0], 'MaMGal::Entry::Picture::Static');
+isa_ok($ret[0], 'App::MaMGal::Entry::Picture::Static');
 is($ret[0]->element_index, 0,					"picture knows its index");
 ok($d->is_interesting, 'dir with one picture is interesting');
 is($d->tile_path, $ret[0]->tile_path, 'interesting thumbnail path of a dir with one picture is that pictures interesting thumbnail path');

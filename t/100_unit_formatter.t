@@ -10,22 +10,22 @@ use Test::Exception;
 use Test::HTML::Content;
 use Test::MockObject;
 use lib 'testlib';
-use MaMGal::TestHelper;
+use App::MaMGal::TestHelper;
 
 prepare_test_data;
 
-use_ok('MaMGal::Formatter');
+use_ok('App::MaMGal::Formatter');
 my $f;
-dies_ok(sub { MaMGal::Formatter->new },     "formatter cannot be created without parameters");
-dies_ok(sub { MaMGal::Formatter->new(1) },  "formatter cannot be created with some junk parameter");
+dies_ok(sub { App::MaMGal::Formatter->new },     "formatter cannot be created without parameters");
+dies_ok(sub { App::MaMGal::Formatter->new(1) },  "formatter cannot be created with some junk parameter");
 
 my $le = get_mock_localeenv;
 $le->mock('get_charset', sub { 'UTF-8' });
 $le->mock('format_time', sub { $_[1] == 1227684276 ? '12:00:00' : '13:13:13' });
 $le->mock('format_date', sub { $_[1] == 1227684276 ? '18 gru 2004' : '2 kwi 2004' });
 
-lives_ok(sub { $f = MaMGal::Formatter->new($le) }, "formatter can be created with locale env");
-isa_ok($f, 'MaMGal::Formatter');
+lives_ok(sub { $f = App::MaMGal::Formatter->new($le) }, "formatter can be created with locale env");
+isa_ok($f, 'App::MaMGal::Formatter');
 lives_ok(sub { $f->set_locale_env($le) },          "Formatter accepts a set_locale_env call");
 
 my $mock_td = Test::MockObject->new
@@ -43,12 +43,12 @@ my $t;
 lives_ok(sub { $t = $f->format($d) },                   "formatter survives dir page creation");
 tag_ok($t, 'meta', { 'http-equiv' => "Content-Type", 'content' => "text/html; charset=UTF-8" }, "generated dir page contains charset declaration");
 no_tag($t, "img", {},					"the resulting page has no pics");
-tag_ok($t, "td", { _content => MaMGal::Formatter->EMPTY_PAGE_TEXT },
+tag_ok($t, "td", { _content => App::MaMGal::Formatter->EMPTY_PAGE_TEXT },
 							"the resulting page has a cell");
 link_ok($t, "../index.html",				"the resulting page has a link down");
 
 my $mp = Test::MockObject->new;
-$mp->set_isa('MaMGal::Picture::Static');
+$mp->set_isa('App::MaMGal::Picture::Static');
 my $time = 1227684276;
 $mp->mock('creation_time', sub { $time });
 $mp->mock('page_path', sub { "pag'e_path" });
@@ -66,7 +66,7 @@ tag_ok($cell, 'a', { href => "pag'e_path" }, "generated link is correctly encode
 tag_ok($cell, 'img', { src => "tn'_pa%3Ft%23h" }, "generated img src is correctly encoded");
 
 my $mp2 = Test::MockObject->new;
-$mp2->set_isa('MaMGal::Picture::Static');
+$mp2->set_isa('App::MaMGal::Picture::Static');
 my ($time1, $time2) = (1080907993, 1227684276);
 $mp2->mock('creation_time', sub { ($time1, $time2) });
 $mp2->mock('page_path', sub { 'page_path ¿ó³w na staro¶æ wydziela wstrêtn± woñ' });

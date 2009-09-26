@@ -2,10 +2,10 @@
 # Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # Any interesting entry (picture or subdirectory)
-package MaMGal::Entry;
+package App::MaMGal::Entry;
 use strict;
 use warnings;
-use base 'MaMGal::Base';
+use base 'App::MaMGal::Base';
 use Carp;
 use File::Basename;
 use File::stat;
