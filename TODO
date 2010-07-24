@@ -26,3 +26,7 @@ calls first:
  - localtime/gmtime: :-/
  - readdir: only ever call from the main thread?
  - thread-safety of other modules that we use
+
+Investigate the possibility of speeding up loading of creation timestamp from
+the EXIF data, possibly by caching it. Currently it constitutes most of the
+processing time for regenerating the top-most index file.
