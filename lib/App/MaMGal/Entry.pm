@@ -105,8 +105,9 @@ sub fresher_than_me
 {
 	my $self = shift;
 	my $path = shift;
+	my %opts = @_;
 	my $stat = stat($path) or return 0;
-	return 1 if $stat->mtime > $self->content_modification_time;
+	return 1 if $stat->mtime >= $self->content_modification_time(%opts);
 	return 0;
 }
 

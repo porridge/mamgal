@@ -149,9 +149,15 @@ sub valid_make_invocation : Test(5) {
 	$d->add_tools({formatter => $mf});
 	lives_ok(sub { $d->make },                                   "Dir lives on make invocation");
 	ok($mf->called('format'),                                    "Dir->make calls formatter->format internally");
-	ok($mf->called('stylesheet'),                                "Dir->make calls formatter->stylesheet internally");
-	dir_only_contains_ok('td/empty', [qw{index.html .mamgal-index.png .mamgal-style.css}],
+	if ($d->is_root) {
+		ok($mf->called('stylesheet'),                        "Dir->make calls formatter->stylesheet internally");
+		dir_only_contains_ok('td/empty', [qw{index.html .mamgal-index.png .mamgal-style.css}],
+                                                                     "Directory contains only the index file, thumb and stylesheet afterwards");
+	} else {
+		ok(1,                                                "Keep the number of tests constant.");
+		dir_only_contains_ok('td/empty', [qw{index.html .mamgal-index.png}],
                                                                      "Directory contains only the index file and thumb afterwards");
+	}
 	use Text::Diff::Table; # work around a warning from UNIVERSAL::can
 	file_ok('td/empty/index.html', "whatever",                   "Dir->make creates an index file");
 }

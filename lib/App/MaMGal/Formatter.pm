@@ -97,10 +97,13 @@ sub format
 	my $dir  = shift;
 	croak "Only one arg is required" if @_;
 	my @elements = $dir->elements;
-	my $ret = $self->HEADER('<link rel="stylesheet" href=".mamgal-style.css" type="text/css">')."\n";
+	my @containers = $dir->containers;
+	my $down_dots = join('/', map { ".." } @containers);
+	$down_dots .= '/' if $down_dots;
+	my $ret = $self->HEADER('<link rel="stylesheet" href="'.$down_dots.'.mamgal-style.css" type="text/css">')."\n";
 	$ret .= '<table class="index">';
 	$ret .= '<tr><th colspan="4" class="header_cell">';
-	$ret .= join(' / ', map { $self->CURDIR($_->name) } $dir->containers, $dir);
+	$ret .= join(' / ', map { $self->CURDIR($_->name) } @containers, $dir);
 	$ret .= '</th></tr>'."\n";
 	$ret .= ($dir->is_root ? '' : '<tr><th colspan="4" class="header_cell">'.$self->LINK_DOWN.'</th></tr>')."\n";
 	$ret .= "\n<tr>\n";
@@ -152,7 +155,9 @@ sub format_slide
 
 	my ($prev, $next) = map { defined $_ ? $_->name : '' } $pic->neighbours;
 
-	my $r = $self->HEADER('<link rel="stylesheet" href="../.mamgal-style.css" type="text/css">')."\n";
+	my @containers = $pic->containers;
+	my $down_dots = join('/', map { ".." } @containers);
+	my $r = $self->HEADER('<link rel="stylesheet" href="'.$down_dots.'/.mamgal-style.css" type="text/css">')."\n";
 	$r .= '<div style="float:left">';
 	$r .= $self->MAYBE_LINK($prev, $self->PREV);
 	$r .= ' | ';
@@ -163,7 +168,7 @@ sub format_slide
 	$r .= '</div>';
 
 	$r .= '<div style="float:right">[ ';
-	$r .= join(' / ', map { $self->CURDIR($_->name) } $pic->containers);
+	$r .= join(' / ', map { $self->CURDIR($_->name) } @containers);
 	$r .= " ]</div><br>\n";
 
 	$r .= "<p>\n";

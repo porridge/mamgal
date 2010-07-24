@@ -57,12 +57,37 @@ sub make
 	my $formatter = $tools->{formatter} or croak "Formatter required";
 	ref $formatter and $formatter->isa('App::MaMGal::Formatter') or croak "[$formatter] is not a formatter";
 
-	my @active_files = map { $_->make } $self->elements;
+	my $deleted_css = $self->_write_stylesheet;
+	# Force a rewrite of all html pages if the stylesheet was removed, as they now need to point to a different place
+	my @active_files = map { $_->make(force_slide => $deleted_css) } $self->elements;
 	my $pruned_count = $self->_prune_inactive_files(\@active_files);
 	$self->_write_montage($pruned_count);
-	$self->_write_contents_to(sub { $formatter->stylesheet    }, '.mamgal-style.css');
-	$self->_write_contents_to(sub { $formatter->format($self) }, 'index.html');
+	$self->_write_index($deleted_css or $pruned_count);
 	return ()
+}
+
+sub _write_index
+{
+	my $self = shift;
+	my $force = shift;
+	my $formatter = $self->tools->{formatter};
+	$self->_write_contents_to(sub { $formatter->format($self) }, 'index.html') unless ($self->fresher_than_me($self->child('index.html')) and not $force);
+}
+
+sub _write_stylesheet
+{
+	my $self = shift;
+	if ($self->is_root) {
+		my $formatter = $self->tools->{formatter};
+		$self->_write_contents_to(sub { $formatter->stylesheet    }, '.mamgal-style.css');
+	} else {
+		# Delete legacy stylesheet files in directories other than root.
+		# TODO: remove this code a few releases from 1.2
+		my $path = $self->child('.mamgal-style.css');
+		return unless -e $path;
+		unlink($path) or App::MaMGal::SystemException->throw(message => '%s: unlink failed: %s', objects => [$path, $!]);
+		return 1;
+	}
 }
 
 sub ensure_subdir_exists
@@ -138,7 +163,7 @@ sub _write_montage
 
 	my $montage_path = $self->child('.mamgal-index.png');
 	# Return early if the montage is fresh
-	return if $self->fresher_than_me($montage_path) and $pruned_files == 0;
+	return if $self->fresher_than_me($montage_path, consider_interesting_only => 1) and $pruned_files == 0;
 
 	# Get just a bunch of images, not all of them.
 	my $montage_count = scalar @images > 36 ? 36 : scalar @images;
@@ -253,15 +278,21 @@ sub containers
 sub creation_time
 {
 	my $self = shift;
+
+	my $spaces = join('', map { " " } $self->containers);
+
 	my @elements = $self->elements;
 	if (scalar @elements == 1) {
 		return $elements[0]->creation_time;
 	} elsif (scalar @elements > 1) {
+		# Lookup cache
+		return wantarray ? @{$self->{cct}} : $self->{cct}->[1] if exists $self->{cct};
 		my ($oldest, $youngest) = (undef, undef);
 		foreach my $t (map { $_->creation_time } @elements) {
 			$oldest   = $t if not defined $oldest   or $oldest   > $t;
 			$youngest = $t if not defined $youngest or $youngest < $t;
 		}
+		$self->{cct} = [$oldest, $youngest];
 		return ($oldest, $youngest) if wantarray;
 		return $youngest;
 	}
@@ -274,9 +305,18 @@ sub creation_time
 sub content_modification_time
 {
 	my $self = shift;
+	my %opts = @_;
 	my $own = $self->SUPER::content_modification_time;
-	foreach my $i ($self->_all_interesting_elements) {
-		my $that = $i->content_modification_time;
+	return $own if $opts{only_own};
+	my @elements;
+	if ($opts{consider_interesting_only}) {
+		@elements = $self->_all_interesting_elements;
+	} else {
+		@elements = $self->elements;
+	}
+	foreach my $i (@elements) {
+		# Prevent doing a deep tree walk
+		my $that = $i->content_modification_time(only_own => 1);
 		$own = $that if $that > $own;
 	}
 	return $own;

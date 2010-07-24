@@ -32,20 +32,20 @@ dir_only_contains_ok('td/more', [qw(.mamgal-root
 					.mamgal-thumbnails/a.png .mamgal-thumbnails/b.png .mamgal-thumbnails/x.png
 					.mamgal-slides/a.png.html .mamgal-slides/b.png.html .mamgal-slides/x.png.html
 					subdir subdir/p.png subdir/p2.png subdir/lost+found
-					subdir/index.html subdir/.mamgal-index.png subdir/.mamgal-style.css
+					subdir/index.html subdir/.mamgal-index.png
 					subdir/.mamgal-medium subdir/.mamgal-medium/p.png subdir/.mamgal-medium/p2.png
 					subdir/.mamgal-thumbnails subdir/.mamgal-thumbnails/p.png
 					subdir/.mamgal-thumbnails/p2.png
 					subdir/.mamgal-slides subdir/.mamgal-slides/p.png.html
 					subdir/.mamgal-slides/p2.png.html
 					subdir/uninteresting subdir/uninteresting/bar.txt subdir/interesting subdir/interesting/b.png
-					subdir/interesting/.mamgal-index.png subdir/interesting/.mamgal-style.css subdir/interesting/.mamgal-medium
-					subdir/interesting/.mamgal-medium/b.png subdir/uninteresting/.mamgal-index.png subdir/uninteresting/.mamgal-style.css
+					subdir/interesting/.mamgal-index.png subdir/interesting/.mamgal-medium
+					subdir/interesting/.mamgal-medium/b.png subdir/uninteresting/.mamgal-index.png
 					subdir/uninteresting/index.html subdir/interesting/index.html subdir/interesting/.mamgal-thumbnails
 					subdir/interesting/.mamgal-slides subdir/interesting/.mamgal-slides/b.png.html
 					subdir/interesting/.mamgal-thumbnails/b.png),
 					'zzz another subdir', 'zzz another subdir/.mamgal-index.png', 'zzz another subdir/index.html',
-					'zzz another subdir/p.png', 'zzz another subdir/.mamgal-style.css', 'zzz another subdir/.mamgal-slides',
+					'zzz another subdir/p.png', 'zzz another subdir/.mamgal-slides',
 					'zzz another subdir/.mamgal-slides/p.png.html', 'zzz another subdir/.mamgal-thumbnails',
 					'zzz another subdir/.mamgal-thumbnails/p.png', 'zzz another subdir/.mamgal-medium',
 					'zzz another subdir/.mamgal-medium/p.png'

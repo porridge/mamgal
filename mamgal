@@ -94,7 +94,7 @@ a montage image showing the contents of the given directory
 
 =item .mamgal-style.css
 
-a stylesheet for the HTML files in the given directory
+a stylesheet for the HTML files in the given tree
 
 =item .mamgal-tmp
 

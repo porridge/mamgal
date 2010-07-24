@@ -19,7 +19,7 @@ use_ok('App::MaMGal');
 my $M = App::MaMGal->new;
 
 ok($M->make_without_roots('td/one_pic'),		"maker returns success on an dir with one file");
-dir_only_contains_ok('td/one_pic', [qw(index.html .mamgal-index.png .mamgal-style.css .mamgal-medium .mamgal-thumbnails .mamgal-slides
+dir_only_contains_ok('td/one_pic', [qw(index.html .mamgal-index.png .mamgal-medium .mamgal-thumbnails .mamgal-slides
 					a1.png
 					.mamgal-medium/a1.png
 					.mamgal-thumbnails/a1.png
@@ -30,4 +30,4 @@ unlink('td/one_pic/a1.png') or die;
 
 $M = App::MaMGal->new;
 ok($M->make_without_roots('td/one_pic'),		"maker returns success on an dir with one file");
-dir_only_contains_ok('td/one_pic', [qw(index.html .mamgal-index.png .mamgal-style.css)], "maker deleted .mamgal-medium, .mamgal-thumbnails and .mamgal-slides");
+dir_only_contains_ok('td/one_pic', [qw(index.html .mamgal-index.png)], "maker deleted .mamgal-medium, .mamgal-thumbnails and .mamgal-slides");

@@ -34,14 +34,32 @@ Other dependencies are documented in Makefile.PL
 
 mplayer is useful, but not strictly necessary for galleries which contain films.
 
-Installation
-============
+Installation:
+=============
 
 Please follow instructions in perlmodinstall. Afterwards, if your language is
 listed in LINGUAS in po/Makefile you may want to run the following command to
 install translation catalogs:
 
   make -C po install
+
+Release notes:
+==============
+
+1.3: Improved performance:
+
+ - creates just one stylesheet file, in the root directory, and deletes legacy
+   stylesheet files in other directories.
+   NOTE: This will cause the first run to be somewhat longer, as all HTML files
+   need to be regenerated to point to the single stylesheet file.
+
+ - does not regenerate the montage file if it is fresh (i.e. more recent than
+   the directory timestamp and timestamps of its interesting elements)
+
+ - does not regenerate the index file if it is fresh (i.e. more recent than the
+   directory timestamp and timestamps of all its elements)
+
+1.2: First public release, using the App::MaMGal namespace
 
 --------------------------------------------------------------------------------
 

@@ -12,19 +12,22 @@ use App::MaMGal::Exceptions;
 sub make
 {
 	my $self = shift;
-	return ($self->refresh_scaled_pictures, $self->refresh_slide);
+	my %opts = @_;
+	my $force_slide = $opts{force_slide} || 0;
+	return ($self->refresh_scaled_pictures, $self->refresh_slide($force_slide));
 }
 
 sub refresh_slide
 {
 	my $self = shift;
+	my $force = shift;
 	my $tools = $self->tools or croak "Tools were not injected";
 	my $formatter = $tools->{formatter} or croak "Formatter required";
 	ref $formatter and $formatter->isa('App::MaMGal::Formatter') or croak "Arg is not a formatter";
 
 	$self->container->ensure_subdir_exists($self->slides_dir);
 	my $name = $self->{dir_name}.'/'.$self->page_path;
-	$self->container->_write_contents_to(sub { $formatter->format_slide($self) }, $self->page_path) unless $self->fresher_than_me($name);
+	$self->container->_write_contents_to(sub { $formatter->format_slide($self) }, $self->page_path) unless ($self->fresher_than_me($name) and not $force);
 	return $self->page_path;
 }
 

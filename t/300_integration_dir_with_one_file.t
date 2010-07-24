@@ -54,7 +54,7 @@ dir_only_contains_ok('td/one_pic', [qw(a1.png)],                "Only the pictur
 
 lives_ok(sub { $d->make },				"dir makes stuff and survives");
 
-dir_only_contains_ok('td/one_pic', [qw(.mamgal-medium .mamgal-thumbnails .mamgal-slides index.html .mamgal-index.png .mamgal-style.css
+dir_only_contains_ok('td/one_pic', [qw(.mamgal-medium .mamgal-thumbnails .mamgal-slides index.html .mamgal-index.png
 					a1.png
 					.mamgal-thumbnails/a1.png
 					.mamgal-medium/a1.png
