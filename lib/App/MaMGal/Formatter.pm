@@ -1,5 +1,5 @@
 # mamgal - a program for creating static image galleries
-# Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
+# Copyright 2007-2010 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # An output formatting class, for creating the actual index files from some
 # contents

@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
+# Copyright 2007-2010 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 use strict;
 use warnings;
