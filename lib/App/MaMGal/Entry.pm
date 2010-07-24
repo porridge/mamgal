@@ -95,6 +95,21 @@ sub creation_time
 	return $stat->mtime;
 }
 
+sub content_modification_time
+{
+	my $self = shift;
+	return $self->App::MaMGal::Entry::creation_time(@_);
+}
+
+sub fresher_than_me
+{
+	my $self = shift;
+	my $path = shift;
+	my $stat = stat($path) or return 0;
+	return 1 if $stat->mtime > $self->content_modification_time;
+	return 0;
+}
+
 # Whether this entry should be shown in a directory contents montage
 sub is_interesting { }
 

@@ -58,8 +58,8 @@ sub make
 	ref $formatter and $formatter->isa('App::MaMGal::Formatter') or croak "[$formatter] is not a formatter";
 
 	my @active_files = map { $_->make } $self->elements;
-	$self->_prune_inactive_files(\@active_files);
-	$self->_write_montage;
+	my $pruned_count = $self->_prune_inactive_files(\@active_files);
+	$self->_write_montage($pruned_count);
 	$self->_write_contents_to(sub { $formatter->stylesheet    }, '.mamgal-style.css');
 	$self->_write_contents_to(sub { $formatter->format($self) }, 'index.html');
 	return ()
@@ -127,12 +127,18 @@ sub _side_length
 sub _write_montage
 {
 	my $self = shift;
+	my $pruned_files = shift;
+
 	my @images = $self->_all_interesting_elements;
 
 	unless (@images) {
 		$self->_write_contents_to(sub { App::MaMGal::DirIcon->img }, '.mamgal-index.png');
 		return;
 	}
+
+	my $montage_path = $self->child('.mamgal-index.png');
+	# Return early if the montage is fresh
+	return if $self->fresher_than_me($montage_path) and $pruned_files == 0;
 
 	# Get just a bunch of images, not all of them.
 	my $montage_count = scalar @images > 36 ? 36 : scalar @images;
@@ -151,10 +157,9 @@ sub _write_montage
 	my ($montage, $r);
 	# Do the magick, scale and write.
 	$r = $montage = $stack->Montage(tile => $side.'x'.$side, geometry => $m_x.'x'.$m_y, border => 2);
-	my $name = $self->child('.mamgal-index.png');
-	ref($r)                                                       or  App::MaMGal::SystemException->throw(message => '%s: montage failed: %s',         objects => [$name, $r]);
-	$r = App::MaMGal::Entry::Picture->scale_into($montage, $m_x, $m_y) and App::MaMGal::SystemException->throw(message => '%s: scaling failed: %s',         objects => [$name, $r]);
-	$r = $montage->Write($name)                                   and App::MaMGal::SystemException->throw(message => '%s: writing montage failed: %s', objects => [$name, $r]);
+	ref($r)                                                            or  App::MaMGal::SystemException->throw(message => '%s: montage failed: %s',         objects => [$montage_path, $r]);
+	$r = App::MaMGal::Entry::Picture->scale_into($montage, $m_x, $m_y) and App::MaMGal::SystemException->throw(message => '%s: scaling failed: %s',         objects => [$montage_path, $r]);
+	$r = $montage->Write($montage_path)                                and App::MaMGal::SystemException->throw(message => '%s: writing montage failed: %s', objects => [$montage_path, $r]);
 }
 
 sub _ignorable_name($)
@@ -184,6 +189,7 @@ sub _prune_inactive_files
 	}
 	my %active = map { $_ => 1 } @$active_files;
 	my $base = $self->{path_name};
+	my $pruned_count = 0;
 	foreach my $dir (@known_subdirs) {
 		# If the directory is not there, we have nothing to do about it
 		next unless -d $base.'/'.$dir;
@@ -195,13 +201,16 @@ sub _prune_inactive_files
 		my $at_start = scalar @entries;
 		my $deleted = 0;
 		foreach my $entry (@entries) {
-			if (not $active{$dir.'/'.$entry}) {
-				unlink($base.'/'.$dir.'/'.$entry) or App::MaMGal::SystemException->throw(message => '%s: unlink failed: %s', objects => ["$base/$dir/$entry", $!]);
-				$deleted++;
-			}
+			next if $active{$dir.'/'.$entry};
+			# Before unlinking, update touch self so that if we crash between unlinking and updating thumbnail, it will be done on subsequent invocation.
+			utime(undef, undef, $base);
+			unlink($base.'/'.$dir.'/'.$entry) or App::MaMGal::SystemException->throw(message => '%s: unlink failed: %s', objects => ["$base/$dir/$entry", $!]);
+			$deleted++;
 		}
+		$pruned_count += $deleted;
 		rmdir($base.'/'.$dir) or App::MaMGal::SystemException->throw(message => '%s: rmdir failed: %s', objects => ["$base/$dir", $!]) if $at_start == $deleted;
 	}
+	return $pruned_count;
 }
 
 sub elements
@@ -257,6 +266,20 @@ sub creation_time
 		return $youngest;
 	}
 	return $self->SUPER::creation_time;
+}
+
+# Returns the most recent of:
+# - this directory inode's modification time
+# - all of interesting elements' content modification time
+sub content_modification_time
+{
+	my $self = shift;
+	my $own = $self->SUPER::content_modification_time;
+	foreach my $i ($self->_all_interesting_elements) {
+		my $that = $i->content_modification_time;
+		$own = $that if $that > $own;
+	}
+	return $own;
 }
 
 sub is_interesting
