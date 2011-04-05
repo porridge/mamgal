@@ -4,7 +4,7 @@
 package App::MaMGal::TestHelper;
 use Test::MockObject;
 use Test::More;
-use lib 'Exporter';
+use base 'Exporter';
 use Carp;
 @EXPORT = qw(get_mock_entry get_mock_iif get_mock_datetime_parser get_mock_formatter get_mock_localeenv get_mock_cc prepare_test_data get_mock_mplayer_wrapper get_mock_logger logged_only_ok logged_exception_only_ok get_mock_exception get_mock_fh printed_only_ok);
 
