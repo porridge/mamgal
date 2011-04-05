@@ -46,6 +46,10 @@ install translation catalogs:
 Release notes:
 ==============
 
+1.4: Fixed unit tests tests under Perl 5.10
+
+ - Exporter had been used incorrectly in App::MaMGal::TestHelper
+
 1.3: Improved performance:
 
  - creates just one stylesheet file, in the root directory, and deletes legacy

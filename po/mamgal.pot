@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: mamgal 1.2\n"
+"Project-Id-Version: mamgal 1.4\n"
 "Report-Msgid-Bugs-To: Marcin Owsiany <marcin@owsiany.pl>\n"
 "POT-Creation-Date: 2009-08-08 19:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
