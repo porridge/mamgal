@@ -31,4 +31,8 @@ Investigate the possibility of speeding up loading of creation timestamp from
 the EXIF data, possibly by caching it. Currently it constitutes most of the
 processing time for regenerating the top-most index file.
 
+Add an option to treat directories more than N levels deep and older than T
+days as not needing a refresh. This would significantly speed up refreshes of
+large galleries.
+
 Make description suppression optional.
