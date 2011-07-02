@@ -30,3 +30,5 @@ calls first:
 Investigate the possibility of speeding up loading of creation timestamp from
 the EXIF data, possibly by caching it. Currently it constitutes most of the
 processing time for regenerating the top-most index file.
+
+Make description suppression optional.

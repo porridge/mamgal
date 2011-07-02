@@ -1,11 +1,11 @@
 #!/usr/bin/perl
 # mamgal - a program for creating static image galleries
-# Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
+# Copyright 2007-2011 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 use strict;
 use warnings;
 use Carp 'verbose';
-use Test::More tests => 33;
+use Test::More tests => 38;
 use Test::Exception;
 use Test::HTML::Content;
 use Test::MockObject;
@@ -46,6 +46,27 @@ no_tag($t, "img", {},					"the resulting page has no pics");
 tag_ok($t, "td", { _content => App::MaMGal::Formatter->EMPTY_PAGE_TEXT },
 							"the resulting page has a cell");
 link_ok($t, "../index.html",				"the resulting page has a link down");
+
+# Elements with the same description, testing description suppression.
+my $mock_td2 = Test::MockObject->new
+	->mock('name', sub { 'td' })
+	->mock('is_root', sub { 1 });
+my $e1 = get_mock_entry(undef, description => 'description 1');
+my $e2 = get_mock_entry(undef, description => 'description 2');
+my $e3 = get_mock_entry(undef, description => 'description 2');
+my $e4 = get_mock_entry(undef, description => 'description 1');
+my $d2 = get_mock_entry('App::MaMGal::Entry::Dir', name => 'empty')
+	->mock('elements', sub { ($e1, $e2, $e3, $e4) })
+	->mock('containers', sub { $mock_td2 })
+	->mock('is_root', sub { 0 });
+my $t2;
+lives_ok(sub { $t2 = $f->format($d2) },                 "formatter survives dir page creation");
+tag_ok($t2, "img", {src=>'a/thumbnail/path'},		"the resulting page has some pics");
+tag_count($t2, "span", { _content => 'description 1' }, 2,
+							"the resulting page has description 1 twice");
+tag_count($t2, "span", { _content => 'description 2' },	1,
+							"the resulting page has description 2 once, the repeat is suppressed");
+link_ok($t2, "../index.html",				"the resulting page has a link down");
 
 my $mp = Test::MockObject->new;
 $mp->set_isa('App::MaMGal::Picture::Static');

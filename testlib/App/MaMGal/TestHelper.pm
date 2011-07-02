@@ -1,5 +1,5 @@
 # mamgal - a program for creating static image galleries
-# Copyright 2008-2009 Marcin Owsiany <marcin@owsiany.pl>
+# Copyright 2008-2011 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 package App::MaMGal::TestHelper;
 use Test::MockObject;
@@ -10,11 +10,17 @@ use Carp;
 
 sub get_mock_entry
 {
-	my $class = shift or croak "class required";
+	my $class = (shift || 'App::MaMGal::Entry');
+	my %args = @_;
 	my $mock_entry = Test::MockObject->new
 		->mock('set_root')
 		->mock('make')
-		->mock('add_tools');
+		->mock('add_tools')
+		->mock('name', sub { $args{'name'} || 'filename.jpg' })
+		->mock('description', sub { $args{'description'} || 'a description' })
+		->mock('creation_time', sub { 1234 })
+		->mock('page_path', sub { 'a/page/path' })
+		->mock('thumbnail_path', sub { 'a/thumbnail/path' });
 	$mock_entry->set_isa($class);
 	return $mock_entry;
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# Copyright 2007-2010 Marcin Owsiany <marcin@owsiany.pl>
+# Copyright 2007-2011 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 use strict;
 use warnings;
@@ -191,9 +191,16 @@ Therefore to refresh a gallery you always need to run mamgal with the root
 directory as an argument. (Otherwise, the subdirectory you specify will itself
 turn into a root directory.)
 
+=head2 Duplicate Description Suppression
+
+In the "index" view, if an entry's description is the same as its immediate
+predecessor's description, then it is omitted. This way you can have identical
+descriptions embedded in multiple images, but the index view is not cluttered
+with them.
+
 =head1 AUTHOR
 
-MaMGal is Copyright 2007-2009 Marcin Owsiany <marcin@owsiany.pl>
+MaMGal is Copyright 2007-2011 Marcin Owsiany <marcin@owsiany.pl>
 
 =head1 SEE ALSO
 

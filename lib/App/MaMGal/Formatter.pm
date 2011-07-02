@@ -1,5 +1,5 @@
 # mamgal - a program for creating static image galleries
-# Copyright 2007-2010 Marcin Owsiany <marcin@owsiany.pl>
+# Copyright 2007-2011 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 # An output formatting class, for creating the actual index files from some
 # contents
@@ -109,12 +109,15 @@ sub format
 	$ret .= "\n<tr>\n";
 	my $i = 1;
 	if (@elements) {
+		my $previous_description = undef;
 		foreach my $e (@elements) {
 			confess "[$e] is not an object" unless ref $e;
 			confess "[$e] is a ".ref($e) unless $e->isa('App::MaMGal::Entry');
-			$ret .= '  '.$self->entry_cell($e)."\n";
+			my $this_description = $e->description;
+			$ret .= '  '.$self->entry_cell($e, ($this_description and $previous_description and ($this_description eq $previous_description)))."\n";
 			$ret .= "</tr>\n<tr>\n" if $i % 4 == 0;
 			$i++;
+			$previous_description = $this_description;
 		}
 	} else {
 		$ret .= '<td colspan="4">'.$self->EMPTY_PAGE_TEXT.'</td>';
@@ -127,6 +130,7 @@ sub entry_cell
 {
 	my $self  = shift;
 	my $entry = shift;
+	my $suppress_description = shift;
 	my $path = $entry->page_path;
 	my $thumbnail_path = $entry->thumbnail_path;
 	my $ret = '';
@@ -137,7 +141,7 @@ sub entry_cell
 	}
 	$ret .= '<br>'.join(' &mdash; ', @timeret).'<br>';
 	$ret .= $self->LINK($path, $self->MAYBE_IMG($thumbnail_path));
-	if ($entry->description) {
+	if ($entry->description and not $suppress_description) {
 		$ret .= sprintf('<br><span class="desc">%s</span>', $entry->description);
 	} else {
 		$ret .= sprintf('<br><span class="filename">[%s]</span><br>', $self->LINK($path, $entry->name));
