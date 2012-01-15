@@ -173,7 +173,7 @@ sub _write_montage
 		my $img = Image::Magick->new;
 		my $rr;
 		$rr = $img->Read($_->tile_path) and App::MaMGal::SystemException->throw(message => '%s: %s', objects => [$_->tile_path, $rr]);
-		$img } @images[0..($montage_count-1)];
+		$img->[0] or $img } @images[0..($montage_count-1)];
 
 	my $side = $self->_side_length($montage_count);
 
