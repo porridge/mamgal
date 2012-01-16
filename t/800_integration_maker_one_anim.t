@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # mamgal - a program for creating static image galleries
-# Copyright 2007-2010 Marcin Owsiany <marcin@owsiany.pl>
+# Copyright 2007-2012 Marcin Owsiany <marcin@owsiany.pl>
 # See the README file for license information
 use strict;
 use warnings;
