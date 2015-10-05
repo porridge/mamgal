@@ -13,7 +13,6 @@ use Carp;
 use FileHandle;
 use Image::EXIF::DateTime::Parser;
 use Locale::gettext;
-use Peco::Container;
 
 use App::MaMGal::CommandChecker;
 use App::MaMGal::EntryFactory;
@@ -26,26 +25,27 @@ use App::MaMGal::MplayerWrapper;
 sub init
 {
 	my $self = shift;
-	my $c = Peco::Container->new;
+
+	my $logger = App::MaMGal::Logger->new(FileHandle->new_from_fd('STDERR', 'w'));
+	my $locale_env;
 	if (@_) {
-		$c->register(locale_env => 'App::MaMGal::LocaleEnv', [qw(logger)], 'new', {set_locale => $_[0]});
+		$locale_env = App::MaMGal::LocaleEnv->new($logger);
+		$locale_env->set_locale($_[0]);
 		textdomain('mamgal');
 	} else {
-		$c->register(locale_env => 'App::MaMGal::LocaleEnv', [qw(logger)]);
+		$locale_env = App::MaMGal::LocaleEnv->new($logger);
 	}
-	$c->register(formatter => 'App::MaMGal::Formatter', [qw(locale_env)]);
-	$c->register(logger => 'App::MaMGal::Logger', [qw(filehandle)]);
-	$c->register(filehandle => 'FileHandle', [qw(descriptor mode)], 'new_from_fd');
-	$c->register(descriptor => 'STDERR');
-	$c->register(mode => 'w');
-	$c->register(datetime_parser => 'Image::EXIF::DateTime::Parser');
-	$c->register(command_checker => 'App::MaMGal::CommandChecker');
-	$c->register(mplayer_wrapper => 'App::MaMGal::MplayerWrapper', [qw(command_checker)]);
-	$c->register(image_info_factory => 'App::MaMGal::ImageInfoFactory', [qw(datetime_parser logger)]);
-	$c->register(entry_factory => 'App::MaMGal::EntryFactory', [qw(formatter mplayer_wrapper image_info_factory logger)]);
-	$c->register(maker => 'App::MaMGal::Maker', ['entry_factory']);
-	$self->{maker} = $c->service('maker');
-	$self->{logger} = $c->service('logger');
+	my $formatter = App::MaMGal::Formatter->new($locale_env);
+	my $command_checker = App::MaMGal::CommandChecker->new;
+	my $mplayer_wrapper = App::MaMGal::MplayerWrapper->new($command_checker);
+	my $datetime_parser = Image::EXIF::DateTime::Parser->new;
+	my $image_info_factory = App::MaMGal::ImageInfoFactory->new($datetime_parser, $logger);
+	my $entry_factory = App::MaMGal::EntryFactory->new($formatter, $mplayer_wrapper, $image_info_factory, $logger);
+	my $maker = App::MaMGal::Maker->new($entry_factory);
+
+	$self->{maker} = $maker;
+	$self->{logger} = $logger;
+
 }
 
 sub DESTROY {} # avoid using AUTOLOAD

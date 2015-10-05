@@ -21,7 +21,6 @@ WriteMakefile(
 		'Image::EXIF::DateTime::Parser' => 0,
 		'Image::Magick' => 0,
 		'Locale::gettext' => 0,
-		'Peco::Container' => 0,
 		'POSIX' => 0,
 		'Scalar::Util' => 0,
 		'URI::file' => 0,
